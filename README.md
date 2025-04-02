@@ -1,14 +1,16 @@
-## XXXXX Project by :  
-  
+## IOT Cocktail Machine Project by:
+* Noam Major
+* Elad Refael Hillel
+* Itai Sitnik
 ## Details about the project
- 
+An app-controlled robot that mixes and serves cocktails automatically.
 ## Folder description :
 * ESP32: source code for the esp side (firmware).
-* Documentation: wiring diagram + basic operating instructions
-* Unit Tests: tests for individual hardware components (input / output devices)
+* Documentation: wiring diagram + basic operating instructions.
+* Unit Tests: tests for individual hardware components (input / output devices).
 * flutter_app : dart code for our Flutter app.
-* Parameters: contains description of parameters and settings that can be modified IN YOUR CODE
-* Assets: link to 3D printed parts, Audio files used in this project, Fritzing file for connection diagram (FZZ format) etc
+* Parameters: contains description of parameters and settings that can be modified IN YOUR CODE.
+* Assets: link to 3D printed parts, Audio files used in this project, Fritzing file for connection diagram (FZZ format) etc.
 
 ## ESP32 SDK version used in this project: 
 
