@@ -1,0 +1,3 @@
+https://randomnerdtutorials.com/esp32-tft-touchscreen-display-2-8-ili9341-arduino/#config-file-windows-pc
+replace C:\Users\USER\OneDrive\מסמכים\Arduino\libraries\TFT_eSPI\User_Setup.h
+with file here
