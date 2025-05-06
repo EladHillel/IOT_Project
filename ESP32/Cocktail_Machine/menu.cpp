@@ -1,34 +1,15 @@
-#include "cocktail_data.h"
-#include <SPI.h>
-#include <TFT_eSPI.h>
-#include <XPT2046_Touchscreen.h>
+#include "menu.h"
 
 TFT_eSPI tft = TFT_eSPI();
-
-#define XPT2046_IRQ 36   // T_IRQ
-#define XPT2046_MOSI 32  // T_DIN
-#define XPT2046_MISO 39  // T_OUT
-#define XPT2046_CLK 25   // T_CLK
-#define XPT2046_CS 33    // T_CS
-
 SPIClass touchscreenSPI = SPIClass(VSPI);
 XPT2046_Touchscreen touchscreen(XPT2046_CS, XPT2046_IRQ);
 
-const int SCREEN_W = 320;
-const int SCREEN_H = 240;
-const int SIDE_W = SCREEN_W - SCREEN_H;
-const int MAIN_W = SCREEN_W - SIDE_W;
-const int SIDE_BUTTON_H = SCREEN_H / 4;
-
 int current_menu = 1;
-int selected_cocktail = -1;
+int selected_cocktail = -1; 
 int touch_x = -1, touch_y = -1;
 
-void setup() {
-  Serial.begin(115200);
-  while (!Serial)
-    delay(10);
 
+void setup_screen(){
   touchscreenSPI.begin(XPT2046_CLK, XPT2046_MISO, XPT2046_MOSI, XPT2046_CS);
   touchscreen.begin(touchscreenSPI);
   touchscreen.setRotation(1);
@@ -43,19 +24,6 @@ void setup() {
   draw_UI();
 }
 
-void loop() {
-  if (!touchscreen.touched())
-    return;
-
-  TS_Point p = touchscreen.getPoint();
-  // truely voodoo
-  touch_x = map(p.x, 200, 3700, 1, SCREEN_W);
-  touch_y = map(p.y, 240, 3800, 1, SCREEN_H);
-
-  handle_touch(touch_x, touch_y);
-  delay(200);
-}
-
 void draw_UI() {
   tft.fillScreen(TFT_BLACK);
   draw_side_menu();
@@ -63,44 +31,48 @@ void draw_UI() {
 }
 
 void draw_side_menu() {
-  tft.setTextSize(2);
-  const int th = 8 * 2;
-  for (int i = 0; i < 4; i++) {
-    int y = i * SIDE_BUTTON_H;
-    tft.drawRect(MAIN_W, y, SIDE_W, SIDE_BUTTON_H, TFT_WHITE);
-    String label = (i < 3) ? String(i + 1) : "Order";
-    int16_t tw = tft.textWidth(label);
-    int16_t tx = MAIN_W + (SIDE_W - tw) / 2;
-    int16_t ty = y + (SIDE_BUTTON_H - th) / 2;
-    tft.setCursor(tx, ty);
-    tft.print(label);
+  tft.setTextSize(SIDE_MENU_TEXT_SIZE);
+  const int text_height_in_pixels = 8 * SIDE_MENU_TEXT_SIZE;
+  
+  for (int i = 0; i < SIDE_MENU_RECT_AMOUNT; i++) {
+    int current_button_y = i * SIDE_BUTTON_HEIGHT;
+    tft.drawRect(MAIN_WIDTH, current_button_y, SIDE_WIDTH, SIDE_BUTTON_HEIGHT, TFT_WHITE);
+	
+    String current_button_label = (i < 3) ? String(i + 1) : "Order";
+    int16_t text_width = tft.textWidth(current_button_label);
+    int16_t text_pos_x = MAIN_WIDTH + (SIDE_WIDTH - text_width) / 2;
+    int16_t text_pos_y = current_button_y + (SIDE_BUTTON_HEIGHT - text_height_in_pixels) / 2;
+	
+    tft.setCursor(text_pos_x, text_pos_y);
+    tft.print(current_button_label);
   }
-  tft.setTextSize(1);
+  tft.setTextSize(DEFAULT_TEXT_SIZE);
 }
 
 void draw_menu_1() {
   const int lineH = 10;
-  tft.setTextSize(1);
-  for (int i = 0; i < 3; i++) {
-    for (int j = 0; j < 3; j++) {
-      int x = i * (MAIN_W / 3);
-      int y = j * (SCREEN_H / 3);
-      int idx = j * 3 + i;
-      tft.fillRect(x, y, MAIN_W / 3, SCREEN_H / 3, TFT_DARKGREY);
-      tft.drawRect(x, y, MAIN_W / 3, SCREEN_H / 3, TFT_WHITE);
-      tft.setCursor(x + 5, y + 6);
-      tft.print(cocktails[idx].name);
+  tft.setTextSize(DEFAULT_TEXT_SIZE);
+  
+  for (int i = 0; i < TABLE_DIMENSION; i++) {
+    for (int j = 0; j < TABLE_DIMENSION; j++) {
+      int current_button_x = i * (MAIN_WIDTH / TABLE_DIMENSION);
+      int current_button_y = j * (SCREEN_HEIGHT / TABLE_DIMENSION);
+      int cell_num = j * TABLE_DIMENSION + i;
+      tft.fillRect(current_button_x, current_button_y, MAIN_WIDTH / 3, SCREEN_HEIGHT / 3, TFT_DARKGREY);
+      tft.drawRect(current_button_x, current_button_y, MAIN_WIDTH / 3, SCREEN_HEIGHT / 3, TFT_WHITE);
+      tft.setCursor(current_button_x + 5, current_button_y + 6);
+      tft.print(cocktails[cell_num].name);
       for (int k = 0; k < INGREDIENT_COUNT; k++) {
-        tft.setCursor(x + 5, y + 10 + (k + 1) * lineH);
+        tft.setCursor(current_button_x + 5, current_button_y + 10 + (k + 1) * lineH);
         tft.print(ingredients[k].name[0]);
         tft.print(": ");
-        tft.print(cocktails[idx].amounts[k]);
+        tft.print(cocktails[cell_num].amounts[k]);
         tft.print(" ml");
       }
-      if (idx == selected_cocktail) {  // draw twice for thickness
-        tft.drawRect(x + 2, y + 2, MAIN_W / 3 - 4, SCREEN_H / 3 - 4,
+      if (cell_num == selected_cocktail) {  // draw twice for thickness
+        tft.drawRect(current_button_x + 2, current_button_y + 2, MAIN_WIDTH / 3 - 4, SCREEN_HEIGHT / 3 - 4,
                      TFT_ORANGE);
-        tft.drawRect(x + 3, y + 3, MAIN_W / 3 - 6, SCREEN_H / 3 - 6,
+        tft.drawRect(current_button_x + 3, current_button_y + 3, MAIN_WIDTH / 3 - 6, SCREEN_HEIGHT / 3 - 6,
                      TFT_ORANGE);
       }
     }
@@ -108,8 +80,8 @@ void draw_menu_1() {
 }
 
 void draw_menu_2() {
-  const int tileW = MAIN_W / 2;
-  const int tileH = SCREEN_H / 2;
+  const int tileW = MAIN_WIDTH / 2;
+  const int tileH = SCREEN_HEIGHT / 2;
   const int button_size = 40;
   const int spacing = 10;
 
@@ -145,12 +117,12 @@ void draw_menu_2() {
       tft.print("-");
     }
   }
-  tft.setTextSize(1);
+  tft.setTextSize(DEFAULT_TEXT_SIZE);
 }
 
 void draw_menu_3() {
-  tft.setTextSize(1);
-  tft.setCursor(50, SCREEN_H / 2 - 5);
+  tft.setTextSize(DEFAULT_TEXT_SIZE);
+  tft.setCursor(50, SCREEN_HEIGHT / 2 - 5);
   tft.print("NOT IMPLEMENTED");
 }
 
@@ -171,18 +143,18 @@ void draw_current_menu() {
 void handle_touch(int x, int y) {
   if (x < 0 || y < 0)
     return;
-  if (x >= MAIN_W) {
-    int button = y / SIDE_BUTTON_H;
+  if (x >= MAIN_WIDTH) {
+    int button = y / SIDE_BUTTON_HEIGHT;
     if (button < 3) {
       current_menu = button + 1;
       draw_UI();
     } else {
-      process_order();
+      int placeholder = 5; // INIT ORDER HERE
     }
     return;
   }
-  int tileW = MAIN_W / 2;
-  int tileH = SCREEN_H / 2;
+  int tileW = MAIN_WIDTH / 2;
+  int tileH = SCREEN_HEIGHT / 2;
 
   const int lineH = 8 * 2;
   const int button_size = 40;
@@ -191,7 +163,7 @@ void handle_touch(int x, int y) {
   int bx = (tileW - button_total) / 2;
   int by = tileH - button_size - 5;
   if (current_menu == 1) {
-    selected_cocktail = (y / (SCREEN_H / 3)) * 3 + (x / (MAIN_W / 3));
+    selected_cocktail = (y / (SCREEN_HEIGHT / 3)) * 3 + (x / (MAIN_WIDTH / 3));
     draw_menu_1();
   } else if (current_menu == 2) {
     int ci = x / tileW;
