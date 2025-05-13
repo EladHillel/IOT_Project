@@ -1,15 +1,18 @@
 #include "menu.h"
 #include "motors_sensors.h"
+#include "filesystem.h"
 
 void setup() {
   Serial.begin(115200);
   while (!Serial)
     delay(10);
   
-  setup_screen();
   setup_motors();
   setup_weight_sensor();
+  setup_data();
+  setup_screen();
 }
+
 
 void loop() {
   check_and_handle_touch();

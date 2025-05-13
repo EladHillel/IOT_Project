@@ -28,6 +28,7 @@ void setup_weight_sensor(){
     Serial.println("HX711 not found.");
     delay(1000);
   }
+  Serial.println("HX711 found.");
 }
 
 bool wait_for_cup(){

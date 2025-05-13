@@ -55,12 +55,12 @@ void draw_menu_1() {
       tft.fillRect(current_button_x, current_button_y, MAIN_WIDTH / 3, SCREEN_HEIGHT / 3, TFT_BLACK);
       tft.drawRect(current_button_x, current_button_y, MAIN_WIDTH / 3, SCREEN_HEIGHT / 3, TFT_WHITE);
       tft.setCursor(current_button_x + 5, current_button_y + 6);
-      tft.print(cocktails[cell_num].name);
+      tft.print(preset_cocktails[cell_num].name);
       for (int k = 0; k < INGREDIENT_COUNT; k++) {
         tft.setCursor(current_button_x + 5, current_button_y + 10 + (k + 1) * lineH);
         tft.print(ingredients[k].name[0]);
         tft.print(": ");
-        tft.print(cocktails[cell_num].amounts[k]);
+        tft.print(preset_cocktails[cell_num].amounts[k]);
         tft.print(" ml");
       }
       if (cell_num == menu_1_selected_cocktail_tile) {  // draw twice for thickness
@@ -227,8 +227,8 @@ void handle_touch_cancellable_op(int x, int y){
 
 void handle_touch_menu_1(int x, int y){
   menu_1_selected_cocktail_tile = (y / (SCREEN_HEIGHT / 3)) * 3 + (x / (MAIN_WIDTH / 3));
-  current_preset_cocktail.name = cocktails[menu_1_selected_cocktail_tile].name;
-  memcpy(current_preset_cocktail.amounts, cocktails[menu_1_selected_cocktail_tile].amounts, sizeof(current_preset_cocktail.amounts));
+  current_preset_cocktail.name = preset_cocktails[menu_1_selected_cocktail_tile].name;
+  memcpy(current_preset_cocktail.amounts, preset_cocktails[menu_1_selected_cocktail_tile].amounts, sizeof(current_preset_cocktail.amounts));
   Serial.println("New cocktail chosen:");
   Serial.println(current_preset_cocktail.name);
   ordered_cocktail = current_preset_cocktail;

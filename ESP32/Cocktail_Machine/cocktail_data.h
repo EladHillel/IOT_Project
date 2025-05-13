@@ -2,8 +2,10 @@
 #define COCKTAIL_DATA_H
 
 #include <TFT_eSPI.h>
+#include <map>
 
 const int INGREDIENT_COUNT = 4;
+const int PRESET_COCKTAIL_COUNT = 9;
 
 struct Cocktail {
   String name;
@@ -11,13 +13,17 @@ struct Cocktail {
 };
 
 struct Ingredient {
-  const String name;
+  String name;
   uint16_t color;
 };
 
-extern const Cocktail cocktails[];
-extern const int cocktailCount;
-extern const Ingredient ingredients[];
+struct Stats {
+  std::map<String, uint32_t> drinkCounts;
+  uint32_t totalDispenses = 0;
+};
+
+extern Cocktail preset_cocktails[];
+extern Ingredient ingredients[];
 
 extern Cocktail current_custom_cocktail;
 extern Cocktail current_preset_cocktail;
