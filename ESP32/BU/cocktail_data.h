@@ -20,6 +20,4 @@ extern const int cocktailCount;
 extern const Ingredient ingredients[];
 extern int ingredientAmounts[];
 
-extern Cocktail current_cocktail;
-extern bool order_pending;
 #endif

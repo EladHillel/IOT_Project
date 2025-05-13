@@ -25,12 +25,22 @@ static const int SIDE_MENU_TEXT_SIZE = 2;
 static const int SIDE_MENU_RECT_AMOUNT = 4;
 static const int DEFAULT_TEXT_SIZE = 1;
 static const int TABLE_DIMENSION = 3;
+static const int CANCELLABLE_OP_TEXT_SIZE = 3;
+static const int CANCEL_BUTTON_SIZE = 40;
+static const int CANCEL_MENU_TEXT_CENTER_X = SCREEN_WIDTH / 2;
+static const int CANCEL_MENU_TEXT_CENTER_Y = SCREEN_HEIGHT / 3;
+static const int CANCEL_BUTTON_X = CANCEL_MENU_TEXT_CENTER_X - CANCEL_BUTTON_SIZE / 2;
+static const int CANCEL_BUTTON_Y = CANCEL_MENU_TEXT_CENTER_Y + 40;
 
-extern int current_menu;
-extern int selected_cocktail;
-extern int touch_x;
-extern int touch_y;
+enum MenuState {
+  Menu_1 = 1,
+  Menu_2 = 2,
+  Menu_3 = 3,
+  Cancellable_Op
+};
 
+extern MenuState current_menu;
+extern int menu_1_selected_cocktail_tile;
 
 /*
 Performs setup steps for screen
@@ -38,38 +48,37 @@ Performs setup steps for screen
 void setup_screen();
 
 /*
+returns to menu 1
+*/
+void return_to_main_menu();
+
+/*
 Main function for drawing the UI in the machines screen.
-*/
-void draw_UI();
-
-/*
-Draws the side menu, which allow navigation between menus.
-*/
-void draw_side_menu();
-
-/*
-Handles user input.
-*/
-void handle_touch(int x, int y);
-
-/*
-draws the current selected menu.
 */
 void draw_current_menu();
 
 /*
-Draws menu 1 - menu with preselected cocktails
+Checks for and handles user input
 */
-static void draw_menu_1();
+void check_and_handle_touch();
 
 /*
-Draws menu 1 - menu for creating custom cocktails
+initiates cancellable operation
 */
-static void draw_menu_2();
+void init_cancellable_op(String op_text);
 
-/*
-Draws menu 3 - menu for other utils.
-*/
-static void draw_menu_3();
+void handle_touch(int x, int y);
+TS_Point* check_touch();
+void draw_side_menu();
+void draw_menu_1();
+void draw_menu_2();
+void draw_menu_3();
+void draw_cancellable_operation();
+void handle_touch_side_menu(int x, int y);
+void handle_touch_cancellable_op(int x, int y);
+void handle_touch_menu_1(int x, int y);
+void handle_touch_menu_2(int x, int y);
+void handle_touch_menu_3(int x, int y);
+
 
 #endif

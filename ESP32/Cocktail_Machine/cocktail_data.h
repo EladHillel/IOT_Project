@@ -6,7 +6,7 @@
 const int INGREDIENT_COUNT = 4;
 
 struct Cocktail {
-  const String name;
+  String name;
   int amounts[INGREDIENT_COUNT];
 };
 
@@ -18,6 +18,9 @@ struct Ingredient {
 extern const Cocktail cocktails[];
 extern const int cocktailCount;
 extern const Ingredient ingredients[];
-extern int ingredientAmounts[];
 
+extern Cocktail current_custom_cocktail;
+extern Cocktail current_preset_cocktail;
+extern Cocktail ordered_cocktail;
+extern bool order_pending;
 #endif

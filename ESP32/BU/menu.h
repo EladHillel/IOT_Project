@@ -12,9 +12,6 @@
 #define XPT2046_CLK 25   // T_CLK
 #define XPT2046_CS 33    // T_CS
 
-#define CHECK_AND_HANDLE_TOUCH() \
-  if (TS_Point* _p = check_touch()) handle_touch(*_p)
-
 extern TFT_eSPI tft;
 extern SPIClass touchscreenSPI;
 extern XPT2046_Touchscreen touchscreen;
@@ -28,22 +25,12 @@ static const int SIDE_MENU_TEXT_SIZE = 2;
 static const int SIDE_MENU_RECT_AMOUNT = 4;
 static const int DEFAULT_TEXT_SIZE = 1;
 static const int TABLE_DIMENSION = 3;
-static const int CANCELLABLE_OP_TEXT_SIZE = 3;
-static const int CANCEL_BUTTON_SIZE = 40;
-static const int CANCEL_MENU_TEXT_CENTER_X = SCREEN_WIDTH / 2;
-static const int CANCEL_MENU_TEXT_CENTER_Y = SCREEN_HEIGHT / 3;
-static const int CANCEL_BUTTON_X = CANCEL_MENU_TEXT_CENTER_X - CANCEL_BUTTON_SIZE / 2;
-static const int CANCEL_BUTTON_Y = CANCEL_MENU_TEXT_CENTER_Y + 40;
 
-enum MenuState {
-  Menu_1 = 1,
-  Menu_2 = 2,
-  Menu_3 = 3,
-  Cancellable_Op
-}
+extern int current_menu;
+extern int selected_cocktail;
+extern int touch_x;
+extern int touch_y;
 
-extern MenuState current_menu;
-extern int menu_1_selected_cocktail_tile;
 
 /*
 Performs setup steps for screen
@@ -53,7 +40,12 @@ void setup_screen();
 /*
 Main function for drawing the UI in the machines screen.
 */
-void draw_current_menu();
+void draw_UI();
+
+/*
+Draws the side menu, which allow navigation between menus.
+*/
+void draw_side_menu();
 
 /*
 Handles user input.
@@ -61,13 +53,23 @@ Handles user input.
 void handle_touch(int x, int y);
 
 /*
-Checks for and returns user input
+draws the current selected menu.
 */
-TS_Point* check_touch();
+void draw_current_menu();
 
 /*
-initiates cancellable operation
+Draws menu 1 - menu with preselected cocktails
 */
-void init_cancellable_op(String op_text);
+static void draw_menu_1();
+
+/*
+Draws menu 1 - menu for creating custom cocktails
+*/
+static void draw_menu_2();
+
+/*
+Draws menu 3 - menu for other utils.
+*/
+static void draw_menu_3();
 
 #endif

@@ -1,13 +1,13 @@
 #include "menu.h"
-#include "cocktail_data.h"
 
 TFT_eSPI tft = TFT_eSPI();
 SPIClass touchscreenSPI = SPIClass(VSPI);
 XPT2046_Touchscreen touchscreen(XPT2046_CS, XPT2046_IRQ);
 
-MenuState current_menu = Menu_1;
-int menu_1_selected_cocktail_tile = -1; 
-String current_cancellable_op_text = "";
+int current_menu = 1;
+int selected_cocktail = -1; 
+int touch_x = -1, touch_y = -1;
+
 
 void setup_screen(){
   touchscreenSPI.begin(XPT2046_CLK, XPT2046_MISO, XPT2046_MOSI, XPT2046_CS);
@@ -22,6 +22,12 @@ void setup_screen(){
   tft.fillScreen(TFT_BLACK);
 
   draw_UI();
+}
+
+void draw_UI() {
+  tft.fillScreen(TFT_BLACK);
+  draw_side_menu();
+  draw_current_menu();
 }
 
 void draw_side_menu() {
@@ -73,7 +79,7 @@ void draw_menu_1() {
   }
 }
 
-void draw_menu_2() { //need cleanup
+void draw_menu_2() {
   const int tileW = MAIN_WIDTH / 2;
   const int tileH = SCREEN_HEIGHT / 2;
   const int button_size = 40;
@@ -121,27 +127,20 @@ void draw_menu_3() {
 }
 
 void draw_current_menu() {
-  tft.fillScreen(TFT_BLACK);
   switch (current_menu) {
-    case Menu_1:
-      draw_side_menu();
+    case 1:
       draw_menu_1();
       break;
-    case Menu_2:
-      draw_side_menu();
+    case 2:
       draw_menu_2();
       break;
-    case Menu_3:
-      draw_side_menu();
+    case 3:
       draw_menu_3();
-      break;
-    case Cancellable_Op:
-      draw_cancellable_operation();
       break;
   }
 }
 
-void handle_touchh(int x, int y) {
+void handle_touch(int x, int y) {
   if (x < 0 || y < 0)
     return;
   if (x >= MAIN_WIDTH) {
@@ -150,7 +149,7 @@ void handle_touchh(int x, int y) {
       current_menu = button + 1;
       draw_UI();
     } else {
-      int placeholder = 5; //NOT SURE WHAT FITS HERE
+      int placeholder = 5; // INIT ORDER HERE
     }
     return;
   }
@@ -164,7 +163,7 @@ void handle_touchh(int x, int y) {
   int bx = (tileW - button_total) / 2;
   int by = tileH - button_size - 5;
   if (current_menu == 1) {
-    selected_cocktail = (y / (SCREEN_HEIGHT / 3)) * 3 + (x / (MAIN_WIDTH / 3)); //convert to int and create instance
+    selected_cocktail = (y / (SCREEN_HEIGHT / 3)) * 3 + (x / (MAIN_WIDTH / 3));
     draw_menu_1();
   } else if (current_menu == 2) {
     int ci = x / tileW;
@@ -223,121 +222,4 @@ void process_order() {
   }
   delay(3000);
   draw_UI();
-}
-
-void draw_cancellable_operation(){
-  tft.fillScreen(TFT_BLACK);
-  tft.setTextDatum(MC_DATUM); // Middle center
-  tft.setTextColor(TFT_WHITE, TFT_BLACK);
-  tft.setTextSize(CANCELLABLE_OP_TEXT_SIZE);
-
-  tft.drawString(current_cancellable_op_text, CANCEL_MENU_TEXT_CENTER_X, CANCEL_MENU_TEXT_CENTER_Y);
-
-  
-  tft.fillRect(CANCEL_BUTTON_X, CANCEL_BUTTON_Y, CANCEL_BUTTON_SIZE, CANCEL_BUTTON_SIZE, TFT_RED);
-  tft.setTextColor(TFT_WHITE, TFT_RED);
-  tft.setTextSize(DEFAULT_TEXT_SIZE);
-  tft.drawString("X", CANCEL_MENU_TEXT_CENTER_X, CANCEL_BUTTON_Y + CANCEL_BUTTON_SIZE / 2);
-
-  // "Cancel" label
-  tft.setTextSize(2);
-  tft.setTextColor(TFT_WHITE, TFT_BLACK);
-  tft.drawString("Cancel", CANCEL_MENU_TEXT_CENTER_X, CANCEL_BUTTON_Y + CANCEL_BUTTON_SIZE + 10);
-}
-
-TS_Point* check_touch(){
-  static TS_Point point_touched;
-
-  if (!touchscreen.touched())
-    return nullptr;
-
-  point_touched = touchscreen.getPoint();
-  return &point_touched;
-}
-
-void handle_touch(TS_Point point) {
-  int x = map(point.x, 200, 3700, 1, SCREEN_WIDTH);
-  int y = map(point.y, 240, 3800, 1, SCREEN_HEIGHT);
-  if (x < 0 || y < 0)
-    return;
-
-  if (current_menu = Cancellable_Op){
-    handle_touch_cancellable_op(x, y);
-    return;
-  }
-  if (x >= MAIN_WIDTH) {
-    handle_touch_side_menu(x, y)
-    return;
-  }
-  else {
-    switch (current_menu) {
-      case Menu_1:
-        handle_touch_menu_1(x, y);
-        break;
-      case Menu_2:
-        handle_touch_menu_2(x, y);
-        break;
-      case Menu_3:
-        handle_touch_menu_3(x, y);
-        break;
-      default:
-        return;
-    return;
-}
-
-void handle_touch_side_menu(int x, int y){
-  int button = y / SIDE_BUTTON_HEIGHT;
-    if (button < 3) {
-      current_menu = button + 1;
-      draw_UI();
-    } 
-    else {
-      order_pending = true;
-    }
-}
-
-void handle_touch_cancellable_op(int x, int y){
-  if (x >= CANCEL_BUTTON_X && x <= CANCEL_BUTTON_X + CANCEL_BUTTON_SIZE &&
-              y >= CANCEL_BUTTON_Y && y <= CANCEL_BUTTON_Y + CANCEL_BUTTON_SIZE)
-    {
-      current_menu = Menu_1 //Cancellable ops must poll for menu state.
-    }
-}
-
-void handle_touch_menu_1(int x, int y){
-  menu_1_selected_cocktail_tile = (y / (SCREEN_HEIGHT / 3)) * 3 + (x / (MAIN_WIDTH / 3));
-  current_cocktail.name = cocktails[menu_1_selected_cocktail_tile].name;
-  current_cocktail.amounts = cocktails[menu_1_selected_cocktail_tile].amounts;
-  draw_current_menu();
-}
-
-void handle_touch_menu_2(int x, int y){ //need cleanup
-  int tileW = MAIN_WIDTH / 2;
-  int tileH = SCREEN_HEIGHT / 2;
-  const int button_size = 40;
-  const int spacing = 10;
-  int button_total = button_size * 2 + spacing;
-  int bx = (tileW - button_total) / 2;
-  int by = tileH - button_size - 5;
-
-  int ci = x / tileW;
-  int cj = y / tileH;
-  int idx = cj * 2 + ci;
-  int lx = x % tileW;
-  int ly = y % tileH;
-  if (lx >= bx && lx < bx + button_size && ly >= by && ly < by + button_size) {
-    ingredientAmounts[idx] = min(200, ingredientAmounts[idx] + 25);
-  } else if (lx >= bx + button_size + spacing && lx < bx + button_total && ly >= by && ly < by + button_size) {
-    ingredientAmounts[idx] = max(0, ingredientAmounts[idx] - 25);
-  }
-}
-
-void handle_touch_menu_3(int x, int y){
-  return;
-}
-
-void init_cancellable_op(String op_text){
-  current_menu = Cancellable_Op;
-  current_cancellable_op_text = op_text;
-  draw_current_menu();
 }

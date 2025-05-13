@@ -17,7 +17,4 @@ const Ingredient ingredients[] = {
   { "Red", 0xc800 }, { "Green", 0x34c6 }, { "Blue", 0x74fb }, { "Yellow", 0xe746 }
 };
 
-Cocktail current_cocktail = {UNSELECTED_COCKTAIL_NAME, [0,0,0,0]};
-bool order_pending = true;
-
 int ingredientAmounts[INGREDIENT_COUNT] = { 0, 0, 0, 0 };

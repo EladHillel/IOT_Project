@@ -12,17 +12,15 @@ void setup() {
 }
 
 void loop() {
-  if (!touchscreen.touched())
-    return;
-
-  TS_Point p = touchscreen.getPoint();
-  // truely voodoo
-  touch_x = map(p.x, 200, 3700, 1, SCREEN_WIDTH);
-  touch_y = map(p.y, 240, 3800, 1, SCREEN_HEIGHT);
-
-  wait_for_cup();
-  pour_drink(4, 20);
-  handle_touch(touch_x, touch_y);
+  check_and_handle_touch();
+  if (order_pending){
+    bool cup_placed = wait_for_cup();
+    if (cup_placed){
+      pour_drink(ordered_cocktail);
+    }
+    order_pending = false;
+    return_to_main_menu();
+  }
   delay(200);
 }
 
