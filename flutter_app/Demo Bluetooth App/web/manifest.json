@@ -1,6 +1,6 @@
 {
-    "name": "bluetooth_test_app",
-    "short_name": "bluetooth_test_app",
+    "name": "flutter_bt_classic_example",
+    "short_name": "flutter_bt_classic_example",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

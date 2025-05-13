@@ -1,0 +1,2 @@
+C:/Users/itai9/Documents/Arduino/flutter_app/android/app/.cxx/RelWithDebInfo/6r6k315p/x86_64/CMakeFiles/edit_cache.dir
+C:/Users/itai9/Documents/Arduino/flutter_app/android/app/.cxx/RelWithDebInfo/6r6k315p/x86_64/CMakeFiles/rebuild_cache.dir
