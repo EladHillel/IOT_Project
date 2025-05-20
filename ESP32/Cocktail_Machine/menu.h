@@ -31,12 +31,14 @@ static const int CANCEL_MENU_TEXT_CENTER_X = SCREEN_WIDTH / 2;
 static const int CANCEL_MENU_TEXT_CENTER_Y = SCREEN_HEIGHT / 3;
 static const int CANCEL_BUTTON_X = CANCEL_MENU_TEXT_CENTER_X - CANCEL_BUTTON_SIZE / 2;
 static const int CANCEL_BUTTON_Y = CANCEL_MENU_TEXT_CENTER_Y + 40;
+static const int MENU_2_INGREDIENT_DELTA = 25;
 
 enum MenuState {
   Menu_1 = 1,
   Menu_2 = 2,
   Menu_3 = 3,
-  Cancellable_Op
+  Cancellable_Op,
+  Error_Screen
 };
 
 extern MenuState current_menu;
@@ -67,6 +69,12 @@ initiates cancellable operation
 */
 void init_cancellable_op(String op_text);
 
+/*
+Shows error message
+*/
+void alert_error(String msg);
+
+
 void handle_touch(int x, int y);
 TS_Point* check_touch();
 void draw_side_menu();
@@ -79,6 +87,6 @@ void handle_touch_cancellable_op(int x, int y);
 void handle_touch_menu_1(int x, int y);
 void handle_touch_menu_2(int x, int y);
 void handle_touch_menu_3(int x, int y);
-
+void draw_error_screen();
 
 #endif

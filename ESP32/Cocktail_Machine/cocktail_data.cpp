@@ -18,13 +18,53 @@ void update_ingredient_amount(int ingredient_index, float amount_poured){
   save_ingredients(ingredients);
 }
 
-bool isCocktailAvailable(Cocktail cocktail){
-  for(int ingredientIndex = 0; ingredientIndex< INGREDIENT_COUNT; ingredientIndex++){
-    if(cocktail.amounts[ingredientIndex] > ingredients[ingredientIndex].amount_left - 5){ //added 5 as a safety for small liquid amounts
+bool isCocktailAvailable(Cocktail cocktail) {
+  for (int ingredientIndex = 0; ingredientIndex < INGREDIENT_COUNT; ingredientIndex++) {
+    float required = cocktail.amounts[ingredientIndex];
+    if (!isIngredientAvailable(ingredients[ingredientIndex], required)) {
       return false;
     }
+  }
+  Serial.println("Cocktail is available.");
+  return true;
+}
+
+bool isIngredientAvailable(Ingredient ingredient ,float required) {
+  const float MINIMUM_INGREDIENT_AMOUNT_THRESHOLD = 5;
+  int available = ingredient.amount_left;
+
+    Serial.print("Ingredient ");
+    Serial.print(ingredient.name);
+    Serial.print(": Required = ");
+    Serial.print(required);
+    Serial.print(" ml, Available = ");
+    Serial.print(available);
+    Serial.println(" ml");
+
+    if (required > available - MINIMUM_INGREDIENT_AMOUNT_THRESHOLD) {
+      Serial.println(" -> Not enough available.");
+      return false;
+    }
+    return true;
+}
+
+bool isCocktailEmpty(Cocktail cocktail){
+    for(int ingredient = 0; ingredient < INGREDIENT_COUNT; ingredient++){
+      if (cocktail.amounts[ingredient] != 0 ){
+        return false;
+      }
     return true;
   }
 }
 
-
+void log_cocktail(const Cocktail& cocktail) {
+  Serial.print("Cocktail: ");
+  Serial.println(cocktail.name);
+  for (int i = 0; i < INGREDIENT_COUNT; i++) {
+    Serial.print("  Ingredient ");
+    Serial.print(i);
+    Serial.print(": ");
+    Serial.print(cocktail.amounts[i]);
+    Serial.println(" ml");
+  }
+}

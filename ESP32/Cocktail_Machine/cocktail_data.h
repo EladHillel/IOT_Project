@@ -6,6 +6,7 @@
 
 const int INGREDIENT_COUNT = 4;
 const int PRESET_COCKTAIL_COUNT = 9;
+extern const String UNSELECTED_COCKTAIL_NAME;
 
 struct Cocktail {
   String name;
@@ -32,4 +33,8 @@ extern Cocktail ordered_cocktail;
 extern bool order_pending;
 
 void update_ingredient_amount(int ingredient_index, float amount_poured);
+bool isCocktailAvailable(Cocktail cocktail);
+bool isIngredientAvailable(Ingredient ingredient ,float required);
+bool isCocktailEmpty(Cocktail cocktail);
+void log_cocktail(const Cocktail& cocktail);
 #endif

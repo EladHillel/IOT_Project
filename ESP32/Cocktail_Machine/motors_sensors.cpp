@@ -31,19 +31,38 @@ void setup_weight_sensor(){
   Serial.println("HX711 found.");
 }
 
-bool wait_for_cup(){
+bool wait_for_cup() {
+  const int stable_reads_required = 10;
+  const int delay_ms = 100;
+  const float delta_threshold = CUP_WEIGHT_THRESHOLD;
+  int stable_reads = 0;
+
   init_cancellable_op("Please insert a cup.");
-  while (scale.get_units(5) < CUP_WEIGHT_THRESHOLD) {
+  float baseline = scale.get_units(10);  // do NOT tare, just read average
+
+  while (stable_reads < stable_reads_required) {
     check_and_handle_touch();
-    if (current_menu != Cancellable_Op){
-      Serial.print("CANCELLED");
+    if (current_menu != Cancellable_Op) {
+      Serial.println("CANCELLED");
       return false;
     }
-    Serial.print("Insert cup");
-    Serial.println(scale.get_units(5));
-    delay(100);
+
+    float weight = scale.get_units(10);
+    float delta = weight - baseline;
+
+    Serial.print("Insert cup, Δ: ");
+    Serial.println(delta);
+
+    if (delta >= delta_threshold) {
+      stable_reads++;
+    } else {
+      stable_reads = 0;
+    }
+
+    delay(delay_ms);
   }
-  Serial.print("CUP DETECTED");
+
+  Serial.println("CUP DETECTED");
   return true;
 }
 

@@ -8,8 +8,9 @@ XPT2046_Touchscreen touchscreen(XPT2046_CS, XPT2046_IRQ);
 MenuState current_menu = Menu_1;
 int menu_1_selected_cocktail_tile = -1; 
 String current_cancellable_op_text = "";
+String current_error_message = "";
 
-void draw_menu_1_tile(int tile_index, bool selected) {
+void draw_menu_1_tile(int tile_index, bool selected, bool cocktail_available) {
   const int lineH = 10;
   int i = tile_index % TABLE_DIMENSION;
   int j = tile_index / TABLE_DIMENSION;
@@ -28,52 +29,76 @@ void draw_menu_1_tile(int tile_index, bool selected) {
     tft.print(" ml");
   }
 
+  if (!cocktail_available) {
+    tft.drawLine(x, y, x + MAIN_WIDTH / 3, y + SCREEN_HEIGHT / 3, TFT_RED);
+    tft.drawLine(x + MAIN_WIDTH / 3, y, x, y + SCREEN_HEIGHT / 3, TFT_RED);
+    return;
+  }
+
   if (selected) {
     tft.drawRect(x + 2, y + 2, MAIN_WIDTH / 3 - 4, SCREEN_HEIGHT / 3 - 4, TFT_ORANGE);
     tft.drawRect(x + 3, y + 3, MAIN_WIDTH / 3 - 6, SCREEN_HEIGHT / 3 - 6, TFT_ORANGE);
   }
 }
 
-void draw_menu_2_tile(int idx) {
+void draw_menu_2_tile(int ingredient_index, bool can_add, bool can_subtract) {
   const int tileW = MAIN_WIDTH / 2;
   const int tileH = SCREEN_HEIGHT / 2;
   const int button_size = 40;
   const int spacing = 10;
 
-  int i = idx % 2;
-  int j = idx / 2;
+  int i = ingredient_index % 2;
+  int j = ingredient_index / 2;
   int x = i * tileW;
   int y = j * tileH;
 
-  tft.fillRect(x, y, tileW, tileH, ingredients[idx].color);
+  tft.fillRect(x, y, tileW, tileH, ingredients[ingredient_index].color);
   tft.setTextSize(2);
 
   // Name
   tft.setCursor(x + 8, y + 8);
-  tft.print(ingredients[idx].name);
+  tft.setTextColor(TFT_BLACK, ingredients[ingredient_index].color);
+  tft.print(ingredients[ingredient_index].name);
 
   // Amount
   tft.setCursor(x + 8, y + 28);
-  tft.print(current_custom_cocktail.amounts[idx]);
+  tft.print(current_custom_cocktail.amounts[ingredient_index]);
   tft.print(" ml");
 
   // Buttons
-  int button_total = button_size * 2 + spacing;
-  int bx = x + (tileW - button_total) / 2;
-  int by = y + tileH - button_size - 5;
+int button_total = button_size * 2 + spacing;
+int bx = x + (tileW - button_total) / 2;
+int by = y + tileH - button_size - 5;
 
-  tft.setTextSize(3);
+tft.setTextSize(3);
 
-  // Plus
-  tft.drawRect(bx, by, button_size, button_size, TFT_BLACK);
-  tft.setCursor(bx + button_size / 2 - 8, by + button_size / 2 - 11);
-  tft.print("+");
+// Draw + button
+tft.drawRect(bx, by, button_size, button_size, TFT_BLACK);
+tft.setTextColor(TFT_BLACK, ingredients[ingredient_index].color);
+tft.setCursor(bx + button_size / 2 - 8, by + button_size / 2 - 11);
+tft.print("+");
 
-  // Minus
-  tft.drawRect(bx + button_size + spacing, by, button_size, button_size, TFT_BLACK);
-  tft.setCursor(bx + button_size + spacing + button_size / 2 - 8,
-                by + button_size / 2 - 11);
-  tft.print("-");
+// If unavailable, overlay red X
+if (!can_add) {
+  tft.drawLine(bx, by, bx + button_size, by + button_size, TFT_RED);
+  tft.drawLine(bx + button_size, by, bx, by + button_size, TFT_RED);
+}
+
+// Draw -
+tft.drawRect(bx + button_size + spacing, by, button_size, button_size, TFT_BLACK);
+tft.setTextColor(TFT_BLACK, ingredients[ingredient_index].color);
+tft.setCursor(bx + button_size + spacing + button_size / 2 - 8, by + button_size / 2 - 11);
+tft.print("-");
+
+// If subtract is unavailable, overlay red X
+if (!can_subtract) {
+  int sub_bx = bx + button_size + spacing;
+  tft.drawLine(sub_bx, by, sub_bx + button_size, by + button_size, TFT_RED);
+  tft.drawLine(sub_bx + button_size, by, sub_bx, by + button_size, TFT_RED);
+}
+
+// Reset text color globally for other menus
+tft.setTextColor(TFT_WHITE, TFT_BLACK);
 }
 
 void setup_screen(){
@@ -111,17 +136,22 @@ void draw_side_menu() {
 }
 
 void draw_menu_1() {
+  ordered_cocktail = current_preset_cocktail;
   tft.setTextSize(DEFAULT_TEXT_SIZE);
   for (int i = 0; i < TABLE_DIMENSION * TABLE_DIMENSION; i++) {
     bool is_selected = (preset_cocktails[i].name == current_preset_cocktail.name);
-    draw_menu_1_tile(i, is_selected);
+    draw_menu_1_tile(i, is_selected, isCocktailAvailable(preset_cocktails[i]));
   }
 }
 
 void draw_menu_2() {
+  ordered_cocktail = current_custom_cocktail;
   tft.setTextSize(DEFAULT_TEXT_SIZE);
-  for (int i = 0; i < 4; i++) {
-    draw_menu_2_tile(i);
+  for (int ingredient_index = 0; ingredient_index < 4; ingredient_index++) {
+    bool is_max_amount = current_custom_cocktail.amounts[ingredient_index] >= 200;
+    bool can_add = !is_max_amount && isIngredientAvailable(ingredients[ingredient_index], current_custom_cocktail.amounts[ingredient_index] + MENU_2_INGREDIENT_DELTA);
+    bool can_subtract = current_custom_cocktail.amounts[ingredient_index] > 0;
+    draw_menu_2_tile(ingredient_index,can_add, can_subtract);
   }
 }
 
@@ -150,6 +180,9 @@ void draw_current_menu() {
       break;
     case Cancellable_Op:
       draw_cancellable_operation();
+      break;
+    case Error_Screen:
+      draw_error_screen();
       break;
   }
 }
@@ -190,7 +223,7 @@ void handle_touch(TS_Point point) {
   if (x < 0 || y < 0)
     return;
 
-  if (current_menu == Cancellable_Op) {
+  if (current_menu == Cancellable_Op || current_menu == Error_Screen) {
     handle_touch_cancellable_op(x, y);
     return;
   }
@@ -215,15 +248,47 @@ void handle_touch(TS_Point point) {
   }
 }
 
+void draw_error_screen() {
+  tft.fillScreen(TFT_BLACK);
+  tft.setTextDatum(MC_DATUM); // Middle center
+  tft.setTextColor(TFT_RED, TFT_BLACK);
+  tft.setTextSize(DEFAULT_TEXT_SIZE + 1);
+  tft.drawString("Error", CANCEL_MENU_TEXT_CENTER_X, CANCEL_MENU_TEXT_CENTER_Y - 30);
+
+  tft.setTextSize(DEFAULT_TEXT_SIZE);
+  tft.setTextColor(TFT_WHITE, TFT_BLACK);
+  tft.drawString(current_error_message, CANCEL_MENU_TEXT_CENTER_X, CANCEL_MENU_TEXT_CENTER_Y);
+
+  tft.fillRect(CANCEL_BUTTON_X, CANCEL_BUTTON_Y, CANCEL_BUTTON_SIZE, CANCEL_BUTTON_SIZE, TFT_RED);
+  tft.setTextColor(TFT_WHITE, TFT_RED);
+  tft.setTextSize(DEFAULT_TEXT_SIZE);
+  tft.drawString("X", CANCEL_MENU_TEXT_CENTER_X, CANCEL_BUTTON_Y + CANCEL_BUTTON_SIZE / 2);
+
+  tft.setTextSize(2);
+  tft.setTextColor(TFT_WHITE, TFT_BLACK);
+  tft.drawString("Back", CANCEL_MENU_TEXT_CENTER_X, CANCEL_BUTTON_Y + CANCEL_BUTTON_SIZE + 10);
+}
+
 void handle_touch_side_menu(int x, int y){
   int button = y / SIDE_BUTTON_HEIGHT;
-    if (button < 3) {
-      current_menu = static_cast<MenuState>(button + 1);
-      draw_current_menu();
-    } 
+  if (button < 3) {
+    current_menu = static_cast<MenuState>(button + 1);
+    draw_current_menu();
+  } 
+  else {
+    if (ordered_cocktail.name == UNSELECTED_COCKTAIL_NAME) {
+      alert_error("No cocktail selected");
+    }
     else {
       order_pending = true;
     }
+  }
+}
+
+void alert_error(String msg){
+  current_error_message = msg;
+  current_menu = Error_Screen;
+  draw_current_menu();
 }
 
 void handle_touch_cancellable_op(int x, int y){
@@ -245,13 +310,15 @@ void handle_touch_menu_1(int x, int y) {
         break;
       }
     }
+    bool is_available = isCocktailAvailable(preset_cocktails[new_tile]);
+    if (is_available){
+      current_preset_cocktail.name = preset_cocktails[new_tile].name;
+      memcpy(current_preset_cocktail.amounts, preset_cocktails[new_tile].amounts, sizeof(current_preset_cocktail.amounts));
+      ordered_cocktail = current_preset_cocktail;
+    }
 
-    current_preset_cocktail.name = preset_cocktails[new_tile].name;
-    memcpy(current_preset_cocktail.amounts, preset_cocktails[new_tile].amounts, sizeof(current_preset_cocktail.amounts));
-    ordered_cocktail = current_preset_cocktail;
-
-    if (prev_tile != -1) draw_menu_1_tile(prev_tile, false);
-    draw_menu_1_tile(new_tile, true);
+    if (prev_tile != -1) draw_menu_1_tile(prev_tile, false, false);
+    draw_menu_1_tile(new_tile, true, is_available);
 
     Serial.println("New cocktail chosen:");
     Serial.println(current_preset_cocktail.name);
@@ -267,7 +334,7 @@ void handle_touch_menu_2(int x, int y) {
 
   int ci = x / tileW;
   int cj = y / tileH;
-  int idx = cj * 2 + ci;
+  int ingredient_index = cj * 2 + ci;
 
   int lx = x % tileW;
   int ly = y % tileH;
@@ -275,19 +342,27 @@ void handle_touch_menu_2(int x, int y) {
   int bx = (tileW - button_total) / 2;
   int by = tileH - button_size - 5;
 
+  bool is_max_amount = current_custom_cocktail.amounts[ingredient_index] >= 200;
+  bool can_add = !is_max_amount && isIngredientAvailable(ingredients[ingredient_index], current_custom_cocktail.amounts[ingredient_index] + MENU_2_INGREDIENT_DELTA);
+  bool can_subtract = current_custom_cocktail.amounts[ingredient_index] > 0;
   bool changed = false;
-
   if (lx >= bx && lx < bx + button_size && ly >= by && ly < by + button_size) {
-    current_custom_cocktail.amounts[idx] = min(200, current_custom_cocktail.amounts[idx] + 25);
+    if (!can_add) {
+      return;
+    }
+
+    current_custom_cocktail.amounts[ingredient_index] = min(200, current_custom_cocktail.amounts[ingredient_index] + MENU_2_INGREDIENT_DELTA);
     changed = true;
-  } else if (lx >= bx + button_size + spacing && lx < bx + button_total && ly >= by && ly < by + button_size) {
-    current_custom_cocktail.amounts[idx] = max(0, current_custom_cocktail.amounts[idx] - 25);
+  } 
+
+  else if (lx >= bx + button_size + spacing && lx < bx + button_total && ly >= by && ly < by + button_size) {
+    current_custom_cocktail.amounts[ingredient_index] = max(0, current_custom_cocktail.amounts[ingredient_index] - MENU_2_INGREDIENT_DELTA);
     changed = true;
   }
 
   if (changed) {
     ordered_cocktail = current_custom_cocktail;
-    draw_menu_2_tile(idx);
+    draw_menu_2_tile(ingredient_index, can_add, can_subtract);
   }
 }
 
