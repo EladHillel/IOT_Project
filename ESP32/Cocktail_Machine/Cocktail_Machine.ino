@@ -24,6 +24,6 @@ void loop() {
     order_pending = false;
     return_to_main_menu();
   }
-  delay(200);
+  delay(100);
 }
 

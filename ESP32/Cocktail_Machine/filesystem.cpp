@@ -78,15 +78,17 @@ bool save_ingredients(const Ingredient ingredients[INGREDIENT_COUNT]) {
   if (!file) return false;
   StaticJsonDocument<1024> document;
   JsonArray ingredientArray = document.to<JsonArray>();
-  for (int i = 0; i < 4; ++i) {
+  for (int i = 0; i < INGREDIENT_COUNT; ++i) {
     JsonObject ingredientObject = ingredientArray.createNestedObject();
     ingredientObject["name"] = ingredients[i].name;
     ingredientObject["color"] = ingredients[i].color;
+    ingredientObject["amount_left"] = ingredients[i].amount_left;
   }
   serializeJson(document, file);
   file.close();
   return true;
 }
+
 
 bool load_ingredients(Ingredient ingredients[INGREDIENT_COUNT]) {
   fs::File file = LittleFS.open("/ingredients.json", "r");
@@ -97,9 +99,10 @@ bool load_ingredients(Ingredient ingredients[INGREDIENT_COUNT]) {
   JsonArray ingredientArray = document.as<JsonArray>();
   int i = 0;
   for (JsonObject ingredientObject : ingredientArray) {
-    if (i >= 4) break;
+    if (i >= INGREDIENT_COUNT) break;
     ingredients[i].name = ingredientObject["name"].as<String>();
     ingredients[i].color = ingredientObject["color"];
+    ingredients[i].amount_left = ingredientObject["amount_left"] | 0.0f;
     ++i;
   }
   file.close();

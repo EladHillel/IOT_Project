@@ -15,6 +15,7 @@ struct Cocktail {
 struct Ingredient {
   String name;
   uint16_t color;
+  float amount_left;
 };
 
 struct Stats {
@@ -29,4 +30,6 @@ extern Cocktail current_custom_cocktail;
 extern Cocktail current_preset_cocktail;
 extern Cocktail ordered_cocktail;
 extern bool order_pending;
+
+void update_ingredient_amount(int ingredient_index, float amount_poured);
 #endif

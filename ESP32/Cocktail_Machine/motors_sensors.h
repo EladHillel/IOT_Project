@@ -6,7 +6,7 @@
 #include "menu.h"
 
 //MOTORs
-const int MOTOR1_PIN = 19; // change
+const int MOTOR1_PIN = 18; // change
 const int MOTOR2_PIN = 19; // change
 const int MOTOR3_PIN = 22; // change
 const int MOTOR4_PIN = 23; 
