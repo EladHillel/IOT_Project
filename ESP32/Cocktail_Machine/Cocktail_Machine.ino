@@ -1,6 +1,7 @@
 #include "menu.h"
 #include "motors_sensors.h"
 #include "filesystem.h"
+#include "bluetooth.h"
 
 void setup() {
   Serial.begin(115200);
@@ -11,10 +12,12 @@ void setup() {
   setup_weight_sensor();
   setup_data();
   setup_screen();
+  ble_setup();
 }
 
 
 void loop() {
+  ble_loop();
   check_and_handle_touch();
   if (order_pending){
      if (isCocktailEmpty(ordered_cocktail)){

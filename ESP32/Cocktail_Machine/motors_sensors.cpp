@@ -93,13 +93,13 @@ static bool pour_ingredient(int motor_num, float target_weight){ //returns wheth
 
   digitalWrite(MOTOR_MAP[motor_num], HIGH);
   while (float curr_weight = scale.get_units(5) < base_weight + target_weight) {
+    Serial.printf("Current overall weight: %.2f\n", scale.get_units(5));
     check_and_handle_touch();
     if (current_menu != Cancellable_Op){
       digitalWrite(MOTOR_MAP[motor_num], LOW);
       update_ingredient_amount(motor_num, curr_weight - base_weight);
       return true;
     }
-    Serial.printf("Current overall weight: %.2f\n", scale.get_units(5));
     delay(100);
   }
   digitalWrite(MOTOR_MAP[motor_num], LOW);

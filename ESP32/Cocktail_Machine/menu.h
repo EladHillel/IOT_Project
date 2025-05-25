@@ -31,7 +31,7 @@ static const int CANCEL_MENU_TEXT_CENTER_X = SCREEN_WIDTH / 2;
 static const int CANCEL_MENU_TEXT_CENTER_Y = SCREEN_HEIGHT / 3;
 static const int CANCEL_BUTTON_X = CANCEL_MENU_TEXT_CENTER_X - CANCEL_BUTTON_SIZE / 2;
 static const int CANCEL_BUTTON_Y = CANCEL_MENU_TEXT_CENTER_Y + 40;
-static const int MENU_2_INGREDIENT_DELTA = 25;
+static const int MENU_2_INGREDIENT_DELTA = 10;
 
 
 enum MenuState {

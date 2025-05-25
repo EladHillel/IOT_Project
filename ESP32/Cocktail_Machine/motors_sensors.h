@@ -17,6 +17,7 @@ const int LOADCELL_DOUT_PIN = 5;
 const int LOADCELL_SCK_PIN = 4;
 
 const float CUP_WEIGHT_THRESHOLD = 1.2;
+const float BASE_WEIGHT_POSSIBLE_ERROR = 2;
 
 const float CALIBRATION_FACTOR = 93000/132;
 

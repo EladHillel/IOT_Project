@@ -2,6 +2,7 @@
 #include <Arduino.h> 
 #include "filesystem.h"
 
+
 const String UNSELECTED_COCKTAIL_NAME = "UNSELECTED";
 const String CUSTOM_COCKTAIL_NAME = "Custom Cocktail";
 
@@ -19,13 +20,15 @@ void update_ingredient_amount(int ingredient_index, float amount_poured){
 }
 
 bool isCocktailAvailable(Cocktail cocktail) {
+  Serial.println("#######Checking if cocktail "+cocktail.name+" is available.#######");
   for (int ingredientIndex = 0; ingredientIndex < INGREDIENT_COUNT; ingredientIndex++) {
     float required = cocktail.amounts[ingredientIndex];
     if (!isIngredientAvailable(ingredients[ingredientIndex], required)) {
+      Serial.println("#######Cocktail is unavailable.#########");
       return false;
     }
   }
-  Serial.println("Cocktail is available.");
+  Serial.println("#######Cocktail is available.#########");
   return true;
 }
 
