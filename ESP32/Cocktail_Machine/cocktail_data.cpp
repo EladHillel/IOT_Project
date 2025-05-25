@@ -53,8 +53,8 @@ bool isCocktailEmpty(Cocktail cocktail){
       if (cocktail.amounts[ingredient] != 0 ){
         return false;
       }
-    return true;
   }
+  return true;
 }
 
 void log_cocktail(const Cocktail& cocktail) {

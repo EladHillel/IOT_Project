@@ -6,6 +6,7 @@
 
 const int INGREDIENT_COUNT = 4;
 const int PRESET_COCKTAIL_COUNT = 9;
+const int MAX_COCKTAIL_DRINK_AMOUNT = 200;
 extern const String UNSELECTED_COCKTAIL_NAME;
 
 struct Cocktail {

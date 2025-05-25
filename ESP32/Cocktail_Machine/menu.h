@@ -33,6 +33,7 @@ static const int CANCEL_BUTTON_X = CANCEL_MENU_TEXT_CENTER_X - CANCEL_BUTTON_SIZ
 static const int CANCEL_BUTTON_Y = CANCEL_MENU_TEXT_CENTER_Y + 40;
 static const int MENU_2_INGREDIENT_DELTA = 25;
 
+
 enum MenuState {
   Menu_1 = 1,
   Menu_2 = 2,

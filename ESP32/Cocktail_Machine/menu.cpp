@@ -41,7 +41,7 @@ void draw_menu_1_tile(int tile_index, bool selected, bool cocktail_available) {
   }
 }
 
-void draw_menu_2_tile(int ingredient_index, bool can_add, bool can_subtract) {
+void draw_menu_2_tile(int ingredient_index, bool can_add) {
   const int tileW = MAIN_WIDTH / 2;
   const int tileH = SCREEN_HEIGHT / 2;
   const int button_size = 40;
@@ -91,7 +91,7 @@ tft.setCursor(bx + button_size + spacing + button_size / 2 - 8, by + button_size
 tft.print("-");
 
 // If subtract is unavailable, overlay red X
-if (!can_subtract) {
+if (current_custom_cocktail.amounts[ingredient_index] == 0) {
   int sub_bx = bx + button_size + spacing;
   tft.drawLine(sub_bx, by, sub_bx + button_size, by + button_size, TFT_RED);
   tft.drawLine(sub_bx + button_size, by, sub_bx, by + button_size, TFT_RED);
@@ -145,20 +145,28 @@ void draw_menu_1() {
 }
 
 void draw_menu_2() {
-  ordered_cocktail = current_custom_cocktail;
   tft.setTextSize(DEFAULT_TEXT_SIZE);
   for (int ingredient_index = 0; ingredient_index < 4; ingredient_index++) {
     bool is_max_amount = current_custom_cocktail.amounts[ingredient_index] >= 200;
     bool can_add = !is_max_amount && isIngredientAvailable(ingredients[ingredient_index], current_custom_cocktail.amounts[ingredient_index] + MENU_2_INGREDIENT_DELTA);
     bool can_subtract = current_custom_cocktail.amounts[ingredient_index] > 0;
-    draw_menu_2_tile(ingredient_index,can_add, can_subtract);
+    draw_menu_2_tile(ingredient_index, can_add);
+  }
+  bool is_available = isCocktailAvailable(current_custom_cocktail);
+  if (is_available){
+    ordered_cocktail = current_custom_cocktail;
   }
 }
 
 void draw_menu_3() {
   tft.setTextSize(DEFAULT_TEXT_SIZE);
   tft.setCursor(50, SCREEN_HEIGHT / 2 - 5);
-  tft.print("NOT IMPLEMENTED");
+  for (int k = 0; k < INGREDIENT_COUNT; k++) {
+    tft.print(ingredients[k].name[0]);
+    tft.print(": ");
+    tft.print(ingredients[k].amount_left);
+    tft.print("\n");
+  }
 }
 
 void draw_current_menu() {
@@ -302,6 +310,12 @@ void handle_touch_cancellable_op(int x, int y){
 
 void handle_touch_menu_1(int x, int y) {
   int new_tile = (y / (SCREEN_HEIGHT / 3)) * 3 + (x / (MAIN_WIDTH / 3));
+  bool is_curr_available = isCocktailAvailable(preset_cocktails[new_tile]);
+
+  if(!is_curr_available){
+    return;
+  }
+
   if (preset_cocktails[new_tile].name != current_preset_cocktail.name) {
     int prev_tile = -1;
     for (int i = 0; i < TABLE_DIMENSION * TABLE_DIMENSION; i++) {
@@ -310,15 +324,15 @@ void handle_touch_menu_1(int x, int y) {
         break;
       }
     }
-    bool is_available = isCocktailAvailable(preset_cocktails[new_tile]);
-    if (is_available){
-      current_preset_cocktail.name = preset_cocktails[new_tile].name;
-      memcpy(current_preset_cocktail.amounts, preset_cocktails[new_tile].amounts, sizeof(current_preset_cocktail.amounts));
-      ordered_cocktail = current_preset_cocktail;
-    }
 
-    if (prev_tile != -1) draw_menu_1_tile(prev_tile, false, false);
-    draw_menu_1_tile(new_tile, true, is_available);
+    bool is_prev_available = isCocktailAvailable(preset_cocktails[prev_tile]);
+    if (prev_tile != -1) draw_menu_1_tile(prev_tile, false, is_prev_available);
+    draw_menu_1_tile(new_tile, true, is_curr_available);
+
+    //if we got here it's available
+    current_preset_cocktail.name = preset_cocktails[new_tile].name;
+    memcpy(current_preset_cocktail.amounts, preset_cocktails[new_tile].amounts, sizeof(current_preset_cocktail.amounts));
+    ordered_cocktail = current_preset_cocktail;
 
     Serial.println("New cocktail chosen:");
     Serial.println(current_preset_cocktail.name);
@@ -342,16 +356,10 @@ void handle_touch_menu_2(int x, int y) {
   int bx = (tileW - button_total) / 2;
   int by = tileH - button_size - 5;
 
-  bool is_max_amount = current_custom_cocktail.amounts[ingredient_index] >= 200;
-  bool can_add = !is_max_amount && isIngredientAvailable(ingredients[ingredient_index], current_custom_cocktail.amounts[ingredient_index] + MENU_2_INGREDIENT_DELTA);
-  bool can_subtract = current_custom_cocktail.amounts[ingredient_index] > 0;
   bool changed = false;
   if (lx >= bx && lx < bx + button_size && ly >= by && ly < by + button_size) {
-    if (!can_add) {
-      return;
-    }
-
-    current_custom_cocktail.amounts[ingredient_index] = min(200, current_custom_cocktail.amounts[ingredient_index] + MENU_2_INGREDIENT_DELTA);
+    int maximal_ingredient_available = min(MAX_COCKTAIL_DRINK_AMOUNT, int(ingredients[ingredient_index].amount_left));
+    current_custom_cocktail.amounts[ingredient_index] = min(current_custom_cocktail.amounts[ingredient_index] + MENU_2_INGREDIENT_DELTA, maximal_ingredient_available);
     changed = true;
   } 
 
@@ -360,15 +368,24 @@ void handle_touch_menu_2(int x, int y) {
     changed = true;
   }
 
+  bool is_max_amount = current_custom_cocktail.amounts[ingredient_index] >= MAX_COCKTAIL_DRINK_AMOUNT;
+  bool can_add = !is_max_amount && isIngredientAvailable(ingredients[ingredient_index], current_custom_cocktail.amounts[ingredient_index] + MENU_2_INGREDIENT_DELTA);
   if (changed) {
     ordered_cocktail = current_custom_cocktail;
-    draw_menu_2_tile(ingredient_index, can_add, can_subtract);
+    draw_menu_2_tile(ingredient_index, can_add);
+  }
+
+  bool is_available = isCocktailAvailable(current_custom_cocktail);
+  if (is_available){
+    ordered_cocktail = current_custom_cocktail;
   }
 }
 
 
 void handle_touch_menu_3(int x, int y){
-  return;
+  for (int k = 0; k < INGREDIENT_COUNT; k++) {
+    ingredients[k].amount_left=500;
+  }
 }
 
 void init_cancellable_op(String op_text){
