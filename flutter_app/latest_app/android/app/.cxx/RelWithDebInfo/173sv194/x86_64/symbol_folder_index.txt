@@ -1,0 +1,1 @@
+C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\build\app\intermediates\cxx\RelWithDebInfo\173sv194\obj\x86_64

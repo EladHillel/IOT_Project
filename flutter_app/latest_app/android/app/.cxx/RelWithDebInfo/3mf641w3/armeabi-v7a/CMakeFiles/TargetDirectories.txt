@@ -1,0 +1,2 @@
+C:/Users/itai9/Documents/Arduino/IOT_Project/flutter_app/latest_app/android/app/.cxx/RelWithDebInfo/3mf641w3/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/itai9/Documents/Arduino/IOT_Project/flutter_app/latest_app/android/app/.cxx/RelWithDebInfo/3mf641w3/armeabi-v7a/CMakeFiles/rebuild_cache.dir
