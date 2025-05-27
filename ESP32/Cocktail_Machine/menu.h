@@ -32,6 +32,8 @@ static const int CANCEL_MENU_TEXT_CENTER_Y = SCREEN_HEIGHT / 3;
 static const int CANCEL_BUTTON_X = CANCEL_MENU_TEXT_CENTER_X - CANCEL_BUTTON_SIZE / 2;
 static const int CANCEL_BUTTON_Y = CANCEL_MENU_TEXT_CENTER_Y + 40;
 static const int MENU_2_INGREDIENT_DELTA = 10;
+static const int LONG_PRESS_INTERVAL_MS = 10;
+static const int LONG_PRESS_COUNT_THRESHOLD = 500;
 
 
 enum MenuState {
@@ -39,7 +41,8 @@ enum MenuState {
   Menu_2 = 2,
   Menu_3 = 3,
   Cancellable_Op,
-  Error_Screen
+  Error_Screen,
+  Cocktail_More,
 };
 
 extern MenuState current_menu;
@@ -75,6 +78,11 @@ Shows error message
 */
 void alert_error(String msg);
 
+/*
+Shows more cocktail options and data
+*/
+void open_cocktail_more();
+
 
 void handle_touch(int x, int y);
 TS_Point* check_touch();
@@ -89,5 +97,7 @@ void handle_touch_menu_1(int x, int y);
 void handle_touch_menu_2(int x, int y);
 void handle_touch_menu_3(int x, int y);
 void draw_error_screen();
+void draw_cocktail_more_menu();
+void handle_touch_cocktail_extended_menu(int x, int y);
 
 #endif

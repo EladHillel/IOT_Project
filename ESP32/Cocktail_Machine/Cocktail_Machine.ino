@@ -29,10 +29,9 @@ void loop() {
     log_cocktail(ordered_cocktail);
     bool cup_placed = wait_for_cup();
     if (cup_placed){
-      pour_drink(ordered_cocktail);
+      pour_drink(ordered_cocktail, chosen_cocktail_size);
     }
     order_pending = false;
-    return_to_main_menu();
   }
   delay(100);
 }

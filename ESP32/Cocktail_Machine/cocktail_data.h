@@ -4,6 +4,13 @@
 #include <TFT_eSPI.h>
 #include <map>
 
+
+enum CocktailSize {
+  Small = 0,
+  Medium = 1,
+  Large = 2
+};
+
 const int INGREDIENT_COUNT = 4;
 const int PRESET_COCKTAIL_COUNT = 9;
 const int MAX_COCKTAIL_DRINK_AMOUNT = 200;
@@ -32,6 +39,7 @@ extern Cocktail current_custom_cocktail;
 extern Cocktail current_preset_cocktail;
 extern Cocktail ordered_cocktail;
 extern bool order_pending;
+extern CocktailSize chosen_cocktail_size; 
 
 void update_ingredient_amount(int ingredient_index, float amount_poured);
 bool isCocktailAvailable(Cocktail cocktail);

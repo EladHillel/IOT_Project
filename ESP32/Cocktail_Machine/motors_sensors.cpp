@@ -66,45 +66,79 @@ bool wait_for_cup() {
   return true;
 }
 
-void pour_drink(Cocktail cocktail){
+void pour_drink(Cocktail cocktail, CocktailSize size) {
   init_cancellable_op("Pouring cocktail...");
   delay(500);
   Serial.printf("Starting to pour cocktail: '%s'\n", cocktail.name);
+  Serial.printf("Cocktail amount modified by: '%.3f'\n", PORTION_MAP[size]);
   for(int ingredient = 0; ingredient < INGREDIENT_COUNT; ingredient++){
     if (cocktail.amounts[ingredient] == 0 ){
       continue;
     }
     
-    bool op_cancelled = pour_ingredient(ingredient, cocktail.amounts[ingredient]);
+    float curr_amount = cocktail.amounts[ingredient] * PORTION_MAP[size];
+    OrderState op_state = pour_ingredient(ingredient, curr_amount);
 
-    if (op_cancelled){
+    switch (op_state) {
+    case Completed:
+      Serial.print("Ingredient poured succcessfully");
+      break;
+    case Cancelled:
       Serial.print("CANCELLED");
+      return_to_main_menu();
       return;
-    }
+    case Timeout:
+      Serial.print("Timeout Reached");
+      alert_error("Operation failed: pour timeout reached");
+      return;
   }
   Serial.printf("Cocktail poured successfully");
+  return_to_main_menu();
+}
 }
 
-static bool pour_ingredient(int motor_num, float target_weight){ //returns whether op was cancelled
-  current_menu = Cancellable_Op;
+static OrderState pour_ingredient(int motor_num, float target_weight){ 
+
+  //Logging base weight & starting motor
   Serial.printf("Starting motor number: %d for target weight: %.2f\n", motor_num, target_weight);
   float base_weight = scale.get_units(10);
   Serial.printf("Base weight: %.2f\n", base_weight);
-
   digitalWrite(MOTOR_MAP[motor_num], HIGH);
-  while (float curr_weight = scale.get_units(5) < base_weight + target_weight) {
+
+
+  float prev_weight = base_weight;
+  int times_unchanged = 0;
+  float curr_weight = scale.get_units(5);
+  //While target not reached
+  while (curr_weight < base_weight + target_weight) {
     Serial.printf("Current overall weight: %.2f\n", scale.get_units(5));
+
+    //Check if cancelled
     check_and_handle_touch();
     if (current_menu != Cancellable_Op){
       digitalWrite(MOTOR_MAP[motor_num], LOW);
       update_ingredient_amount(motor_num, curr_weight - base_weight);
-      return true;
+      return Cancelled;
     }
+
+    //Timeout check
+    bool is_weight_changed = (curr_weight - prev_weight < WEIGHT_CHANGE_DETECTION_THRESHOLD);
+    times_unchanged =  is_weight_changed ? times_unchanged + 1 : 0;
+    if (times_unchanged >= TIMES_UNCHANGED_FOR_TIMEOUT) {
+      digitalWrite(MOTOR_MAP[motor_num], LOW);
+      update_ingredient_amount(motor_num, curr_weight - base_weight);
+      return Timeout;
+    }
+    
+    prev_weight = is_weight_changed ? curr_weight : prev_weight;
     delay(100);
+    curr_weight = scale.get_units(5);
   }
+
+  //target reached
   digitalWrite(MOTOR_MAP[motor_num], LOW);
   Serial.println("Target reached. Motor stopped.");
   update_ingredient_amount(motor_num, scale.get_units(5) - base_weight);
-  return false;
+  return Completed;
 }
 
