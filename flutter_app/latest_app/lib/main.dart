@@ -17,15 +17,15 @@ class CocktailBluetoothApp extends StatelessWidget {
 
 class Cocktail {
   String name;
-  Map<String, int> ingredients;
+  List<int> amounts;
 
-  Cocktail({required this.name, required this.ingredients});
+  Cocktail({required this.name, required this.amounts});
 
-  bool get isComplete => ingredients.values.reduce((a, b) => a + b) == 100;
+  bool get isComplete => amounts.reduce((a, b) => a + b) == 100;
 
   Map<String, dynamic> toJson() => {
         'name': name,
-        'amounts': ingredients.values.toList(),
+        'amounts': amounts,
       };
 }
 
@@ -37,13 +37,9 @@ class CocktailBluetoothScreen extends StatefulWidget {
 
 class _CocktailBluetoothScreenState extends State<CocktailBluetoothScreen> {
   List<Cocktail> cocktails = List.generate(
-      9,
-      (index) => Cocktail(name: 'Cocktail ${index + 1}', ingredients: {
-            'Drink 1': 100,
-            'Drink 2': 0,
-            'Drink 3': 0,
-            'Drink 4': 0,
-          }));
+    9,
+    (index) => Cocktail(name: 'Cocktail ${index + 1}', amounts: [100, 0, 0, 0]),
+  );
 
   List<BluetoothDevice> devicesList = [];
   BluetoothDevice? connectedDevice;
@@ -265,7 +261,7 @@ class _CocktailBluetoothScreenState extends State<CocktailBluetoothScreen> {
         print("=== INDIVIDUAL COCKTAILS ===");
         for (int i = 0; i < cocktails.length; i++) {
           print("Cocktail ${i + 1}: ${cocktails[i].name}");
-          print("  Amounts only: ${cocktails[i].ingredients.values.toList()}");
+          print("  Amounts only: ${cocktails[i].amounts}");
           print("  Complete: ${cocktails[i].isComplete}");
           print("  JSON: ${jsonEncode(cocktails[i].toJson())}");
         }
@@ -362,7 +358,7 @@ class _CocktailBluetoothScreenState extends State<CocktailBluetoothScreen> {
                     title: Text(
                         '${cocktails[i].isComplete ? '✅' : '❌'} - ${cocktails[i].name}'),
                     subtitle: Text(
-                        'Ingredients: ${cocktails[i].ingredients.values.join(', ')} ml (Total: ${cocktails[i].ingredients.values.reduce((a, b) => a + b)} ml)'),
+                        'Amounts: ${cocktails[i].amounts.join(', ')} ml (Total: ${cocktails[i].amounts.reduce((a, b) => a + b)} ml)'),
                     trailing: IconButton(
                       icon: Icon(Icons.edit),
                       onPressed: () async {
@@ -467,22 +463,22 @@ class EditCocktailScreen extends StatefulWidget {
 
 class _EditCocktailScreenState extends State<EditCocktailScreen> {
   late String name;
-  late Map<String, int> ingredients;
+  late List<int> amounts;
 
   @override
   void initState() {
     super.initState();
     name = widget.cocktail.name;
-    ingredients = Map.from(widget.cocktail.ingredients);
+    amounts = List.from(widget.cocktail.amounts);
   }
 
-  int get total => ingredients.values.reduce((a, b) => a + b);
+  int get total => amounts.reduce((a, b) => a + b);
 
-  void updateIngredient(String key, int delta) {
+  void updateAmount(int index, int delta) {
     setState(() {
-      int newVal = ingredients[key]! + delta;
+      int newVal = amounts[index] + delta;
       if (newVal >= 0 && total + delta <= 100) {
-        ingredients[key] = newVal;
+        amounts[index] = newVal;
       }
     });
   }
@@ -504,24 +500,24 @@ class _EditCocktailScreenState extends State<EditCocktailScreen> {
             Text('Total: $total ml',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             SizedBox(height: 10),
-            for (String drink in ingredients.keys)
+            for (int i = 0; i < 4; i++)
               Card(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('$drink: ${ingredients[drink]} ml',
+                      Text('Drink ${i + 1}: ${amounts[i]} ml',
                           style: TextStyle(fontSize: 16)),
                       Row(
                         children: [
                           IconButton(
                             icon: Icon(Icons.remove_circle, color: Colors.red),
-                            onPressed: () => updateIngredient(drink, -10),
+                            onPressed: () => updateAmount(i, -10),
                           ),
                           IconButton(
                             icon: Icon(Icons.add_circle, color: Colors.green),
-                            onPressed: () => updateIngredient(drink, 10),
+                            onPressed: () => updateAmount(i, 10),
                           ),
                         ],
                       )
@@ -534,7 +530,7 @@ class _EditCocktailScreenState extends State<EditCocktailScreen> {
               ElevatedButton(
                 onPressed: () {
                   Navigator.pop(
-                      context, Cocktail(name: name, ingredients: ingredients));
+                      context, Cocktail(name: name, amounts: amounts));
                 },
                 child: Text('Save Cocktail'),
                 style: ElevatedButton.styleFrom(

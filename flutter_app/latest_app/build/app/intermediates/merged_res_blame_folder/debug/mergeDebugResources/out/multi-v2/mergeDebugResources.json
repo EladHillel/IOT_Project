@@ -810,6 +810,25 @@
                     }
                 },
                 {
+                    "source": "C:\\Users\\itai9\\Documents\\Arduino\\IOT_Project\\flutter_app\\latest_app\\android\\app\\src\\main\\res\\values\\styles.xml",
+                    "from": {
+                        "startLines": "3,14",
+                        "startColumns": "4,4",
+                        "startOffsets": "173,818",
+                        "endLines": "7,16",
+                        "endColumns": "12,12",
+                        "endOffsets": "476,982"
+                    },
+                    "to": {
+                        "startLines": "155,159",
+                        "startColumns": "4,4",
+                        "startOffsets": "7894,8075",
+                        "endLines": "158,161",
+                        "endColumns": "12,12",
+                        "endOffsets": "8070,8239"
+                    }
+                },
+                {
                     "source": "C:\\Users\\itai9\\.gradle\\caches\\8.10.2\\transforms\\55520e4df2220e27f13f0bbb7467d11a\\transformed\\fragment-1.7.1\\res\\values\\values.xml",
                     "from": {
                         "startLines": "2,3,4,5,10",
@@ -894,25 +913,6 @@
                         "startOffsets": "7045",
                         "endColumns": "49",
                         "endOffsets": "7090"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\itai9\\Documents\\Arduino\\IOT_Project\\flutter_app\\Hello-World-8\\android\\app\\src\\main\\res\\values\\styles.xml",
-                    "from": {
-                        "startLines": "3,14",
-                        "startColumns": "4,4",
-                        "startOffsets": "173,818",
-                        "endLines": "7,16",
-                        "endColumns": "12,12",
-                        "endOffsets": "476,982"
-                    },
-                    "to": {
-                        "startLines": "155,159",
-                        "startColumns": "4,4",
-                        "startOffsets": "7894,8075",
-                        "endLines": "158,161",
-                        "endColumns": "12,12",
-                        "endOffsets": "8070,8239"
                     }
                 }
             ]
@@ -1251,7 +1251,7 @@
             "outputFile": "com.example.helloworld.app-debug-26:/values-night-v8_values-night-v8.arsc.flat",
             "map": [
                 {
-                    "source": "C:\\Users\\itai9\\Documents\\Arduino\\IOT_Project\\flutter_app\\Hello-World-8\\android\\app\\src\\main\\res\\values-night\\styles.xml",
+                    "source": "C:\\Users\\itai9\\Documents\\Arduino\\IOT_Project\\flutter_app\\latest_app\\android\\app\\src\\main\\res\\values-night\\styles.xml",
                     "from": {
                         "startLines": "3,14",
                         "startColumns": "4,4",

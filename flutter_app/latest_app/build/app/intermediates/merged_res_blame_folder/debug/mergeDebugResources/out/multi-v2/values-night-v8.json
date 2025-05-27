@@ -4,7 +4,7 @@
             "outputFile": "com.example.helloworld.app-mergeDebugResources-24:/values-night-v8/values-night-v8.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\itai9\\Documents\\Arduino\\IOT_Project\\flutter_app\\Hello-World-8\\android\\app\\src\\main\\res\\values-night\\styles.xml",
+                    "source": "C:\\Users\\itai9\\Documents\\Arduino\\IOT_Project\\flutter_app\\latest_app\\android\\app\\src\\main\\res\\values-night\\styles.xml",
                     "from": {
                         "startLines": "3,14",
                         "startColumns": "4,4",

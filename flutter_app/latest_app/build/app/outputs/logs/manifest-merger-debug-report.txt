@@ -1,7 +1,7 @@
 -- Merging decision tree log ---
 application
-INJECTED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\Hello-World-8\android\app\src\main\AndroidManifest.xml:9:5-40:19
-INJECTED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\Hello-World-8\android\app\src\debug\AndroidManifest.xml
+INJECTED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\main\AndroidManifest.xml:9:5-40:19
+INJECTED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\debug\AndroidManifest.xml
 MERGED from [androidx.window:window:1.2.0] C:\Users\itai9\.gradle\caches\8.10.2\transforms\5093ab42d2307deb2d7ac0b7f5718c38\transformed\jetified-window-1.2.0\AndroidManifest.xml:22:5-29:19
 MERGED from [androidx.window:window:1.2.0] C:\Users\itai9\.gradle\caches\8.10.2\transforms\5093ab42d2307deb2d7ac0b7f5718c38\transformed\jetified-window-1.2.0\AndroidManifest.xml:22:5-29:19
 MERGED from [androidx.core:core:1.13.1] C:\Users\itai9\.gradle\caches\8.10.2\transforms\8cf478dec41eed746328fa8046755ba2\transformed\core-1.13.1\AndroidManifest.xml:28:5-89
@@ -15,19 +15,19 @@ MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\itai9\.gradle\cach
 MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\itai9\.gradle\caches\8.10.2\transforms\92a2169b5b2674c8bbe10e1b1d80da0f\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:24:5-25:19
 MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\itai9\.gradle\caches\8.10.2\transforms\92a2169b5b2674c8bbe10e1b1d80da0f\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:24:5-25:19
 	android:extractNativeLibs
-		INJECTED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\Hello-World-8\android\app\src\debug\AndroidManifest.xml
+		INJECTED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\debug\AndroidManifest.xml
 	android:appComponentFactory
 		ADDED from [androidx.core:core:1.13.1] C:\Users\itai9\.gradle\caches\8.10.2\transforms\8cf478dec41eed746328fa8046755ba2\transformed\core-1.13.1\AndroidManifest.xml:28:18-86
 	android:name
-		INJECTED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\Hello-World-8\android\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\main\AndroidManifest.xml
 manifest
-ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\Hello-World-8\android\app\src\main\AndroidManifest.xml:1:1-52:12
-MERGED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\Hello-World-8\android\app\src\main\AndroidManifest.xml:1:1-52:12
-INJECTED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\Hello-World-8\android\app\src\debug\AndroidManifest.xml:1:1-7:12
-INJECTED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\Hello-World-8\android\app\src\debug\AndroidManifest.xml:1:1-7:12
-INJECTED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\Hello-World-8\android\app\src\debug\AndroidManifest.xml:1:1-7:12
-MERGED from [:flutter_blue_plus_android] C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\Hello-World-8\build\flutter_blue_plus_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:2:1-11:12
-MERGED from [:permission_handler_android] C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\Hello-World-8\build\permission_handler_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:2:1-7:12
+ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\main\AndroidManifest.xml:1:1-52:12
+MERGED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\main\AndroidManifest.xml:1:1-52:12
+INJECTED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\debug\AndroidManifest.xml:1:1-7:12
+INJECTED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\debug\AndroidManifest.xml:1:1-7:12
+INJECTED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\debug\AndroidManifest.xml:1:1-7:12
+MERGED from [:flutter_blue_plus_android] C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\build\flutter_blue_plus_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:2:1-11:12
+MERGED from [:permission_handler_android] C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\build\permission_handler_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.fragment:fragment:1.7.1] C:\Users\itai9\.gradle\caches\8.10.2\transforms\55520e4df2220e27f13f0bbb7467d11a\transformed\fragment-1.7.1\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.window:window:1.2.0] C:\Users\itai9\.gradle\caches\8.10.2\transforms\5093ab42d2307deb2d7ac0b7f5718c38\transformed\jetified-window-1.2.0\AndroidManifest.xml:17:1-31:12
 MERGED from [androidx.window:window-java:1.2.0] C:\Users\itai9\.gradle\caches\8.10.2\transforms\c1f85211ae6978d0218d51595a7f7e62\transformed\jetified-window-java-1.2.0\AndroidManifest.xml:17:1-21:12
@@ -55,57 +55,57 @@ MERGED from [androidx.interpolator:interpolator:1.0.0] C:\Users\itai9\.gradle\ca
 MERGED from [androidx.window.extensions.core:core:1.0.0] C:\Users\itai9\.gradle\caches\8.10.2\transforms\47506b70b93177473c53f4d5d7e77c91\transformed\jetified-core-1.0.0\AndroidManifest.xml:2:1-7:12
 MERGED from [com.getkeepsafe.relinker:relinker:1.4.5] C:\Users\itai9\.gradle\caches\8.10.2\transforms\9e1412f82216e9a99f9f845f4567c1f2\transformed\jetified-relinker-1.4.5\AndroidManifest.xml:2:1-7:12
 	package
-		INJECTED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\Hello-World-8\android\app\src\debug\AndroidManifest.xml
+		INJECTED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\debug\AndroidManifest.xml
 	android:versionName
-		INJECTED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\Hello-World-8\android\app\src\debug\AndroidManifest.xml
+		INJECTED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\debug\AndroidManifest.xml
 	android:versionCode
-		INJECTED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\Hello-World-8\android\app\src\debug\AndroidManifest.xml
+		INJECTED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\debug\AndroidManifest.xml
 	xmlns:android
-		ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\Hello-World-8\android\app\src\main\AndroidManifest.xml:1:11-69
+		ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\main\AndroidManifest.xml:1:11-69
 uses-permission#android.permission.BLUETOOTH
-ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\Hello-World-8\android\app\src\main\AndroidManifest.xml:3:5-68
+ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\main\AndroidManifest.xml:3:5-68
 	android:name
-		ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\Hello-World-8\android\app\src\main\AndroidManifest.xml:3:22-65
+		ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\main\AndroidManifest.xml:3:22-65
 uses-permission#android.permission.BLUETOOTH_ADMIN
-ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\Hello-World-8\android\app\src\main\AndroidManifest.xml:4:5-74
+ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\main\AndroidManifest.xml:4:5-74
 	android:name
-		ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\Hello-World-8\android\app\src\main\AndroidManifest.xml:4:22-71
+		ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\main\AndroidManifest.xml:4:22-71
 uses-permission#android.permission.BLUETOOTH_SCAN
-ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\Hello-World-8\android\app\src\main\AndroidManifest.xml:5:5-73
+ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\main\AndroidManifest.xml:5:5-73
 	android:name
-		ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\Hello-World-8\android\app\src\main\AndroidManifest.xml:5:22-70
+		ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\main\AndroidManifest.xml:5:22-70
 uses-permission#android.permission.BLUETOOTH_CONNECT
-ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\Hello-World-8\android\app\src\main\AndroidManifest.xml:6:5-76
+ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\main\AndroidManifest.xml:6:5-76
 	android:name
-		ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\Hello-World-8\android\app\src\main\AndroidManifest.xml:6:22-73
+		ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\main\AndroidManifest.xml:6:22-73
 uses-permission#android.permission.ACCESS_FINE_LOCATION
-ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\Hello-World-8\android\app\src\main\AndroidManifest.xml:7:5-79
+ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\main\AndroidManifest.xml:7:5-79
 	android:name
-		ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\Hello-World-8\android\app\src\main\AndroidManifest.xml:7:22-76
+		ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\main\AndroidManifest.xml:7:22-76
 queries
-ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\Hello-World-8\android\app\src\main\AndroidManifest.xml:46:5-51:15
+ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\main\AndroidManifest.xml:46:5-51:15
 intent#action:name:android.intent.action.PROCESS_TEXT+data:mimeType:text/plain
-ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\Hello-World-8\android\app\src\main\AndroidManifest.xml:47:9-50:18
+ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\main\AndroidManifest.xml:47:9-50:18
 action#android.intent.action.PROCESS_TEXT
-ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\Hello-World-8\android\app\src\main\AndroidManifest.xml:48:13-72
+ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\main\AndroidManifest.xml:48:13-72
 	android:name
-		ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\Hello-World-8\android\app\src\main\AndroidManifest.xml:48:21-70
+		ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\main\AndroidManifest.xml:48:21-70
 data
-ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\Hello-World-8\android\app\src\main\AndroidManifest.xml:49:13-50
+ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\main\AndroidManifest.xml:49:13-50
 	android:mimeType
-		ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\Hello-World-8\android\app\src\main\AndroidManifest.xml:49:19-48
+		ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\main\AndroidManifest.xml:49:19-48
 uses-permission#android.permission.INTERNET
-ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\Hello-World-8\android\app\src\debug\AndroidManifest.xml:6:5-66
+ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\debug\AndroidManifest.xml:6:5-66
 	android:name
-		ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\Hello-World-8\android\app\src\debug\AndroidManifest.xml:6:22-64
+		ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\debug\AndroidManifest.xml:6:22-64
 uses-sdk
-INJECTED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\Hello-World-8\android\app\src\debug\AndroidManifest.xml reason: use-sdk injection requested
-INJECTED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\Hello-World-8\android\app\src\debug\AndroidManifest.xml
-INJECTED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\Hello-World-8\android\app\src\debug\AndroidManifest.xml
-MERGED from [:flutter_blue_plus_android] C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\Hello-World-8\build\flutter_blue_plus_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:9:5-44
-MERGED from [:flutter_blue_plus_android] C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\Hello-World-8\build\flutter_blue_plus_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:9:5-44
-MERGED from [:permission_handler_android] C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\Hello-World-8\build\permission_handler_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
-MERGED from [:permission_handler_android] C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\Hello-World-8\build\permission_handler_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
+INJECTED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\debug\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\debug\AndroidManifest.xml
+INJECTED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\debug\AndroidManifest.xml
+MERGED from [:flutter_blue_plus_android] C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\build\flutter_blue_plus_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:9:5-44
+MERGED from [:flutter_blue_plus_android] C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\build\flutter_blue_plus_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:9:5-44
+MERGED from [:permission_handler_android] C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\build\permission_handler_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
+MERGED from [:permission_handler_android] C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\build\permission_handler_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
 MERGED from [androidx.fragment:fragment:1.7.1] C:\Users\itai9\.gradle\caches\8.10.2\transforms\55520e4df2220e27f13f0bbb7467d11a\transformed\fragment-1.7.1\AndroidManifest.xml:5:5-44
 MERGED from [androidx.fragment:fragment:1.7.1] C:\Users\itai9\.gradle\caches\8.10.2\transforms\55520e4df2220e27f13f0bbb7467d11a\transformed\fragment-1.7.1\AndroidManifest.xml:5:5-44
 MERGED from [androidx.window:window:1.2.0] C:\Users\itai9\.gradle\caches\8.10.2\transforms\5093ab42d2307deb2d7ac0b7f5718c38\transformed\jetified-window-1.2.0\AndroidManifest.xml:20:5-44
@@ -159,9 +159,9 @@ MERGED from [androidx.window.extensions.core:core:1.0.0] C:\Users\itai9\.gradle\
 MERGED from [com.getkeepsafe.relinker:relinker:1.4.5] C:\Users\itai9\.gradle\caches\8.10.2\transforms\9e1412f82216e9a99f9f845f4567c1f2\transformed\jetified-relinker-1.4.5\AndroidManifest.xml:5:5-43
 MERGED from [com.getkeepsafe.relinker:relinker:1.4.5] C:\Users\itai9\.gradle\caches\8.10.2\transforms\9e1412f82216e9a99f9f845f4567c1f2\transformed\jetified-relinker-1.4.5\AndroidManifest.xml:5:5-43
 	android:targetSdkVersion
-		INJECTED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\Hello-World-8\android\app\src\debug\AndroidManifest.xml
+		INJECTED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\debug\AndroidManifest.xml
 	android:minSdkVersion
-		INJECTED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\Hello-World-8\android\app\src\debug\AndroidManifest.xml
+		INJECTED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\debug\AndroidManifest.xml
 uses-library#androidx.window.extensions
 ADDED from [androidx.window:window:1.2.0] C:\Users\itai9\.gradle\caches\8.10.2\transforms\5093ab42d2307deb2d7ac0b7f5718c38\transformed\jetified-window-1.2.0\AndroidManifest.xml:23:9-25:40
 	android:required
