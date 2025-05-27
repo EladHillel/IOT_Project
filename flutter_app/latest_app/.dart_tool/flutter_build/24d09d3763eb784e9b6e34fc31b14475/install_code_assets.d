@@ -1,0 +1,1 @@
+ C:\\Users\\itai9\\Documents\\Arduino\\IOT_Project\\flutter_app\\latest_app\\.dart_tool\\flutter_build\\24d09d3763eb784e9b6e34fc31b14475\\native_assets.json: 
