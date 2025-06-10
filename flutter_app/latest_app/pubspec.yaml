@@ -7,11 +7,18 @@ version: 1.0.0+1
 environment:
   sdk: ^3.0.0
 
+# dependencies:
+#   flutter:
+#     sdk: flutter
+#   flutter_blue_plus: ^1.34.5
+#   permission_handler: ^11.3.0
+
 dependencies:
   flutter:
     sdk: flutter
-  flutter_blue_plus: ^1.34.5
-  permission_handler: ^11.3.0
+  flutter_blue_plus: ^1.12.13
+  permission_handler: ^11.0.1
+  provider: ^6.0.5
 
 dev_dependencies:
   flutter_test:

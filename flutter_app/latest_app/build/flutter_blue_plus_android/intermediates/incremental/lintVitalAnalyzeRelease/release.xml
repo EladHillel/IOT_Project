@@ -1,0 +1,31 @@
+<variant
+    name="release"
+    package="com.lib.flutter_blue_plus"
+    minSdkVersion="21"
+    targetSdkVersion="21"
+    mergedManifest="C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\build\flutter_blue_plus_android\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml"
+    proguardFiles="C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\build\flutter_blue_plus_android\intermediates\default_proguard_files\global\proguard-android.txt-8.7.0"
+    partialResultsDir="C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\build\flutter_blue_plus_android\intermediates\lint_vital_partial_results\release\lintVitalAnalyzeRelease\out"
+    desugaredMethodsFiles="C:\Users\itai9\.gradle\caches\8.10.2\transforms\58b2fa97deb6620e81e8f2146e68c814\transformed\D8BackportedDesugaredMethods.txt">
+  <buildFeatures
+      namespacing="REQUIRED"/>
+  <sourceProviders>
+    <sourceProvider
+        manifests="src\main\AndroidManifest.xml"
+        javaDirectories="src\main\java;src\release\java;src\main\kotlin;src\release\kotlin"
+        resDirectories="src\main\res;src\release\res"
+        assetsDirectories="src\main\assets;src\release\assets"/>
+  </sourceProviders>
+  <testSourceProviders>
+  </testSourceProviders>
+  <testFixturesSourceProviders>
+  </testFixturesSourceProviders>
+  <artifact
+      classOutputs="C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\build\flutter_blue_plus_android\intermediates\javac\release\compileReleaseJavaWithJavac\classes;C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\build\flutter_blue_plus_android\intermediates\compile_r_class_jar\release\generateReleaseRFile\R.jar"
+      type="MAIN"
+      applicationId="com.lib.flutter_blue_plus"
+      generatedSourceFolders="C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\build\flutter_blue_plus_android\generated\ap_generated_sources\release\out"
+      generatedResourceFolders="C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\build\flutter_blue_plus_android\generated\res\resValues\release"
+      desugaredMethodsFiles="C:\Users\itai9\.gradle\caches\8.10.2\transforms\58b2fa97deb6620e81e8f2146e68c814\transformed\D8BackportedDesugaredMethods.txt">
+  </artifact>
+</variant>
