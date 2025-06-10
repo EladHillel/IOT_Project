@@ -104,6 +104,12 @@
       "languageVersion": "3.3"
     },
     {
+      "name": "flutter_bluetooth_serial",
+      "rootUri": "file:///C:/Users/itai9/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_bluetooth_serial-0.4.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "flutter_lints",
       "rootUri": "file:///C:/Users/itai9/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_lints-4.0.0",
       "packageUri": "lib/",
@@ -308,7 +314,7 @@
       "languageVersion": "3.0"
     }
   ],
-  "generated": "2025-06-10T13:46:03.013003Z",
+  "generated": "2025-06-10T16:12:37.103293Z",
   "generator": "pub",
   "generatorVersion": "3.7.2",
   "flutterRoot": "file:///C:/Users/itai9/Documents/Arduino/flutter",

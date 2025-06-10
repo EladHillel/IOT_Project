@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'bluetooth_listener.dart';
 
 // Bluetooth Device Provider (from your working app)
 class BluetoothDeviceProvider with ChangeNotifier {
@@ -146,6 +147,18 @@ class MainScreen extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                       builder: (context) => const StatisticsScreen()),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.query_stats),
+              title: const Text('RISH'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const BluetoothListener()),
                 );
               },
             ),
