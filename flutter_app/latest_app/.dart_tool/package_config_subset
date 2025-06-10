@@ -62,6 +62,10 @@ flutter_blue_plus_web
 3.3
 file:///C:/Users/itai9/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_blue_plus_web-3.0.1/
 file:///C:/Users/itai9/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_blue_plus_web-3.0.1/lib/
+flutter_bluetooth_serial
+2.12
+file:///C:/Users/itai9/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_bluetooth_serial-0.4.0/
+file:///C:/Users/itai9/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_bluetooth_serial-0.4.0/lib/
 flutter_lints
 3.1
 file:///C:/Users/itai9/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_lints-4.0.0/
@@ -94,6 +98,10 @@ meta
 2.12
 file:///C:/Users/itai9/AppData/Local/Pub/Cache/hosted/pub.dev/meta-1.16.0/
 file:///C:/Users/itai9/AppData/Local/Pub/Cache/hosted/pub.dev/meta-1.16.0/lib/
+nested
+2.12
+file:///C:/Users/itai9/AppData/Local/Pub/Cache/hosted/pub.dev/nested-1.0.0/
+file:///C:/Users/itai9/AppData/Local/Pub/Cache/hosted/pub.dev/nested-1.0.0/lib/
 path
 3.4
 file:///C:/Users/itai9/AppData/Local/Pub/Cache/hosted/pub.dev/path-1.9.1/
@@ -130,6 +138,10 @@ plugin_platform_interface
 3.0
 file:///C:/Users/itai9/AppData/Local/Pub/Cache/hosted/pub.dev/plugin_platform_interface-2.1.8/
 file:///C:/Users/itai9/AppData/Local/Pub/Cache/hosted/pub.dev/plugin_platform_interface-2.1.8/lib/
+provider
+2.12
+file:///C:/Users/itai9/AppData/Local/Pub/Cache/hosted/pub.dev/provider-6.1.5/
+file:///C:/Users/itai9/AppData/Local/Pub/Cache/hosted/pub.dev/provider-6.1.5/lib/
 rxdart
 2.12
 file:///C:/Users/itai9/AppData/Local/Pub/Cache/hosted/pub.dev/rxdart-0.28.0/
