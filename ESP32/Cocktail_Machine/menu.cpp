@@ -18,68 +18,91 @@ bool check_long_press(TS_Point* p) {
   static unsigned long press_start_time = 0;
   static int last_press_tile = -1;
   static bool long_press_reported = false;
-  const unsigned long LONG_PRESS_THRESHOLD_MS = 1000; // 2 seconds
+  static bool was_touching = false;
+
+  const unsigned long LONG_PRESS_THRESHOLD_MS = 500;
 
   if (p == nullptr) {
-    Serial.println("[LongPress] Touch released — resetting state.");
+    if (was_touching) {
+      Serial.println("[LongPress] Touch released — resetting state.");
+      was_touching = false;
+    }
     press_start_time = 0;
     last_press_tile = -1;
     long_press_reported = false;
     return false;
   }
 
+  was_touching = true;
   int tile = get_menu_1_new_tile(p->x, p->y);
   unsigned long now = millis();
-
-  Serial.printf("[LongPress] Current tile: %d | Last tile: %d | Time: %lu\n", tile, last_press_tile, now);
 
   if (tile == last_press_tile) {
     if (press_start_time == 0) {
       press_start_time = now;
-      Serial.printf("[LongPress] Press start time set at %lu for tile %d\n", now, tile);
       return false;
     }
 
     unsigned long held_time = now - press_start_time;
-    Serial.printf("[LongPress] Held for %lu ms\n", held_time);
-
     if (!long_press_reported && held_time > LONG_PRESS_THRESHOLD_MS) {
       long_press_reported = true;
       Serial.printf("[LongPress] >>> Long press detected on tile %d at %lu\n", tile, now);
       return true;
     }
-
     return false;
   } else {
     last_press_tile = tile;
     press_start_time = now;
     long_press_reported = false;
-    Serial.printf("[LongPress] New tile press detected: %d at %lu\n", tile, now);
     return false;
   }
 }
 
+void draw_random_button(bool highlight) {
+  int button_y = SCREEN_HEIGHT - SIDE_BUTTON_HEIGHT - 10;
+  int button_x = MAIN_WIDTH / 2 - 60;
+  int button_w = 120;
+  int button_h = SIDE_BUTTON_HEIGHT;
+
+  uint16_t bg_color = highlight ? TFT_ORANGE : TFT_BLACK;
+  uint16_t text_color = TFT_WHITE;
+
+  // Draw white outline
+  tft.drawRect(button_x - 1, button_y - 1, button_w + 2, button_h + 2, TFT_WHITE);
+
+  // Fill button background
+  tft.fillRect(button_x, button_y, button_w, button_h, bg_color);
+
+  String label = "Random Drink";
+  int16_t text_width = tft.textWidth(label);
+  int16_t text_x = button_x + (button_w - text_width) / 2;
+  int16_t text_y = button_y + (button_h - 8 * DEFAULT_TEXT_SIZE) / 2;
+
+  tft.setTextColor(text_color);
+  tft.setCursor(text_x, text_y);
+  tft.print(label);
+}
 
 
-void draw_menu_1_tile(int tile_index, bool selected, bool cocktail_available) {
+void draw_menu_1_tile(int tile_index, bool selected, bool cocktail_available, int y_offset = 0, const Cocktail* cock_array = preset_cocktails) {
   Serial.println("draw_menu_1_tile entered");
   const int lineH = 10;
   int i = tile_index % TABLE_DIMENSION;
   int j = tile_index / TABLE_DIMENSION;
   int x = i * (MAIN_WIDTH / TABLE_DIMENSION);
-  int y = j * (SCREEN_HEIGHT / TABLE_DIMENSION);
+  int y = j * (SCREEN_HEIGHT / TABLE_DIMENSION) + y_offset;
 
   tft.fillRect(x, y, MAIN_WIDTH / 3, SCREEN_HEIGHT / 3, TFT_BLACK);
   tft.drawRect(x, y, MAIN_WIDTH / 3, SCREEN_HEIGHT / 3, TFT_WHITE);
 
   Serial.println("printing cocktail on tile");
   tft.setCursor(x + 5, y + 6);
-  tft.print(preset_cocktails[tile_index].name);
+  tft.print(cock_array[tile_index].name);
   for (int k = 0; k < INGREDIENT_COUNT; k++) {
     tft.setCursor(x + 5, y + 10 + (k + 1) * lineH);
     tft.print(ingredients[k].name[0]);
     tft.print(": ");
-    tft.print(preset_cocktails[tile_index].amounts[k]);
+    tft.print(cock_array[tile_index].amounts[k]);
     tft.print(" ml");
   }
 
@@ -213,17 +236,27 @@ void draw_menu_2() {
     ordered_cocktail = current_custom_cocktail;
   }
 }
-
 void draw_menu_3() {
   tft.setTextSize(DEFAULT_TEXT_SIZE);
-  tft.setCursor(50, SCREEN_HEIGHT / 2 - 5);
-  for (int k = 0; k < INGREDIENT_COUNT; k++) {
-    tft.print(ingredients[k].name[0]);
-    tft.print(": ");
-    tft.print(ingredients[k].amount_left);
-    tft.print("\n");
+
+  // Draw title
+  String title = "Most Popular Drinks";
+  int16_t title_width = tft.textWidth(title);
+  int16_t title_x = MAIN_WIDTH / 2 - title_width / 2;
+  int16_t title_y = 10;
+  tft.setCursor(title_x, title_y);
+  tft.print(title);
+
+  // Draw popular drinks like in menu 1
+  for (int i = 0; i < TOP_COCKTAIL_COUNT; i++) {
+    bool is_selected = (top_cocktails[i].name == current_preset_cocktail.name);
+    draw_menu_1_tile(i, is_selected, isCocktailAvailable(top_cocktails[i]), MENU3_TILE_Y_OFFSET, top_cocktails);
   }
+
+  // Draw "Random Drink" button at the bottom
+  draw_random_button(false);
 }
+
 
 void draw_current_menu() {
   Serial.println("Drawing current menu:");
@@ -373,45 +406,63 @@ void handle_touch_cancellable_op(int x, int y){
   draw_current_menu();
 }
 
-void handle_touch_menu_1(int x, int y) {
-  Serial.println("Handle touch menu_1");
-  int new_tile = get_menu_1_new_tile(x, y);
-  bool is_curr_available = isCocktailAvailable(preset_cocktails[new_tile]);
+void update_selected_tile(int new_tile, int tile_count, const Cocktail* cocktails, int y_offset = 0) {
+  int prev_tile = -1;
+  for (int i = 0; i < tile_count; i++) {
+    if (cocktails[i].name == current_preset_cocktail.name) {
+      prev_tile = i;
+      break;
+    }
+  }
 
-  if(!is_curr_available){
+  if (prev_tile != -1) {
+    bool is_prev_available = isCocktailAvailable(cocktails[prev_tile]);
+    draw_menu_1_tile(prev_tile, false, is_prev_available, y_offset, cocktails);
+  }
+
+  if (new_tile > tile_count - 1){
+   // We touched outside grid and should deselect
+   return; 
+  }
+
+  bool is_curr_available = isCocktailAvailable(cocktails[new_tile]);
+  draw_menu_1_tile(new_tile, true, is_curr_available, y_offset, cocktails);
+}
+
+void handle_touch_tiles(int x, int y, int tile_count, const Cocktail* cocktails, int y_offset = 0) {
+  Serial.println("Handle touch tiles");
+  int new_tile = get_menu_1_new_tile(x, y);
+
+  bool is_curr_available = isCocktailAvailable(cocktails[new_tile]);
+
+  if (!is_curr_available) {
     return;
   }
 
-  //Check if selected tile changed and update view if so
   Serial.printf("new tile %d \n", new_tile);
   Serial.println("Checking selected tile changed");
-  if (preset_cocktails[new_tile].name != current_preset_cocktail.name) {
-    int prev_tile = -1;
-    for (int i = 0; i < TABLE_DIMENSION * TABLE_DIMENSION; i++) {
-      Serial.printf("Checking tile %d \n",i);
-      if (preset_cocktails[i].name == current_preset_cocktail.name) {
-        prev_tile = i;
-        Serial.println("Found prev tile:");
-        Serial.println(prev_tile);
-        break;
-      }
-    }
 
-    if(prev_tile != -1){
-      Serial.println("Prev changed, changing view");
-      bool is_prev_available = isCocktailAvailable(preset_cocktails[prev_tile]);
-      draw_menu_1_tile(prev_tile, false, is_prev_available);
-    }
-    draw_menu_1_tile(new_tile, true, is_curr_available);
+  if (cocktails[new_tile].name != current_preset_cocktail.name) {
+    update_selected_tile(new_tile, tile_count, cocktails, y_offset);
   }
-    //Cocktail is available, change state.
-    Serial.println("Changing cocktail state");
-    current_preset_cocktail.name = preset_cocktails[new_tile].name;
-    memcpy(current_preset_cocktail.amounts, preset_cocktails[new_tile].amounts, sizeof(current_preset_cocktail.amounts));
-    ordered_cocktail = current_preset_cocktail;
 
-    Serial.println("New cocktail chosen:");
-    Serial.println(current_preset_cocktail.name);
+  if (new_tile > tile_count - 1){
+  // We touched outside grid and should deselect
+   deselect_preset_cocktail();
+   return; 
+  }
+
+  Serial.println("Changing cocktail state");
+  current_preset_cocktail.name = cocktails[new_tile].name;
+  memcpy(current_preset_cocktail.amounts, cocktails[new_tile].amounts, sizeof(current_preset_cocktail.amounts));
+  ordered_cocktail = current_preset_cocktail;
+
+  Serial.println("New cocktail chosen:");
+  Serial.println(current_preset_cocktail.name);
+}
+
+void handle_touch_menu_1(int x, int y) {
+  handle_touch_tiles(x, y, PRESET_COCKTAIL_COUNT, preset_cocktails);
 }
 
 void handle_touch_menu_2(int x, int y) {
@@ -457,10 +508,43 @@ void handle_touch_menu_2(int x, int y) {
 }
 
 
-void handle_touch_menu_3(int x, int y){
+void handle_touch_menu_3(int x, int y) {
   for (int k = 0; k < INGREDIENT_COUNT; k++) {
-    ingredients[k].amount_left=500;
+    ingredients[k].amount_left = 500;
   }
+
+  const int TILE_Y_OFFSET = MENU3_TILE_Y_OFFSET;
+  const int TILE_W = MAIN_WIDTH / TABLE_DIMENSION;
+  const int TILE_H = SCREEN_HEIGHT / TABLE_DIMENSION;
+
+  for (int i = 0; i < 3; i++) {
+    int col = i % TABLE_DIMENSION;
+    int row = i / TABLE_DIMENSION;
+    int tile_x = col * TILE_W;
+    int tile_y = row * TILE_H + TILE_Y_OFFSET;
+
+    handle_touch_tiles(x, y, TABLE_DIMENSION, top_cocktails, TILE_Y_OFFSET);
+    if (x >= tile_x && x < tile_x + TILE_W &&
+        y >= tile_y && y < tile_y + TILE_H) {
+      draw_random_button(false);
+      return;
+    }
+  }
+
+  int button_y = SCREEN_HEIGHT - SIDE_BUTTON_HEIGHT - 10;
+  int button_x = MAIN_WIDTH / 2 - 60;
+  int button_w = 120;
+  int button_h = SIDE_BUTTON_HEIGHT;
+
+  if (x >= button_x && x < button_x + button_w &&
+      y >= button_y && y < button_y + button_h) {
+    deselect_preset_cocktail();
+    draw_random_button(true);  // highlight on press
+    ordered_cocktail = get_random_cocktail();
+    return;
+  }
+
+  draw_random_button(false);  // default draw if no press
 }
 
 void init_cancellable_op(String op_text){
@@ -476,6 +560,7 @@ void check_and_handle_touch() {
   }
   if(current_menu == Menu_1 && check_long_press(p)){
     open_cocktail_more();
+    delay(700);
   }
 }
 

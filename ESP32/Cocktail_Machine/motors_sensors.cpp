@@ -69,7 +69,7 @@ bool wait_for_cup() {
 void pour_drink(Cocktail cocktail, CocktailSize size) {
   init_cancellable_op("Pouring cocktail...");
   delay(500);
-  Serial.printf("Starting to pour cocktail: '%s'\n", cocktail.name);
+  Serial.printf("Starting to pour cocktail: '%s'\n", cocktail.name.c_str());
   Serial.printf("Cocktail amount modified by: '%.3f'\n", PORTION_MAP[size]);
   for(int ingredient = 0; ingredient < INGREDIENT_COUNT; ingredient++){
     if (cocktail.amounts[ingredient] == 0 ){
@@ -78,23 +78,23 @@ void pour_drink(Cocktail cocktail, CocktailSize size) {
     
     float curr_amount = cocktail.amounts[ingredient] * PORTION_MAP[size];
     OrderState op_state = pour_ingredient(ingredient, curr_amount);
-
     switch (op_state) {
     case Completed:
       Serial.print("Ingredient poured succcessfully");
       break;
     case Cancelled:
-      Serial.print("CANCELLED");
+      Serial.println("CANCELLED");
       return_to_main_menu();
       return;
     case Timeout:
-      Serial.print("Timeout Reached");
+      Serial.println("Timeout Reached");
       alert_error("Operation failed: pour timeout reached");
       return;
+    }
+  update_stats_on_drink_order(op_state);
   }
   Serial.printf("Cocktail poured successfully");
   return_to_main_menu();
-}
 }
 
 static OrderState pour_ingredient(int motor_num, float target_weight){ 
@@ -118,11 +118,12 @@ static OrderState pour_ingredient(int motor_num, float target_weight){
     if (current_menu != Cancellable_Op){
       digitalWrite(MOTOR_MAP[motor_num], LOW);
       update_ingredient_amount(motor_num, curr_weight - base_weight);
+      Serial.println("Cancelled in pour_ingredient");
       return Cancelled;
     }
 
     //Timeout check
-    bool is_weight_changed = (curr_weight - prev_weight < WEIGHT_CHANGE_DETECTION_THRESHOLD);
+    bool is_weight_changed = (abs(curr_weight - prev_weight) < WEIGHT_CHANGE_DETECTION_THRESHOLD);
     times_unchanged =  is_weight_changed ? times_unchanged + 1 : 0;
     if (times_unchanged >= TIMES_UNCHANGED_FOR_TIMEOUT) {
       digitalWrite(MOTOR_MAP[motor_num], LOW);

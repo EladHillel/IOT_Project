@@ -108,17 +108,27 @@ bool load_ingredients(Ingredient ingredients[INGREDIENT_COUNT]) {
   file.close();
   return true;
 }
-
 bool save_stats(const Stats& stats) {
   fs::File file = LittleFS.open("/stats.json", "w");
   if (!file) return false;
+  
   StaticJsonDocument<2048> document;
   JsonObject rootObject = document.to<JsonObject>();
-  rootObject["total"] = stats.totalDispenses;
-  JsonObject countsObject = rootObject.createNestedObject("counts");
-  for (const auto& entry : stats.drinkCounts) {
-    countsObject[entry.first] = entry.second;
+  
+  // Save individual counters
+  rootObject["orders_completed"] = stats.orders_completed;
+  rootObject["random_drink_orders"] = stats.random_drink_orders;
+  rootObject["preset_drink_orders"] = stats.preset_drink_orders;
+  rootObject["orders_timed_out"] = stats.orders_timed_out;
+  rootObject["orders_cancelled"] = stats.orders_cancelled;
+  rootObject["custom_drink_orders"] = stats.custom_drink_orders;
+  
+  // Save preset cocktail order counts as an array
+  JsonArray cocktailCounts = rootObject.createNestedArray("preset_cocktail_order_counts");
+  for (int i = 0; i < PRESET_COCKTAIL_COUNT; i++) {
+    cocktailCounts.add(stats.preset_cocktail_order_counts[i]);
   }
+  
   serializeJson(document, file);
   file.close();
   return true;
@@ -127,15 +137,32 @@ bool save_stats(const Stats& stats) {
 bool load_stats(Stats& stats) {
   fs::File file = LittleFS.open("/stats.json", "r");
   if (!file) return false;
+  
   StaticJsonDocument<2048> document;
   DeserializationError err = deserializeJson(document, file);
-  if (err) return false;
-  stats.totalDispenses = document["total"] | 0;
-  stats.drinkCounts.clear();
-  JsonObject countsObject = document["counts"];
-  for (JsonPair entry : countsObject) {
-    stats.drinkCounts[entry.key().c_str()] = entry.value();
+  if (err) {
+    file.close();
+    return false;
   }
+  
+  // Load individual counters with default values of 0
+  stats.orders_completed = document["orders_completed"] | 0;
+  stats.random_drink_orders = document["random_drink_orders"] | 0;
+  stats.preset_drink_orders = document["preset_drink_orders"] | 0;
+  stats.orders_timed_out = document["orders_timed_out"] | 0;
+  stats.orders_cancelled = document["orders_cancelled"] | 0;
+  stats.custom_drink_orders = document["custom_drink_orders"] | 0;
+  
+  // Load preset cocktail order counts
+  JsonArray cocktailCounts = document["preset_cocktail_order_counts"];
+  for (int i = 0; i < PRESET_COCKTAIL_COUNT; i++) {
+    if (i < cocktailCounts.size()) {
+      stats.preset_cocktail_order_counts[i] = cocktailCounts[i] | 0;
+    } else {
+      stats.preset_cocktail_order_counts[i] = 0;
+    }
+  }
+  
   file.close();
   return true;
 }

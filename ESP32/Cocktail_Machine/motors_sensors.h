@@ -5,12 +5,6 @@
 #include "cocktail_data.h"
 #include "menu.h"
 
-enum OrderState {
-  Completed,
-  Cancelled,
-  Timeout
-};
-
 //MOTORs
 const int MOTOR1_PIN = 18; // change
 const int MOTOR2_PIN = 19; // change
@@ -25,7 +19,7 @@ const int LOADCELL_SCK_PIN = 4;
 const float CUP_WEIGHT_THRESHOLD = 1.2;
 const float BASE_WEIGHT_POSSIBLE_ERROR = 2;
 const float TIMES_UNCHANGED_FOR_TIMEOUT = 45;
-const float WEIGHT_CHANGE_DETECTION_THRESHOLD = 1;
+const float WEIGHT_CHANGE_DETECTION_THRESHOLD = 1.5;
 
 const float CALIBRATION_FACTOR = 93000/132;
 

@@ -34,6 +34,7 @@ static const int CANCEL_BUTTON_Y = CANCEL_MENU_TEXT_CENTER_Y + 40;
 static const int MENU_2_INGREDIENT_DELTA = 10;
 static const int LONG_PRESS_INTERVAL_MS = 10;
 static const int LONG_PRESS_COUNT_THRESHOLD = 500;
+static int MENU3_TILE_Y_OFFSET = 30;
 
 
 enum MenuState {

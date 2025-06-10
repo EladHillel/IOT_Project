@@ -32,7 +32,9 @@ void loop() {
       pour_drink(ordered_cocktail, chosen_cocktail_size);
     }
     order_pending = false;
+    update_top_ordered_cocktails();
   }
+  send_menu_via_ble();
   delay(100);
 }
 

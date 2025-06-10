@@ -23,6 +23,29 @@ static void clearCocktailAmounts(Cocktail& c) {
     }
 }
 
+void send_menu_via_ble() {
+    if (!deviceConnected || !pCharacteristic) return;
+    
+    StaticJsonDocument<2048> doc;
+    JsonArray cocktailArray = doc.to<JsonArray>();
+    
+    for (int i = 0; i < PRESET_COCKTAIL_COUNT; ++i) {
+        if (preset_cocktails[i].name.length() > 0) {
+            JsonObject cocktailObj = cocktailArray.createNestedObject();
+            cocktailObj["name"] = preset_cocktails[i].name;
+            JsonArray amountsArray = cocktailObj.createNestedArray("amounts");
+            for (int j = 0; j < INGREDIENT_COUNT; ++j) {
+                amountsArray.add(preset_cocktails[i].amounts[j]);
+            }
+        }
+    }
+    
+    String jsonString;
+    serializeJson(doc, jsonString);
+    pCharacteristic->setValue(jsonString.c_str());
+    pCharacteristic->notify();
+}
+
 static void fillCocktailAmountsFromJson(Cocktail& cocktail, JsonArray amountsJson) {
     int count = min(INGREDIENT_COUNT, int(amountsJson.size()));
     for (int i = 0; i < count; ++i) {
@@ -43,6 +66,12 @@ static void parseCocktailJson(const String& json) {
         return;
     }
 
+    // Backup old cocktails before overwriting
+    Cocktail old_presets[PRESET_COCKTAIL_COUNT];
+    for (int i = 0; i < PRESET_COCKTAIL_COUNT; ++i) {
+        old_presets[i] = preset_cocktails[i];
+    }
+
     int cocktailCount = 0;
 
     for (JsonObject obj : doc.as<JsonArray>()) {
@@ -56,6 +85,9 @@ static void parseCocktailJson(const String& json) {
         fillCocktailAmountsFromJson(c, amountsJson);
         cocktailCount++;
     }
+
+    // Reset stats for replaced cocktails
+    reset_stats_if_replaced(old_presets, preset_cocktails, stats);
 
     Serial.println("Parsed cocktails:");
     for (int i = 0; i < cocktailCount; ++i) {
