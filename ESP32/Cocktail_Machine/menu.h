@@ -35,6 +35,11 @@ static const int MENU_2_INGREDIENT_DELTA = 10;
 static const int LONG_PRESS_INTERVAL_MS = 10;
 static const int LONG_PRESS_COUNT_THRESHOLD = 500;
 static int MENU3_TILE_Y_OFFSET = 30;
+static const int QUICK_ORDER_BUTTON_WIDTH = 120;
+static const int QUICK_ORDER_BUTTON_HEIGHT = 50;
+static const int QUICK_ORDER_BUTTON_X = (SCREEN_WIDTH - QUICK_ORDER_BUTTON_WIDTH) / 2;
+static const int QUICK_ORDER_BUTTON_Y = (SCREEN_HEIGHT - QUICK_ORDER_BUTTON_HEIGHT) / 2;
+
 
 
 enum MenuState {
@@ -44,6 +49,7 @@ enum MenuState {
   Cancellable_Op,
   Error_Screen,
   Cocktail_More,
+  Quick
 };
 
 extern MenuState current_menu;
@@ -84,6 +90,11 @@ Shows more cocktail options and data
 */
 void open_cocktail_more();
 
+/*
+Enters quick dispense mode
+*/
+void enter_quick_mode(Cocktail cocktail);
+
 
 void handle_touch(int x, int y);
 TS_Point* check_touch();
@@ -100,5 +111,7 @@ void handle_touch_menu_3(int x, int y);
 void draw_error_screen();
 void draw_cocktail_more_menu();
 void handle_touch_cocktail_extended_menu(int x, int y);
+void draw_quick_screen();
+void handle_touch_quick_screen(int x, int y);
 
 #endif

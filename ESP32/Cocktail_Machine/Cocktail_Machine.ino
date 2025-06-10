@@ -13,6 +13,7 @@ void setup() {
   setup_data();
   setup_screen();
   ble_setup();
+  enter_quick_mode(preset_cocktails[0]);
 }
 
 
@@ -34,6 +35,7 @@ void loop() {
     order_pending = false;
     update_top_ordered_cocktails();
   }
+  send_stats_via_ble();
   send_menu_via_ble();
   delay(100);
 }

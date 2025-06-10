@@ -17,6 +17,7 @@ Cocktail current_preset_cocktail = {UNSELECTED_COCKTAIL_NAME, {0, 0, 0, 0}};
 Cocktail ordered_cocktail = {UNSELECTED_COCKTAIL_NAME, {0, 0, 0, 0}};
 CocktailSize chosen_cocktail_size = Medium;
 bool order_pending = false;
+Mode mode = Normal;
 
 void update_ingredient_amount(int ingredient_index, float amount_poured){
   ingredients[ingredient_index].amount_left = max(0.0f,ingredients[ingredient_index].amount_left - amount_poured);

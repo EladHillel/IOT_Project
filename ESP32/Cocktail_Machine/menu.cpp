@@ -9,6 +9,7 @@ MenuState current_menu = Menu_1;
 int menu_1_selected_cocktail_tile = -1; 
 String current_cancellable_op_text = "";
 String current_error_message = "";
+bool is_quick = false;
 
 int get_menu_1_new_tile(int x,int y){
   return (y / (SCREEN_HEIGHT / 3)) * 3 + (x / (MAIN_WIDTH / 3));
@@ -195,6 +196,39 @@ void setup_screen(){
   draw_current_menu();
 }
 
+void draw_quick_screen() {
+  tft.fillScreen(TFT_BLACK);
+  tft.setTextDatum(MC_DATUM); // Middle center
+
+  // Draw the button
+  tft.fillRect(QUICK_ORDER_BUTTON_X, QUICK_ORDER_BUTTON_Y, QUICK_ORDER_BUTTON_WIDTH, QUICK_ORDER_BUTTON_HEIGHT, TFT_BLUE);
+  tft.setTextColor(TFT_WHITE, TFT_BLUE);
+  tft.setTextSize(DEFAULT_TEXT_SIZE);
+  tft.drawString("Order", QUICK_ORDER_BUTTON_X + QUICK_ORDER_BUTTON_WIDTH / 2, QUICK_ORDER_BUTTON_Y + QUICK_ORDER_BUTTON_HEIGHT / 2);
+}
+
+void handle_touch_quick_screen(int x, int y) {
+ if (x >= QUICK_ORDER_BUTTON_X && x <= (QUICK_ORDER_BUTTON_X + QUICK_ORDER_BUTTON_WIDTH) &&
+        y >= QUICK_ORDER_BUTTON_Y && y <= (QUICK_ORDER_BUTTON_Y + QUICK_ORDER_BUTTON_HEIGHT)) {
+      order_pending = true;
+    }
+}
+
+void enter_quick_mode(Cocktail cocktail){
+  ordered_cocktail.name = cocktail.name;
+  memcpy(ordered_cocktail.amounts, cocktail.amounts, sizeof(cocktail.amounts));
+  is_quick = true;
+  current_menu = Quick;
+  draw_current_menu();
+}
+
+void exit_quick_mode(Cocktail cocktail){
+  ordered_cocktail.name = UNSELECTED_COCKTAIL_NAME;
+  is_quick = false;
+  current_menu = Menu_1;
+  draw_current_menu();
+}
+
 void draw_side_menu() {
   tft.setTextSize(SIDE_MENU_TEXT_SIZE);
   const int text_height_in_pixels = 8 * SIDE_MENU_TEXT_SIZE;
@@ -285,6 +319,9 @@ void draw_current_menu() {
       draw_side_menu();
       draw_cocktail_more_menu();
       break;
+    case Quick:
+      draw_quick_screen();
+      break;
   }
 }
 
@@ -305,7 +342,7 @@ void draw_cancellable_operation(){
   // "Cancel" label
   tft.setTextSize(2);
   tft.setTextColor(TFT_WHITE, TFT_BLACK);
-  tft.drawString("Cancel", CANCEL_MENU_TEXT_CENTER_X, CANCEL_BUTTON_Y + CANCEL_BUTTON_SIZE + 10);
+  tft.drawString("Stop", CANCEL_MENU_TEXT_CENTER_X, CANCEL_BUTTON_Y + CANCEL_BUTTON_SIZE + 10);
 }
 
 TS_Point* check_touch(){
@@ -328,6 +365,10 @@ void handle_touch(TS_Point point) {
   if (current_menu == Cancellable_Op || current_menu == Error_Screen) {
     handle_touch_cancellable_op(x, y);
     return;
+  }
+
+  if(current_menu == Quick){
+    handle_touch_quick_screen(x,y);
   }
 
   if (x >= MAIN_WIDTH) {
@@ -565,7 +606,7 @@ void check_and_handle_touch() {
 }
 
 void return_to_main_menu(){
-  current_menu = Menu_1;
+  current_menu = is_quick ? Quick : Menu_1;
   draw_current_menu();
 }
 

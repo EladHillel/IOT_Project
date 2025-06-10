@@ -35,4 +35,6 @@ void pour_drink(Cocktail cocktail, CocktailSize size);
 
 static OrderState pour_ingredient(int motor_num, float weight);
 
+void pour_until_stopped(int motor_num);
+
 #endif

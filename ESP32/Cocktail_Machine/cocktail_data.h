@@ -4,6 +4,11 @@
 #include <TFT_eSPI.h>
 #include <map>
 
+enum Mode {
+  Normal,
+  Clean,
+  Fast
+};
 
 enum CocktailSize {
   Small = 0,

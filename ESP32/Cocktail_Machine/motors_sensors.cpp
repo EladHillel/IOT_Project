@@ -143,3 +143,28 @@ static OrderState pour_ingredient(int motor_num, float target_weight){
   return Completed;
 }
 
+
+void pour_until_stopped(int motor_num){
+  Serial.println("Starting Cleaning Mode...");
+  init_cancellable_op("Cleaning...");
+  const int CLEAN_TIME = 5000;
+  unsigned long lastSentTime = millis();
+  unsigned long currentTime = millis();
+  
+  digitalWrite(MOTOR_MAP[motor_num], HIGH);
+
+  while (currentTime - lastSentTime < CLEAN_TIME) {
+    //Check if cancelled
+    check_and_handle_touch();
+    if (current_menu != Cancellable_Op){
+      digitalWrite(MOTOR_MAP[motor_num], LOW);
+      Serial.println("Cancelled cleanup");
+      return;
+    }
+    currentTime = millis();
+    delay(100);
+  }
+  Serial.println("Cleanup completed");
+  digitalWrite(MOTOR_MAP[motor_num], LOW);
+  return_to_main_menu();
+}

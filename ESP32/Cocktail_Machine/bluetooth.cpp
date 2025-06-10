@@ -11,6 +11,7 @@
 
 #define SERVICE_UUID        "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 #define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
+#define SEND_DELAY 3000 
 
 BLEServer* pServer = nullptr;
 BLECharacteristic* pCharacteristic = nullptr;
@@ -24,10 +25,16 @@ static void clearCocktailAmounts(Cocktail& c) {
 }
 
 void send_menu_via_ble() {
+    unsigned long currentTime = millis();
+    static unsigned long lastSentTime = 0;
+    if (currentTime - lastSentTime < SEND_DELAY) return; 
+    lastSentTime = currentTime; 
+
     if (!deviceConnected || !pCharacteristic) return;
     
     StaticJsonDocument<2048> doc;
-    JsonArray cocktailArray = doc.to<JsonArray>();
+    doc["type"] = "menu";  // New field specifying message type
+    JsonArray cocktailArray = doc.createNestedArray("data");
     
     for (int i = 0; i < PRESET_COCKTAIL_COUNT; ++i) {
         if (preset_cocktails[i].name.length() > 0) {
@@ -106,6 +113,37 @@ class MyServerCallbacks : public BLEServerCallbacks {
         deviceConnected = false;
     }
 };
+
+void send_stats_via_ble() {
+    static unsigned long lastSentTime = 0;
+    unsigned long currentTime = millis();
+    if (currentTime - lastSentTime < SEND_DELAY) return; 
+    lastSentTime = currentTime; 
+
+    if (!deviceConnected || !pCharacteristic) return;
+    
+    StaticJsonDocument<512> doc;
+    doc["type"] = "stats";  // New field specifying message type
+    JsonObject dataObj = doc.createNestedObject("data");
+
+    dataObj["orders_completed"] = stats.orders_completed;
+    dataObj["random_drink_orders"] = stats.random_drink_orders;
+    dataObj["preset_drink_orders"] = stats.preset_drink_orders;
+    dataObj["orders_timed_out"] = stats.orders_timed_out;
+    dataObj["orders_cancelled"] = stats.orders_cancelled;
+    dataObj["custom_drink_orders"] = stats.custom_drink_orders;
+
+    JsonArray orderCountsArray = dataObj.createNestedArray("preset_cocktail_order_counts");
+    for (int i = 0; i < PRESET_COCKTAIL_COUNT; ++i) {
+        orderCountsArray.add(stats.preset_cocktail_order_counts[i]);
+    }
+
+    String jsonString;
+    serializeJson(doc, jsonString);
+    pCharacteristic->setValue(jsonString.c_str());
+    pCharacteristic->notify();
+}
+
 
 class MyCharacteristicCallbacks : public BLECharacteristicCallbacks {
     void onWrite(BLECharacteristic* c) override {
