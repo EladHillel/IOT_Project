@@ -2,15 +2,19 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 class BluetoothListener extends StatefulWidget {
-  final BluetoothConnection? connection;
+  final BluetoothDevice device;
+  final Guid serviceUuid;
+  final Guid characteristicUuid;
   final bool isConnected;
 
   const BluetoothListener({
     Key? key,
-    required this.connection,
+    required this.device,
+    required this.serviceUuid,
+    required this.characteristicUuid,
     required this.isConnected,
   }) : super(key: key);
 
@@ -19,14 +23,17 @@ class BluetoothListener extends StatefulWidget {
 }
 
 class _BluetoothListenerState extends State<BluetoothListener> {
-  StreamSubscription<Uint8List>? _streamSubscription;
+  StreamSubscription<List<int>>? _characteristicSubscription;
+  BluetoothCharacteristic? _characteristic;
   bool _isListening = false;
   String _buffer = '';
 
   @override
   void initState() {
     super.initState();
-    _startListening();
+    if (widget.isConnected) {
+      _startListening();
+    }
   }
 
   @override
@@ -47,45 +54,57 @@ class _BluetoothListenerState extends State<BluetoothListener> {
     super.dispose();
   }
 
-  void _startListening() {
-    if (widget.connection != null && widget.isConnected && !_isListening) {
+  Future<void> _startListening() async {
+    if (!_isListening && widget.isConnected) {
       setState(() {
         _isListening = true;
       });
 
-      _streamSubscription = widget.connection!.input!.listen(
-        _onDataReceived,
-        onError: (error) {
-          print('Bluetooth listening error: $error');
-          setState(() {
-            _isListening = false;
-          });
-        },
-        onDone: () {
-          print('Bluetooth connection closed');
-          setState(() {
-            _isListening = false;
-          });
-        },
-      );
+      // Discover services and find the characteristic
+      List<BluetoothService> services = await widget.device.discoverServices();
+      for (BluetoothService service in services) {
+        if (service.uuid == widget.serviceUuid) {
+          for (BluetoothCharacteristic c in service.characteristics) {
+            if (c.uuid == widget.characteristicUuid) {
+              _characteristic = c;
+              await c.setNotifyValue(true);
+              _characteristicSubscription = c.value.listen(
+                _onDataReceived,
+                onError: (error) {
+                  print('Bluetooth listening error: $error');
+                  setState(() {
+                    _isListening = false;
+                  });
+                },
+                onDone: () {
+                  print('Bluetooth connection closed');
+                  setState(() {
+                    _isListening = false;
+                  });
+                },
+              );
+              break;
+            }
+          }
+        }
+      }
     }
   }
 
   void _stopListening() {
-    _streamSubscription?.cancel();
-    _streamSubscription = null;
+    _characteristicSubscription?.cancel();
+    _characteristicSubscription = null;
+    _characteristic?.setNotifyValue(false);
     setState(() {
       _isListening = false;
     });
   }
 
-  void _onDataReceived(Uint8List data) {
+  void _onDataReceived(List<int> data) {
     try {
-      // Convert bytes to string
-      String received = utf8.decode(data);
+      String received = utf8.decode(Uint8List.fromList(data));
       _buffer += received;
 
-      // Check for complete messages (assuming newline delimiter)
       while (_buffer.contains('\n')) {
         int newlineIndex = _buffer.indexOf('\n');
         String message = _buffer.substring(0, newlineIndex).trim();
@@ -168,20 +187,29 @@ class _BluetoothListenerState extends State<BluetoothListener> {
     );
   }
 
+  String _getStatusText() {
+    if (!widget.isConnected) {
+      return 'Not connected';
+    } else if (_isListening) {
+      return 'Listening for messages...';
+    } else {
+      return 'Connection established';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(16),
       child: Row(
         children: [
-          // Status indicator
           Container(
             width: 12,
             height: 12,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: (widget.isConnected && _isListening) 
-                  ? Colors.green 
+              color: (widget.isConnected && _isListening)
+                  ? Colors.green
                   : Colors.red,
             ),
           ),
@@ -201,111 +229,6 @@ class _BluetoothListenerState extends State<BluetoothListener> {
               size: 20,
             ),
         ],
-      ),
-    );
-  }
-
-  String _getStatusText() {
-    if (!widget.isConnected) {
-      return 'Not connected';
-    } else if (_isListening) {
-      return 'Listening for messages...';
-    } else {
-      return 'Connection established';
-    }
-  }
-}
-
-// Alternative version with custom popup styling
-class CustomBluetoothPopup extends StatelessWidget {
-  final String message;
-  final VoidCallback onClose;
-
-  const CustomBluetoothPopup({
-    Key? key,
-    required this.message,
-    required this.onClose,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Dialog(
-      backgroundColor: Colors.transparent,
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black26,
-              blurRadius: 10,
-              offset: Offset(0, 5),
-            ),
-          ],
-        ),
-        padding: EdgeInsets.all(20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              padding: EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.blue[50],
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.bluetooth_connected,
-                color: Colors.blue,
-                size: 30,
-              ),
-            ),
-            SizedBox(height: 16),
-            Text(
-              'ESP32 Message',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.grey[800],
-              ),
-            ),
-            SizedBox(height: 12),
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Text(
-                message,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.black87,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: onClose,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                foregroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(25),
-                ),
-              ),
-              child: Text(
-                'OK',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

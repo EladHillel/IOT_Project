@@ -3,28 +3,38 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'bluetooth_listener.dart';
 
 // Bluetooth Device Provider (from your working app)
 class BluetoothDeviceProvider with ChangeNotifier {
   BluetoothDevice? _connectedDevice;
   BluetoothCharacteristic? _writeCharacteristic;
   BluetoothCharacteristic? _notifyCharacteristic;
+  BluetoothCharacteristic? _readCharacteristic;
 
   BluetoothDevice? get connectedDevice => _connectedDevice;
   BluetoothCharacteristic? get writeCharacteristic => _writeCharacteristic;
   BluetoothCharacteristic? get notifyCharacteristic => _notifyCharacteristic;
+  BluetoothCharacteristic? get readCharacteristic => _readCharacteristic;
 
   void setConnectedDevice(BluetoothDevice? device) {
     _connectedDevice = device;
     notifyListeners();
   }
 
-  void setCharacteristics(
-      BluetoothCharacteristic? write, BluetoothCharacteristic? notify) {
+  void setCharacteristics({
+    BluetoothCharacteristic? write,
+    BluetoothCharacteristic? notify,
+    BluetoothCharacteristic? read,
+  }) {
     _writeCharacteristic = write;
     _notifyCharacteristic = notify;
+    _readCharacteristic = read;
     notifyListeners();
+  }
+
+  Future<List<int>?> readValue() async {
+    if (_readCharacteristic == null) return null;
+    return await _readCharacteristic!.read();
   }
 
   void disconnect() {
@@ -32,6 +42,7 @@ class BluetoothDeviceProvider with ChangeNotifier {
     _connectedDevice = null;
     _writeCharacteristic = null;
     _notifyCharacteristic = null;
+    _readCharacteristic = null;
     notifyListeners();
   }
 }
@@ -146,7 +157,9 @@ class MainScreen extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const StatisticsScreen()),
+                      builder: (context) => StatisticsScreen(
+      provider: context.read<BluetoothDeviceProvider>(),
+    )),
                 );
               },
             ),
@@ -158,7 +171,9 @@ class MainScreen extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const BluetoothListener()),
+                      builder: (context) => StatisticsScreen(
+      provider: context.read<BluetoothDeviceProvider>(),
+    )),
                 );
               },
             ),
@@ -585,41 +600,40 @@ class _ScanScreenState extends State<ScanScreen> {
       List<BluetoothService> services = await device.discoverServices();
       BluetoothCharacteristic? writeChar;
       BluetoothCharacteristic? notifyChar;
+      BluetoothCharacteristic? readChar;
 
       // Look for the specific characteristic from your working app
       for (var service in services) {
-        for (var characteristic in service.characteristics) {
-          if (characteristic.characteristicUuid ==
-              Guid("beb5483e-36e1-4688-b7f5-ea07361b26a8")) {
-            if (characteristic.properties.write ||
-                characteristic.properties.writeWithoutResponse) {
-              writeChar = characteristic;
-            }
-            if (characteristic.properties.notify) {
-              notifyChar = characteristic;
-            }
-          }
-        }
+  for (var characteristic in service.characteristics) {
+    if (characteristic.characteristicUuid ==
+        Guid("beb5483e-36e1-4688-b7f5-ea07361b26a8")) {
+      if (characteristic.properties.write ||
+          characteristic.properties.writeWithoutResponse) {
+        writeChar = characteristic;
       }
+      if (characteristic.properties.notify) {
+        notifyChar = characteristic;
+      }
+      if (characteristic.properties.read) {
+        readChar = characteristic;
+      }
+    }
+  }
+}
 
-      // Fallback to any writable/notify characteristics
-      if (writeChar == null || notifyChar == null) {
-        for (var service in services) {
-          for (var characteristic in service.characteristics) {
-            if (writeChar == null &&
-                (characteristic.properties.write ||
-                    characteristic.properties.writeWithoutResponse)) {
-              writeChar = characteristic;
-            }
-            if (notifyChar == null && characteristic.properties.notify) {
-              notifyChar = characteristic;
-            }
-          }
-        }
+// Fallback to any readable characteristic if not found
+if (readChar == null) {
+  for (var service in services) {
+    for (var characteristic in service.characteristics) {
+      if (readChar == null && characteristic.properties.read) {
+        readChar = characteristic;
       }
+    }
+  }
+}
 
       provider.setConnectedDevice(device);
-      provider.setCharacteristics(writeChar, notifyChar);
+      provider.setCharacteristics(write: writeChar, notify: notifyChar, read: readChar);
 
       setState(() {
         statusMessage = "Connected successfully!";
@@ -931,36 +945,52 @@ class _EditCocktailScreenState extends State<EditCocktailScreen> {
 }
 
 class StatisticsScreen extends StatefulWidget {
-  const StatisticsScreen({super.key});
+  final BluetoothDeviceProvider provider;
+
+  const StatisticsScreen({super.key, required this.provider});
 
   @override
-  _StatisticsScreenState createState() => _StatisticsScreenState();
+  State<StatisticsScreen> createState() => _StatisticsScreenState();
 }
 
 class _StatisticsScreenState extends State<StatisticsScreen> {
+  List<String> stats = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _readStats();
+  }
+
+  Future<void> _readStats() async {
+    final value = await widget.provider.readValue();
+    if (value != null) {
+      final decoded = String.fromCharCodes(value);
+      setState(() {
+        stats = decoded.split('\n');
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Statistics'),
-      ),
-      body: const Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Stat 1 = 10', style: TextStyle(fontSize: 24)),
-            SizedBox(height: 10),
-            Text('Stat 2 = 25', style: TextStyle(fontSize: 24)),
-            SizedBox(height: 10),
-            Text('Stat 3 = 7', style: TextStyle(fontSize: 24)),
-            SizedBox(height: 10),
-            Text('Stat 4 = 42', style: TextStyle(fontSize: 24)),
-            SizedBox(height: 10),
-            Text('Stat 5 = 3', style: TextStyle(fontSize: 24)),
-          ],
-        ),
+      appBar: AppBar(title: const Text('Statistics')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: stats.isEmpty
+            ? const Center(child: CircularProgressIndicator())
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: stats
+                    .map((s) => Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: Text(s, style: const TextStyle(fontSize: 24)),
+                        ))
+                    .toList(),
+              ),
       ),
     );
   }
 }
+

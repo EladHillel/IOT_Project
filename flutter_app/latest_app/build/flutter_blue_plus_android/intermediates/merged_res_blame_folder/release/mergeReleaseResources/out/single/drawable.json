@@ -1,18 +1,18 @@
 [
     {
         "merged": "com.lib.flutter_blue_plus.flutter_blue_plus_android-release-25:/drawable/notification_tile_bg.xml",
-        "source": "com.lib.flutter_blue_plus.flutter_blue_plus_android-core-1.13.1-8:/drawable/notification_tile_bg.xml"
+        "source": "com.lib.flutter_blue_plus.flutter_blue_plus_android-core-1.13.1-17:/drawable/notification_tile_bg.xml"
     },
     {
         "merged": "com.lib.flutter_blue_plus.flutter_blue_plus_android-release-25:/drawable/notification_bg_low.xml",
-        "source": "com.lib.flutter_blue_plus.flutter_blue_plus_android-core-1.13.1-8:/drawable/notification_bg_low.xml"
+        "source": "com.lib.flutter_blue_plus.flutter_blue_plus_android-core-1.13.1-17:/drawable/notification_bg_low.xml"
     },
     {
         "merged": "com.lib.flutter_blue_plus.flutter_blue_plus_android-release-25:/drawable/notification_icon_background.xml",
-        "source": "com.lib.flutter_blue_plus.flutter_blue_plus_android-core-1.13.1-8:/drawable/notification_icon_background.xml"
+        "source": "com.lib.flutter_blue_plus.flutter_blue_plus_android-core-1.13.1-17:/drawable/notification_icon_background.xml"
     },
     {
         "merged": "com.lib.flutter_blue_plus.flutter_blue_plus_android-release-25:/drawable/notification_bg.xml",
-        "source": "com.lib.flutter_blue_plus.flutter_blue_plus_android-core-1.13.1-8:/drawable/notification_bg.xml"
+        "source": "com.lib.flutter_blue_plus.flutter_blue_plus_android-core-1.13.1-17:/drawable/notification_bg.xml"
     }
 ]

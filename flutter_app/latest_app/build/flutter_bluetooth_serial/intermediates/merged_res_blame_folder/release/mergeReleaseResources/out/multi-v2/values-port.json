@@ -1,0 +1,34 @@
+{
+    "logs": [
+        {
+            "outputFile": "io.github.edufolly.flutterbluetoothserial.flutter_bluetooth_serial-mergeReleaseResources-25:/values-port/values-port.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\itai9\\.gradle\\caches\\8.10.2\\transforms\\75134600e85afa50bc6616ba42115e64\\transformed\\appcompat-1.3.0\\res\\values-port\\values-port.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "55",
+                        "endOffsets": "106"
+                    }
+                }
+            ]
+        },
+        {
+            "outputFile": "io.github.edufolly.flutterbluetoothserial.flutter_bluetooth_serial-release-27:/values-port/values-port.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\itai9\\.gradle\\caches\\8.10.2\\transforms\\75134600e85afa50bc6616ba42115e64\\transformed\\appcompat-1.3.0\\res\\values-port\\values-port.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "55",
+                        "endOffsets": "106"
+                    }
+                }
+            ]
+        }
+    ]
+}
