@@ -181,6 +181,6 @@ void setup_data(){
   
   while(!load_ingredients(ingredients)) {
      Serial.println("Loading ingredients ran into issue.");
-  }
+  } 
   Serial.println("Loaded preset ingredients");
 }

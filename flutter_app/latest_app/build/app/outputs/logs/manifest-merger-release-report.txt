@@ -19,7 +19,7 @@ MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\it
 	android:appComponentFactory
 		ADDED from [androidx.core:core:1.13.1] C:\Users\itai9\.gradle\caches\8.10.2\transforms\dfc2fbca530748e569b0737b09fa016f\transformed\core-1.13.1\AndroidManifest.xml:28:18-86
 	android:label
-		ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\main\AndroidManifest.xml:10:9-35
+		ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\main\AndroidManifest.xml:10:9-37
 	android:icon
 		ADDED from C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\main\AndroidManifest.xml:12:9-43
 	android:name

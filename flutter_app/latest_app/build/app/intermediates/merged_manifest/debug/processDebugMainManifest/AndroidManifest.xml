@@ -33,8 +33,6 @@
         </intent>
     </queries>
 
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
     <permission
         android:name="com.example.helloworld.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
         android:protectionLevel="signature" />

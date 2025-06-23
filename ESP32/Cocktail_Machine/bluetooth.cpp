@@ -9,9 +9,9 @@
 #include "menu.h"
 #include "filesystem.h"
 
-#define SERVICE_UUID        "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
+#define SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 #define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
-#define SEND_DELAY 3000 
+#define SEND_DELAY 3000
 
 BLEServer* pServer = nullptr;
 BLECharacteristic* pCharacteristic = nullptr;
@@ -25,17 +25,16 @@ static void clearCocktailAmounts(Cocktail& c) {
 }
 
 void send_menu_via_ble() {
-    unsigned long currentTime = millis();
-    static unsigned long lastSentTime = 0;
-    if (currentTime - lastSentTime < SEND_DELAY) return; 
-    lastSentTime = currentTime; 
+    // unsigned long currentTime = millis();
+    // static unsigned long lastSentTime = 0;
+    // if (currentTime - lastSentTime < SEND_DELAY) return;
+    // lastSentTime = currentTime;
 
     if (!deviceConnected || !pCharacteristic) return;
-    
-    StaticJsonDocument<2048> doc;
-    doc["type"] = "menu";  // New field specifying message type
-    JsonArray cocktailArray = doc.createNestedArray("data");
-    
+
+    StaticJsonDocument<512> doc;
+    JsonArray cocktailArray = doc.to<JsonArray>();
+
     for (int i = 0; i < PRESET_COCKTAIL_COUNT; ++i) {
         if (preset_cocktails[i].name.length() > 0) {
             JsonObject cocktailObj = cocktailArray.createNestedObject();
@@ -46,11 +45,10 @@ void send_menu_via_ble() {
             }
         }
     }
-    
+
     String jsonString;
     serializeJson(doc, jsonString);
     pCharacteristic->setValue(jsonString.c_str());
-    pCharacteristic->notify();
 }
 
 static void fillCocktailAmountsFromJson(Cocktail& cocktail, JsonArray amountsJson) {
@@ -115,25 +113,23 @@ class MyServerCallbacks : public BLEServerCallbacks {
 };
 
 void send_stats_via_ble() {
-    static unsigned long lastSentTime = 0;
-    unsigned long currentTime = millis();
-    if (currentTime - lastSentTime < SEND_DELAY) return; 
-    lastSentTime = currentTime; 
+    // static unsigned long lastSentTime = 0;
+    // unsigned long currentTime = millis();
+    // if (currentTime - lastSentTime < SEND_DELAY) return;
+    // lastSentTime = currentTime;
 
     if (!deviceConnected || !pCharacteristic) return;
-    
+
     StaticJsonDocument<512> doc;
-    doc["type"] = "stats";  // New field specifying message type
-    JsonObject dataObj = doc.createNestedObject("data");
 
-    dataObj["orders_completed"] = stats.orders_completed;
-    dataObj["random_drink_orders"] = stats.random_drink_orders;
-    dataObj["preset_drink_orders"] = stats.preset_drink_orders;
-    dataObj["orders_timed_out"] = stats.orders_timed_out;
-    dataObj["orders_cancelled"] = stats.orders_cancelled;
-    dataObj["custom_drink_orders"] = stats.custom_drink_orders;
+    doc["orders_completed"] = stats.orders_completed;
+    doc["random_drink_orders"] = stats.random_drink_orders;
+    doc["preset_drink_orders"] = stats.preset_drink_orders;
+    doc["orders_timed_out"] = stats.orders_timed_out;
+    doc["orders_cancelled"] = stats.orders_cancelled;
+    doc["custom_drink_orders"] = stats.custom_drink_orders;
 
-    JsonArray orderCountsArray = dataObj.createNestedArray("preset_cocktail_order_counts");
+    JsonArray orderCountsArray = doc.createNestedArray("preset_cocktail_order_counts");
     for (int i = 0; i < PRESET_COCKTAIL_COUNT; ++i) {
         orderCountsArray.add(stats.preset_cocktail_order_counts[i]);
     }
@@ -141,19 +137,39 @@ void send_stats_via_ble() {
     String jsonString;
     serializeJson(doc, jsonString);
     pCharacteristic->setValue(jsonString.c_str());
-    pCharacteristic->notify();
 }
-
 
 class MyCharacteristicCallbacks : public BLECharacteristicCallbacks {
     void onWrite(BLECharacteristic* c) override {
-        std::string value = c->getValue();
-        if (!value.empty()) {
-            String json = String(value.c_str());
-            Serial.println("Received JSON:");
-            Serial.println(json);
-            parseCocktailJson(json);
+        std::string input = c->getValue();
+        if (input.empty()) return;
+
+        // handle request
+        std::string prefix = "REQUEST ";
+        if (input.rfind(prefix, 0) == 0) {
+            std::string type = input.substr(prefix.length());
+
+            std::string result = "GOT " + type;
+            Serial.println(result.c_str());
+
+            if (type == "Menu")
+                send_menu_via_ble();
+            else if (type == "Stats")
+                send_stats_via_ble();
+            else {
+                char s[512], *p = "0123456789ABCDEF";
+                for (int i = 0; i < 512; i++)
+                    s[i] = p[i % 16];
+                c->setValue(s);
+            }
+            return;
         }
+
+        // handle incoming menu
+        String json = String(input.c_str());
+        Serial.println("Received JSON:");
+        Serial.println(json);
+        parseCocktailJson(json);
     }
 };
 
@@ -164,19 +180,15 @@ void ble_setup() {
     pServer = BLEDevice::createServer();
     pServer->setCallbacks(new MyServerCallbacks());
 
-    BLEService *pService = pServer->createService(SERVICE_UUID);
+    BLEService* pService = pServer->createService(SERVICE_UUID);
     pCharacteristic = pService->createCharacteristic(
-        CHARACTERISTIC_UUID,
-        BLECharacteristic::PROPERTY_READ |
-        BLECharacteristic::PROPERTY_WRITE |
-        BLECharacteristic::PROPERTY_NOTIFY |
-        BLECharacteristic::PROPERTY_INDICATE
-    );
+      CHARACTERISTIC_UUID,
+      BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_NOTIFY | BLECharacteristic::PROPERTY_INDICATE);
     pCharacteristic->setCallbacks(new MyCharacteristicCallbacks());
     pCharacteristic->addDescriptor(new BLE2902());
 
     pService->start();
-    BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
+    BLEAdvertising* pAdvertising = BLEDevice::getAdvertising();
     pAdvertising->addServiceUUID(SERVICE_UUID);
     pAdvertising->start();
 }

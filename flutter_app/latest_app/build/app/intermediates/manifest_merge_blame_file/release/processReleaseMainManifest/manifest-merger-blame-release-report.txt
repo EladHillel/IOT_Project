@@ -63,8 +63,8 @@
 40        android:extractNativeLibs="true"
 41        android:icon="@mipmap/ic_launcher"
 41-->C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\main\AndroidManifest.xml:12:9-43
-42        android:label="helloworld" >
-42-->C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\main\AndroidManifest.xml:10:9-35
+42        android:label="Cocktail App" >
+42-->C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\main\AndroidManifest.xml:10:9-37
 43        <activity
 43-->C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\android\app\src\main\AndroidManifest.xml:13:9-34:20
 44            android:name="com.example.helloworld.MainActivity"

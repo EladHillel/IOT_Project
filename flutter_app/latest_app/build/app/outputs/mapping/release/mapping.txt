@@ -3,8 +3,8 @@
 # min_api: 21
 # common_typos_disable
 # {"id":"com.android.tools.r8.mapping","version":"2.2"}
-# pg_map_id: c3c9832
-# pg_map_hash: SHA-256 c3c9832850841a63fab6d3383eeca1fedb743596f66be2c273bf8bc278f85bbc
+# pg_map_id: 6e4dc09
+# pg_map_hash: SHA-256 6e4dc0989b4380f44fd1458a8a22779a3e7b255f7c1b86ba72b935cc3fbfa4a5
 _COROUTINE.ArtificialStackFrames -> R8$$REMOVED$$CLASS$$0:
 # {"id":"sourceFile","fileName":"CoroutineDebugging.kt"}
 _COROUTINE.CoroutineDebuggingKt -> R8$$REMOVED$$CLASS$$1:
@@ -7419,72 +7419,72 @@ com.baseflow.permissionhandler.MethodCallHandlerImpl -> C.c:
     11:11:void io.flutter.embedding.engine.systemchannels.KeyboardChannel$1.onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):42:42 -> d
     12:12:void io.flutter.embedding.engine.systemchannels.KeyboardChannel$1.onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):44:44 -> d
     13:13:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):32:32 -> d
-    14:14:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):373:373 -> d
+    14:14:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):374:374 -> d
     14:14:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):55 -> d
-    15:15:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):359:359 -> d
+    15:15:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):360:360 -> d
     15:15:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):55 -> d
-    16:16:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):422:422 -> d
+    16:16:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):423:423 -> d
     16:16:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):55 -> d
     17:17:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):32:32 -> d
     18:18:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):87:87 -> d
     19:19:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):54:54 -> d
     20:20:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):57:57 -> d
-    21:21:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):334:334 -> d
+    21:21:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):335:335 -> d
     21:21:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):55 -> d
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
     22:22:void lambda$onMethodCall$1(io.flutter.plugin.common.MethodChannel$Result,java.lang.String,java.lang.String):58:58 -> d
-    22:22:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):335 -> d
+    22:22:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):336 -> d
     22:22:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):55 -> d
-    23:24:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):341:342 -> d
+    23:24:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):342:343 -> d
     23:24:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):55 -> d
     25:25:void lambda$onMethodCall$1(io.flutter.plugin.common.MethodChannel$Result,java.lang.String,java.lang.String):58:58 -> d
-    25:25:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):344 -> d
+    25:25:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):345 -> d
     25:25:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):55 -> d
-    26:28:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):350:352 -> d
+    26:28:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):351:353 -> d
     26:28:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):55 -> d
-    29:31:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):354:356 -> d
+    29:31:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):355:357 -> d
     29:31:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):55 -> d
-    32:33:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):358:359 -> d
+    32:33:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):359:360 -> d
     32:33:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):55 -> d
-    34:34:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):364:364 -> d
+    34:34:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):365:365 -> d
     34:34:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):55 -> d
-    35:35:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):368:368 -> d
+    35:35:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):369:369 -> d
     35:35:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):55 -> d
-    36:37:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):390:391 -> d
+    36:37:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):391:392 -> d
     36:37:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):55 -> d
-    38:39:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):394:395 -> d
+    38:39:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):395:396 -> d
     38:39:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):55 -> d
-    40:41:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):398:399 -> d
+    40:41:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):399:400 -> d
     40:41:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):55 -> d
-    42:43:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):402:403 -> d
+    42:43:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):403:404 -> d
     42:43:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):55 -> d
-    44:45:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):406:407 -> d
+    44:45:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):407:408 -> d
     44:45:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):55 -> d
-    46:47:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):410:411 -> d
+    46:47:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):411:412 -> d
     46:47:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):55 -> d
-    48:48:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):414:414 -> d
+    48:48:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):415:415 -> d
     48:48:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):55 -> d
-    49:50:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):425:426 -> d
+    49:50:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):426:427 -> d
     49:50:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):55 -> d
-    51:51:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):416:416 -> d
+    51:51:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):417:417 -> d
     51:51:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):55 -> d
-    52:54:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):418:420 -> d
+    52:54:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):419:421 -> d
     52:54:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):55 -> d
-    55:55:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):422:422 -> d
+    55:55:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):423:423 -> d
     55:55:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):55 -> d
-    56:56:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):369:369 -> d
+    56:56:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):370:370 -> d
     56:56:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):55 -> d
-    57:58:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):372:373 -> d
+    57:58:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):373:374 -> d
     57:58:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):55 -> d
-    59:59:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):375:375 -> d
+    59:59:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):376:376 -> d
     59:59:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):55 -> d
-    60:61:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):379:380 -> d
+    60:61:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):380:381 -> d
     60:61:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):55 -> d
-    62:62:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):382:382 -> d
+    62:62:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):383:383 -> d
     62:62:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):55 -> d
-    63:65:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):431:433 -> d
+    63:65:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):432:434 -> d
     63:65:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):55 -> d
-    66:67:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):440:441 -> d
+    66:67:void com.baseflow.permissionhandler.PermissionManager.requestPermissions(java.util.List,com.baseflow.permissionhandler.PermissionManager$RequestPermissionsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):441:442 -> d
     66:67:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):55 -> d
     68:69:void com.baseflow.permissionhandler.AppSettingsManager.openAppSettings(android.content.Context,com.baseflow.permissionhandler.AppSettingsManager$OpenAppSettingsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):17:18 -> d
     68:69:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):77 -> d
@@ -7500,27 +7500,27 @@ com.baseflow.permissionhandler.MethodCallHandlerImpl -> C.c:
     80:80:void com.baseflow.permissionhandler.AppSettingsManager.openAppSettings(android.content.Context,com.baseflow.permissionhandler.AppSettingsManager$OpenAppSettingsSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):36:36 -> d
     80:80:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):77 -> d
     81:81:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):47:47 -> d
-    82:82:void com.baseflow.permissionhandler.PermissionManager.checkPermissionStatus(int,com.baseflow.permissionhandler.PermissionManager$CheckPermissionsSuccessCallback):300:300 -> d
+    82:82:void com.baseflow.permissionhandler.PermissionManager.checkPermissionStatus(int,com.baseflow.permissionhandler.PermissionManager$CheckPermissionsSuccessCallback):301:301 -> d
     82:82:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):48 -> d
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
-    83:83:void com.baseflow.permissionhandler.PermissionManager.checkPermissionStatus(int,com.baseflow.permissionhandler.PermissionManager$CheckPermissionsSuccessCallback):300:300 -> d
+    83:83:void com.baseflow.permissionhandler.PermissionManager.checkPermissionStatus(int,com.baseflow.permissionhandler.PermissionManager$CheckPermissionsSuccessCallback):301:301 -> d
     83:83:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):48 -> d
     84:84:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):65:65 -> d
-    85:85:void com.baseflow.permissionhandler.PermissionManager.shouldShowRequestPermissionRationale(int,com.baseflow.permissionhandler.PermissionManager$ShouldShowRequestPermissionRationaleSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):611:611 -> d
+    85:85:void com.baseflow.permissionhandler.PermissionManager.shouldShowRequestPermissionRationale(int,com.baseflow.permissionhandler.PermissionManager$ShouldShowRequestPermissionRationaleSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):612:612 -> d
     85:85:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):66 -> d
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
-    86:86:void com.baseflow.permissionhandler.PermissionManager.shouldShowRequestPermissionRationale(int,com.baseflow.permissionhandler.PermissionManager$ShouldShowRequestPermissionRationaleSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):612:612 -> d
+    86:86:void com.baseflow.permissionhandler.PermissionManager.shouldShowRequestPermissionRationale(int,com.baseflow.permissionhandler.PermissionManager$ShouldShowRequestPermissionRationaleSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):613:613 -> d
     86:86:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):66 -> d
     87:87:void lambda$onMethodCall$2(io.flutter.plugin.common.MethodChannel$Result,java.lang.String,java.lang.String):69:69 -> d
-    87:87:void com.baseflow.permissionhandler.PermissionManager.shouldShowRequestPermissionRationale(int,com.baseflow.permissionhandler.PermissionManager$ShouldShowRequestPermissionRationaleSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):614 -> d
+    87:87:void com.baseflow.permissionhandler.PermissionManager.shouldShowRequestPermissionRationale(int,com.baseflow.permissionhandler.PermissionManager$ShouldShowRequestPermissionRationaleSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):615 -> d
     87:87:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):66 -> d
-    88:88:void com.baseflow.permissionhandler.PermissionManager.shouldShowRequestPermissionRationale(int,com.baseflow.permissionhandler.PermissionManager$ShouldShowRequestPermissionRationaleSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):620:620 -> d
+    88:88:void com.baseflow.permissionhandler.PermissionManager.shouldShowRequestPermissionRationale(int,com.baseflow.permissionhandler.PermissionManager$ShouldShowRequestPermissionRationaleSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):621:621 -> d
     88:88:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):66 -> d
-    89:90:void com.baseflow.permissionhandler.PermissionManager.shouldShowRequestPermissionRationale(int,com.baseflow.permissionhandler.PermissionManager$ShouldShowRequestPermissionRationaleSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):624:625 -> d
+    89:90:void com.baseflow.permissionhandler.PermissionManager.shouldShowRequestPermissionRationale(int,com.baseflow.permissionhandler.PermissionManager$ShouldShowRequestPermissionRationaleSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):625:626 -> d
     89:90:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):66 -> d
-    91:93:void com.baseflow.permissionhandler.PermissionManager.shouldShowRequestPermissionRationale(int,com.baseflow.permissionhandler.PermissionManager$ShouldShowRequestPermissionRationaleSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):629:631 -> d
+    91:93:void com.baseflow.permissionhandler.PermissionManager.shouldShowRequestPermissionRationale(int,com.baseflow.permissionhandler.PermissionManager$ShouldShowRequestPermissionRationaleSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):630:632 -> d
     91:93:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):66 -> d
-    94:94:void com.baseflow.permissionhandler.PermissionManager.shouldShowRequestPermissionRationale(int,com.baseflow.permissionhandler.PermissionManager$ShouldShowRequestPermissionRationaleSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):635:635 -> d
+    94:94:void com.baseflow.permissionhandler.PermissionManager.shouldShowRequestPermissionRationale(int,com.baseflow.permissionhandler.PermissionManager$ShouldShowRequestPermissionRationaleSuccessCallback,com.baseflow.permissionhandler.ErrorCallback):636:636 -> d
     94:94:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):66 -> d
     95:95:void onMethodCall(io.flutter.plugin.common.MethodCall,io.flutter.plugin.common.MethodChannel$Result):34:34 -> d
     96:96:void com.baseflow.permissionhandler.ServiceManager.checkServiceStatus(int,android.content.Context,com.baseflow.permissionhandler.ServiceManager$SuccessCallback,com.baseflow.permissionhandler.ErrorCallback):35:35 -> d
@@ -7852,173 +7852,174 @@ com.baseflow.permissionhandler.PermissionManager -> C.g:
       # {"id":"com.android.tools.r8.residualsignature","signature":"Ljava/util/HashMap;"}
     1:3:void <init>(android.content.Context):63:63 -> <init>
     4:6:void <init>(android.content.Context):64:64 -> <init>
-    6:12:int determinePermissionStatus(int):514:514 -> a
-    13:16:int determinePermissionStatus(int):448:448 -> a
-    17:22:int checkNotificationPermissionStatus():640:640 -> a
-    17:22:int determinePermissionStatus(int):449 -> a
+    6:12:int determinePermissionStatus(int):515:515 -> a
+    13:16:int determinePermissionStatus(int):449:449 -> a
+    17:22:int checkNotificationPermissionStatus():641:641 -> a
+    17:22:int determinePermissionStatus(int):450 -> a
     23:27:androidx.core.app.NotificationManagerCompat androidx.core.app.NotificationManagerCompat.from(android.content.Context):217:217 -> a
-    23:27:int checkNotificationPermissionStatus():641 -> a
-    23:27:int determinePermissionStatus(int):449 -> a
-    28:36:int checkNotificationPermissionStatus():642:642 -> a
-    28:36:int determinePermissionStatus(int):449 -> a
-    37:43:int checkNotificationPermissionStatus():649:649 -> a
-    37:43:int determinePermissionStatus(int):449 -> a
-    44:52:int checkNotificationPermissionStatus():653:653 -> a
-    44:52:int determinePermissionStatus(int):449 -> a
-    53:60:int determinePermissionStatus(int):452:452 -> a
-    61:66:int checkBluetoothPermissionStatus():658:658 -> a
-    61:66:int determinePermissionStatus(int):453 -> a
-    67:72:int checkBluetoothPermissionStatus():659:659 -> a
-    67:72:int determinePermissionStatus(int):453 -> a
-    73:91:int checkBluetoothPermissionStatus():661:661 -> a
-    73:91:int determinePermissionStatus(int):453 -> a
-    92:95:int determinePermissionStatus(int):459:459 -> a
-    96:101:int checkBluetoothPermissionStatus():658:658 -> a
-    96:101:int determinePermissionStatus(int):460 -> a
-    102:107:int checkBluetoothPermissionStatus():659:659 -> a
-    102:107:int determinePermissionStatus(int):460 -> a
-    108:118:int checkBluetoothPermissionStatus():661:661 -> a
-    108:118:int determinePermissionStatus(int):460 -> a
-    119:125:int determinePermissionStatus(int):466:466 -> a
-    126:131:int determinePermissionStatus(int):471:471 -> a
-    132:149:int determinePermissionStatus(int):474:474 -> a
-    150:162:int determinePermissionStatus(int):480:480 -> a
-    163:184:int determinePermissionStatus(int):481:481 -> a
-    185:191:int determinePermissionStatus(int):486:486 -> a
-    192:196:int determinePermissionStatus(int):494:494 -> a
-    197:203:int determinePermissionStatus(int):499:499 -> a
-    204:211:int determinePermissionStatus(int):504:504 -> a
-    212:216:int determinePermissionStatus(int):507:507 -> a
-    217:234:int determinePermissionStatus(int):509:509 -> a
-    235:238:int determinePermissionStatus(int):511:511 -> a
-    239:248:int determinePermissionStatus(int):512:512 -> a
-    249:254:int determinePermissionStatus(int):513:513 -> a
-    255:259:int determinePermissionStatus(int):514:514 -> a
-    260:270:int determinePermissionStatus(int):516:516 -> a
-    271:274:int determinePermissionStatus(int):519:519 -> a
-    275:281:int determinePermissionStatus(int):520:520 -> a
-    282:285:int determinePermissionStatus(int):523:523 -> a
-    286:296:int determinePermissionStatus(int):526:526 -> a
-    297:300:int determinePermissionStatus(int):528:528 -> a
-    301:313:int determinePermissionStatus(int):531:531 -> a
-    314:319:int determinePermissionStatus(int):533:533 -> a
-    320:327:int determinePermissionStatus(int):534:534 -> a
-    328:340:int determinePermissionStatus(int):537:537 -> a
-    341:348:int determinePermissionStatus(int):540:540 -> a
-    349:352:int determinePermissionStatus(int):541:541 -> a
-    353:365:int determinePermissionStatus(int):544:544 -> a
-    366:369:int determinePermissionStatus(int):546:546 -> a
-    370:377:int determinePermissionStatus(int):547:547 -> a
-    378:381:int determinePermissionStatus(int):548:548 -> a
-    382:389:int determinePermissionStatus(int):551:551 -> a
-    390:402:int determinePermissionStatus(int):553:553 -> a
-    403:408:int determinePermissionStatus(int):569:569 -> a
-    409:422:int determinePermissionStatus(int):571:571 -> a
-    423:426:int determinePermissionStatus(int):556:556 -> a
-    427:430:int determinePermissionStatus(int):558:558 -> a
-    431:444:int determinePermissionStatus(int):559:559 -> a
-    445:454:int determinePermissionStatus(int):562:562 -> a
-    455:458:int determinePermissionStatus(int):564:564 -> a
-    459:476:int determinePermissionStatus(int):566:566 -> a
-    477:482:int determinePermissionStatus(int):575:575 -> a
-    483:492:int determinePermissionStatus(int):576:576 -> a
+    23:27:int checkNotificationPermissionStatus():642 -> a
+    23:27:int determinePermissionStatus(int):450 -> a
+    28:36:int checkNotificationPermissionStatus():643:643 -> a
+    28:36:int determinePermissionStatus(int):450 -> a
+    37:43:int checkNotificationPermissionStatus():650:650 -> a
+    37:43:int determinePermissionStatus(int):450 -> a
+    44:52:int checkNotificationPermissionStatus():654:654 -> a
+    44:52:int determinePermissionStatus(int):450 -> a
+    53:60:int determinePermissionStatus(int):453:453 -> a
+    61:66:int checkBluetoothPermissionStatus():659:659 -> a
+    61:66:int determinePermissionStatus(int):454 -> a
+    67:72:int checkBluetoothPermissionStatus():660:660 -> a
+    67:72:int determinePermissionStatus(int):454 -> a
+    73:91:int checkBluetoothPermissionStatus():662:662 -> a
+    73:91:int determinePermissionStatus(int):454 -> a
+    92:95:int determinePermissionStatus(int):460:460 -> a
+    96:101:int checkBluetoothPermissionStatus():659:659 -> a
+    96:101:int determinePermissionStatus(int):461 -> a
+    102:107:int checkBluetoothPermissionStatus():660:660 -> a
+    102:107:int determinePermissionStatus(int):461 -> a
+    108:118:int checkBluetoothPermissionStatus():662:662 -> a
+    108:118:int determinePermissionStatus(int):461 -> a
+    119:125:int determinePermissionStatus(int):467:467 -> a
+    126:131:int determinePermissionStatus(int):472:472 -> a
+    132:149:int determinePermissionStatus(int):475:475 -> a
+    150:162:int determinePermissionStatus(int):481:481 -> a
+    163:184:int determinePermissionStatus(int):482:482 -> a
+    185:191:int determinePermissionStatus(int):487:487 -> a
+    192:196:int determinePermissionStatus(int):495:495 -> a
+    197:203:int determinePermissionStatus(int):500:500 -> a
+    204:211:int determinePermissionStatus(int):505:505 -> a
+    212:216:int determinePermissionStatus(int):508:508 -> a
+    217:234:int determinePermissionStatus(int):510:510 -> a
+    235:238:int determinePermissionStatus(int):512:512 -> a
+    239:248:int determinePermissionStatus(int):513:513 -> a
+    249:254:int determinePermissionStatus(int):514:514 -> a
+    255:259:int determinePermissionStatus(int):515:515 -> a
+    260:270:int determinePermissionStatus(int):517:517 -> a
+    271:274:int determinePermissionStatus(int):520:520 -> a
+    275:281:int determinePermissionStatus(int):521:521 -> a
+    282:285:int determinePermissionStatus(int):524:524 -> a
+    286:296:int determinePermissionStatus(int):527:527 -> a
+    297:300:int determinePermissionStatus(int):529:529 -> a
+    301:313:int determinePermissionStatus(int):532:532 -> a
+    314:319:int determinePermissionStatus(int):534:534 -> a
+    320:327:int determinePermissionStatus(int):535:535 -> a
+    328:340:int determinePermissionStatus(int):538:538 -> a
+    341:348:int determinePermissionStatus(int):541:541 -> a
+    349:352:int determinePermissionStatus(int):542:542 -> a
+    353:365:int determinePermissionStatus(int):545:545 -> a
+    366:369:int determinePermissionStatus(int):547:547 -> a
+    370:377:int determinePermissionStatus(int):548:548 -> a
+    378:381:int determinePermissionStatus(int):549:549 -> a
+    382:389:int determinePermissionStatus(int):552:552 -> a
+    390:402:int determinePermissionStatus(int):554:554 -> a
+    403:408:int determinePermissionStatus(int):570:570 -> a
+    409:422:int determinePermissionStatus(int):572:572 -> a
+    423:426:int determinePermissionStatus(int):557:557 -> a
+    427:430:int determinePermissionStatus(int):559:559 -> a
+    431:444:int determinePermissionStatus(int):560:560 -> a
+    445:454:int determinePermissionStatus(int):563:563 -> a
+    455:458:int determinePermissionStatus(int):565:565 -> a
+    459:476:int determinePermissionStatus(int):567:567 -> a
+    477:482:int determinePermissionStatus(int):576:576 -> a
+    483:492:int determinePermissionStatus(int):577:577 -> a
     19:31:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):167:167 -> b
     32:34:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):168:168 -> b
     35:39:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):172:172 -> b
     40:45:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):176:176 -> b
-    46:53:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):177:177 -> b
-    54:57:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):183:183 -> b
-    58:63:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):184:184 -> b
-    64:65:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):187:187 -> b
+    46:47:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):177:177 -> b
+    48:55:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):178:178 -> b
+    56:59:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):184:184 -> b
+    60:65:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):185:185 -> b
     66:67:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):188:188 -> b
-    68:71:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):189:189 -> b
-    72:84:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):190:190 -> b
-    85:90:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):193:193 -> b
-    91:92:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):195:195 -> b
+    68:69:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):189:189 -> b
+    70:73:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):190:190 -> b
+    74:86:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):191:191 -> b
+    87:92:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):194:194 -> b
     93:94:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):196:196 -> b
-    95:98:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):197:197 -> b
-    99:106:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):198:198 -> b
-    107:111:java.lang.Integer com.baseflow.permissionhandler.PermissionUtils.strictestStatus(java.lang.Integer,java.lang.Integer):491:491 -> b
-    107:111:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):198 -> b
-    112:114:java.lang.Integer com.baseflow.permissionhandler.PermissionUtils.strictestStatus(java.lang.Integer,java.lang.Integer):492:492 -> b
-    112:114:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):198 -> b
-    115:117:java.lang.Integer com.baseflow.permissionhandler.PermissionUtils.strictestStatus(java.lang.Integer,java.lang.Integer):493:493 -> b
-    115:117:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):198 -> b
-    118:121:java.lang.Integer com.baseflow.permissionhandler.PermissionUtils.strictestStatus(java.lang.Integer,java.lang.Integer):494:494 -> b
-    118:121:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):198 -> b
-    122:130:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):199:199 -> b
-    131:140:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):201:201 -> b
-    141:143:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):205:205 -> b
-    144:145:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):206:206 -> b
-    146:162:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):209:209 -> b
-    163:796:int com.baseflow.permissionhandler.PermissionUtils.parseManifestName(java.lang.String):30:30 -> b
-    163:796:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):214 -> b
-    797:800:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):219:219 -> b
-    801:812:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):222:222 -> b
-    813:818:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):223:223 -> b
-    819:822:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):224:224 -> b
-    823:827:java.lang.Integer com.baseflow.permissionhandler.PermissionUtils.strictestStatus(java.lang.Integer,java.lang.Integer):491:491 -> b
-    823:827:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):224 -> b
-    828:830:java.lang.Integer com.baseflow.permissionhandler.PermissionUtils.strictestStatus(java.lang.Integer,java.lang.Integer):492:492 -> b
-    828:830:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):224 -> b
-    831:833:java.lang.Integer com.baseflow.permissionhandler.PermissionUtils.strictestStatus(java.lang.Integer,java.lang.Integer):493:493 -> b
-    831:833:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):224 -> b
-    834:837:java.lang.Integer com.baseflow.permissionhandler.PermissionUtils.strictestStatus(java.lang.Integer,java.lang.Integer):494:494 -> b
-    834:837:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):224 -> b
-    838:850:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):225:225 -> b
-    851:862:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):227:227 -> b
-    863:864:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):228:228 -> b
-    865:870:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):229:229 -> b
-    871:878:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):230:230 -> b
-    879:881:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):228:228 -> b
-    882:893:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):232:232 -> b
-    894:895:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):233:233 -> b
-    896:901:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):234:234 -> b
-    902:909:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):235:235 -> b
-    910:916:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):233:233 -> b
-    917:918:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):238:238 -> b
-    919:922:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):239:239 -> b
-    923:934:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):241:241 -> b
-    935:952:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):242:242 -> b
-    953:954:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):245:245 -> b
-    955:958:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):246:246 -> b
-    959:964:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):248:248 -> b
-    965:976:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):249:249 -> b
-    977:978:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):250:250 -> b
-    979:982:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):251:251 -> b
-    983:986:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):252:252 -> b
-    987:989:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):250:250 -> b
-    990:1002:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):256:256 -> b
-    1003:1004:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):257:257 -> b
-    1005:1008:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):258:258 -> b
-    1009:1012:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):259:259 -> b
-    1013:1015:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):257:257 -> b
-    1016:1040:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):262:262 -> b
-    1041:1052:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):269:269 -> b
-    1053:1054:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):270:270 -> b
-    1055:1060:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):271:271 -> b
-    1061:1068:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):272:272 -> b
-    1069:1072:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):270:270 -> b
-    1073:1074:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):266:266 -> b
-    1075:1078:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):267:267 -> b
-    1079:1086:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):268:268 -> b
-    1087:1096:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):266:266 -> b
-    1097:1102:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):276:276 -> b
-    1103:1108:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):279:279 -> b
-    1109:1118:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):280:280 -> b
-    1:12:boolean isValidManifestForCalendarFullAccess():672:672 -> c
-    13:25:boolean isValidManifestForCalendarFullAccess():673:673 -> c
-    26:41:boolean isValidManifestForCalendarFullAccess():674:674 -> c
-    42:45:boolean isValidManifestForCalendarFullAccess():677:677 -> c
-    46:52:boolean isValidManifestForCalendarFullAccess():678:678 -> c
-    53:58:boolean isValidManifestForCalendarFullAccess():680:680 -> c
-    1:5:void launchSpecialPermission(java.lang.String,int):594:594 -> d
-    6:10:void launchSpecialPermission(java.lang.String,int):598:598 -> d
-    11:18:void launchSpecialPermission(java.lang.String,int):599:599 -> d
-    19:24:void launchSpecialPermission(java.lang.String,int):600:600 -> d
-    25:45:void launchSpecialPermission(java.lang.String,int):601:601 -> d
-    46:50:void launchSpecialPermission(java.lang.String,int):603:603 -> d
-    51:57:void launchSpecialPermission(java.lang.String,int):604:604 -> d
+    95:96:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):197:197 -> b
+    97:100:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):198:198 -> b
+    101:108:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):199:199 -> b
+    109:113:java.lang.Integer com.baseflow.permissionhandler.PermissionUtils.strictestStatus(java.lang.Integer,java.lang.Integer):491:491 -> b
+    109:113:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):199 -> b
+    114:116:java.lang.Integer com.baseflow.permissionhandler.PermissionUtils.strictestStatus(java.lang.Integer,java.lang.Integer):492:492 -> b
+    114:116:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):199 -> b
+    117:119:java.lang.Integer com.baseflow.permissionhandler.PermissionUtils.strictestStatus(java.lang.Integer,java.lang.Integer):493:493 -> b
+    117:119:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):199 -> b
+    120:123:java.lang.Integer com.baseflow.permissionhandler.PermissionUtils.strictestStatus(java.lang.Integer,java.lang.Integer):494:494 -> b
+    120:123:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):199 -> b
+    124:132:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):200:200 -> b
+    133:142:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):202:202 -> b
+    143:145:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):206:206 -> b
+    146:147:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):207:207 -> b
+    148:164:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):210:210 -> b
+    165:798:int com.baseflow.permissionhandler.PermissionUtils.parseManifestName(java.lang.String):30:30 -> b
+    165:798:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):215 -> b
+    799:802:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):220:220 -> b
+    803:814:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):223:223 -> b
+    815:820:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):224:224 -> b
+    821:824:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):225:225 -> b
+    825:829:java.lang.Integer com.baseflow.permissionhandler.PermissionUtils.strictestStatus(java.lang.Integer,java.lang.Integer):491:491 -> b
+    825:829:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):225 -> b
+    830:832:java.lang.Integer com.baseflow.permissionhandler.PermissionUtils.strictestStatus(java.lang.Integer,java.lang.Integer):492:492 -> b
+    830:832:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):225 -> b
+    833:835:java.lang.Integer com.baseflow.permissionhandler.PermissionUtils.strictestStatus(java.lang.Integer,java.lang.Integer):493:493 -> b
+    833:835:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):225 -> b
+    836:839:java.lang.Integer com.baseflow.permissionhandler.PermissionUtils.strictestStatus(java.lang.Integer,java.lang.Integer):494:494 -> b
+    836:839:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):225 -> b
+    840:852:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):226:226 -> b
+    853:864:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):228:228 -> b
+    865:866:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):229:229 -> b
+    867:872:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):230:230 -> b
+    873:880:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):231:231 -> b
+    881:883:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):229:229 -> b
+    884:895:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):233:233 -> b
+    896:897:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):234:234 -> b
+    898:903:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):235:235 -> b
+    904:911:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):236:236 -> b
+    912:918:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):234:234 -> b
+    919:920:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):239:239 -> b
+    921:924:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):240:240 -> b
+    925:936:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):242:242 -> b
+    937:954:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):243:243 -> b
+    955:956:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):246:246 -> b
+    957:960:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):247:247 -> b
+    961:966:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):249:249 -> b
+    967:978:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):250:250 -> b
+    979:980:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):251:251 -> b
+    981:984:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):252:252 -> b
+    985:988:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):253:253 -> b
+    989:991:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):251:251 -> b
+    992:1004:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):257:257 -> b
+    1005:1006:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):258:258 -> b
+    1007:1010:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):259:259 -> b
+    1011:1014:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):260:260 -> b
+    1015:1017:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):258:258 -> b
+    1018:1042:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):263:263 -> b
+    1043:1054:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):270:270 -> b
+    1055:1056:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):271:271 -> b
+    1057:1062:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):272:272 -> b
+    1063:1070:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):273:273 -> b
+    1071:1074:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):271:271 -> b
+    1075:1076:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):267:267 -> b
+    1077:1080:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):268:268 -> b
+    1081:1088:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):269:269 -> b
+    1089:1098:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):267:267 -> b
+    1099:1104:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):277:277 -> b
+    1105:1110:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):280:280 -> b
+    1111:1120:boolean onRequestPermissionsResult(int,java.lang.String[],int[]):281:281 -> b
+    1:12:boolean isValidManifestForCalendarFullAccess():673:673 -> c
+    13:25:boolean isValidManifestForCalendarFullAccess():674:674 -> c
+    26:41:boolean isValidManifestForCalendarFullAccess():675:675 -> c
+    42:45:boolean isValidManifestForCalendarFullAccess():678:678 -> c
+    46:52:boolean isValidManifestForCalendarFullAccess():679:679 -> c
+    53:58:boolean isValidManifestForCalendarFullAccess():681:681 -> c
+    1:5:void launchSpecialPermission(java.lang.String,int):595:595 -> d
+    6:10:void launchSpecialPermission(java.lang.String,int):599:599 -> d
+    11:18:void launchSpecialPermission(java.lang.String,int):600:600 -> d
+    19:24:void launchSpecialPermission(java.lang.String,int):601:601 -> d
+    25:45:void launchSpecialPermission(java.lang.String,int):602:602 -> d
+    46:50:void launchSpecialPermission(java.lang.String,int):604:604 -> d
+    51:57:void launchSpecialPermission(java.lang.String,int):605:605 -> d
     1:6:boolean onActivityResult(int,int,android.content.Intent):73:73 -> f
     7:10:boolean onActivityResult(int,int,android.content.Intent):81:81 -> f
     11:20:boolean onActivityResult(int,int,android.content.Intent):82:82 -> f

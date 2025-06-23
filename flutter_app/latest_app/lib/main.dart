@@ -4,7 +4,6 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
-// Bluetooth Device Provider (from your working app)
 class BluetoothDeviceProvider with ChangeNotifier {
   BluetoothDevice? _connectedDevice;
   BluetoothCharacteristic? _writeCharacteristic;
@@ -37,6 +36,13 @@ class BluetoothDeviceProvider with ChangeNotifier {
     return await _readCharacteristic!.read();
   }
 
+  Future<List<int>?> sendRequest(String request) async {
+    if (_writeCharacteristic == null) return null;
+    await _writeCharacteristic!.write(utf8.encode("REQUEST $request"));
+    if (_readCharacteristic == null) return null;
+    return await _readCharacteristic!.read();
+  }
+
   void disconnect() {
     _connectedDevice?.disconnect();
     _connectedDevice = null;
@@ -47,12 +53,9 @@ class BluetoothDeviceProvider with ChangeNotifier {
   }
 }
 
-final GlobalKey<ScaffoldMessengerState> snackbarKey =
-    GlobalKey<ScaffoldMessengerState>();
-
-class Snackbar {
-  static show(String message, {bool success = true}) {
-    snackbarKey.currentState?.showSnackBar(
+extension SnackbarExtension on BuildContext {
+  void showSnackbar(String message, {bool success = true}) {
+    ScaffoldMessenger.of(this).showSnackBar(
       SnackBar(
         content: Text(message),
         backgroundColor: success ? Colors.green : Colors.red,
@@ -69,13 +72,33 @@ class CocktailBluetoothApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => BluetoothDeviceProvider(),
+      create: (_) => BluetoothDeviceProvider(),
       child: MaterialApp(
-        scaffoldMessengerKey: snackbarKey,
+        // scaffoldMessengerKey: snackbarKey,
         builder: (context, child) => SafeArea(child: child!),
-        home: const MainScreen(),
+        theme: ThemeData(
+          appBarTheme: const AppBarTheme(
+            backgroundColor: Colors.blueAccent,
+            foregroundColor: Colors.white,
+          ),
+        ),
+        home: const HomeLoader(),
       ),
     );
+  }
+}
+
+class HomeLoader extends StatefulWidget {
+  const HomeLoader({super.key});
+
+  @override
+  State<HomeLoader> createState() => _HomeLoaderState();
+}
+
+class _HomeLoaderState extends State<HomeLoader> {
+  @override
+  Widget build(BuildContext context) {
+    return const MainScreen();
   }
 }
 
@@ -86,6 +109,13 @@ class Cocktail {
   Cocktail({required this.name, required this.amounts});
 
   bool get isComplete => amounts.reduce((a, b) => a + b) == 100;
+
+  factory Cocktail.fromJson(Map<String, dynamic> json) {
+    return Cocktail(
+      name: json['name'],
+      amounts: List<int>.from(json['amounts']),
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         'name': name,
@@ -107,7 +137,7 @@ class MainScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Cocktail Manager'),
+        title: const Text("Cocktail Manager"),
         leading: Builder(
           builder: (context) => IconButton(
             icon: const Icon(Icons.menu),
@@ -120,7 +150,7 @@ class MainScreen extends StatelessWidget {
           padding: EdgeInsets.zero,
           children: [
             const DrawerHeader(
-              decoration: BoxDecoration(color: Colors.blue),
+              decoration: BoxDecoration(color: Colors.blueAccent),
               child: Text(
                 'Cocktail Manager',
                 style: TextStyle(color: Colors.white, fontSize: 24),
@@ -133,7 +163,8 @@ class MainScreen extends StatelessWidget {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const ScanScreen()),
+                  MaterialPageRoute(
+                      builder: (context) => const BluetoothScreen()),
                 );
               },
             ),
@@ -145,7 +176,7 @@ class MainScreen extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const CocktailEditScreen()),
+                      builder: (context) => const CocktailsListScreen()),
                 );
               },
             ),
@@ -171,7 +202,7 @@ class MainScreen extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => StatisticsScreen(
+                      builder: (context) => DumpScreen(
                             provider: context.read<BluetoothDeviceProvider>(),
                           )),
                 );
@@ -214,7 +245,7 @@ class MainScreen extends StatelessWidget {
                             const SizedBox(width: 8),
                             Text(
                               connectedDevice != null
-                                  ? "Connected to: ${connectedDevice.remoteId}"
+                                  ? "Connected to: ${connectedDevice.platformName}"
                                   : "No device connected",
                               style: TextStyle(
                                 fontSize: 16,
@@ -253,7 +284,6 @@ class MainScreen extends StatelessWidget {
                     const SizedBox(height: 5),
                     LinearProgressIndicator(
                       value: completeCount / 9,
-                      backgroundColor: Colors.grey[300],
                       valueColor: AlwaysStoppedAnimation<Color>(
                         completeCount == 9 ? Colors.green : Colors.blue,
                       ),
@@ -278,7 +308,7 @@ class MainScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const ScanScreen()),
+                            builder: (context) => const BluetoothScreen()),
                       );
                     },
                     icon: const Icon(Icons.bluetooth),
@@ -295,7 +325,7 @@ class MainScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const CocktailEditScreen()),
+                            builder: (context) => const CocktailsListScreen()),
                       );
                     },
                     icon: const Icon(Icons.edit),
@@ -393,7 +423,7 @@ class MainScreen extends StatelessWidget {
       BuildContext context, BluetoothDeviceProvider provider) async {
     final device = provider.connectedDevice;
     if (device == null) {
-      Snackbar.show("No device connected", success: false);
+      context.showSnackbar("No device connected", success: false);
       return;
     }
 
@@ -449,27 +479,27 @@ class MainScreen extends StatelessWidget {
         }
 
         Navigator.of(context).pop(); // Close loading dialog
-        Snackbar.show("Cocktail menu sent successfully!", success: true);
+        context.showSnackbar("Cocktail menu sent successfully!", success: true);
       } else {
         Navigator.of(context).pop(); // Close loading dialog
-        Snackbar.show("No writable characteristic found", success: false);
+        context.showSnackbar("No writable characteristic found",
+            success: false);
       }
     } catch (e) {
       Navigator.of(context).pop(); // Close loading dialog
-      Snackbar.show("Error sending data: $e", success: false);
+      context.showSnackbar("Error sending data: $e", success: false);
     }
   }
 }
 
-// Scan Screen (from your working app)
-class ScanScreen extends StatefulWidget {
-  const ScanScreen({super.key});
+class BluetoothScreen extends StatefulWidget {
+  const BluetoothScreen({super.key});
 
   @override
-  State<ScanScreen> createState() => _ScanScreenState();
+  State<BluetoothScreen> createState() => _BluetoothScreenState();
 }
 
-class _ScanScreenState extends State<ScanScreen> {
+class _BluetoothScreenState extends State<BluetoothScreen> {
   List<BluetoothDevice> devicesList = [];
   bool isScanning = false;
   String statusMessage = "";
@@ -521,7 +551,7 @@ class _ScanScreenState extends State<ScanScreen> {
       });
 
       if (adapterState != BluetoothAdapterState.on) {
-        Snackbar.show("Please enable Bluetooth to scan for devices",
+        context.showSnackbar("Please enable Bluetooth to scan for devices",
             success: false);
       }
     } catch (e) {
@@ -535,7 +565,7 @@ class _ScanScreenState extends State<ScanScreen> {
     BluetoothAdapterState adapterState =
         await FlutterBluePlus.adapterState.first;
     if (adapterState != BluetoothAdapterState.on) {
-      Snackbar.show("Bluetooth is not enabled", success: false);
+      context.showSnackbar("Bluetooth is not enabled", success: false);
       return;
     }
 
@@ -621,7 +651,7 @@ class _ScanScreenState extends State<ScanScreen> {
         }
       }
 
-// Fallback to any readable characteristic if not found
+      // Fallback to any readable characteristic if not found
       if (readChar == null) {
         for (var service in services) {
           for (var characteristic in service.characteristics) {
@@ -640,9 +670,11 @@ class _ScanScreenState extends State<ScanScreen> {
         statusMessage = "Connected successfully!";
       });
 
-      Snackbar.show(
+      context.showSnackbar(
           "Connected to ${device.platformName.isNotEmpty ? device.platformName : 'Unknown'}",
           success: true);
+
+      _loadMenu();
 
       // Go back to main screen
       Navigator.of(context).pop();
@@ -650,7 +682,17 @@ class _ScanScreenState extends State<ScanScreen> {
       setState(() {
         statusMessage = "Connection failed: $e";
       });
-      Snackbar.show("Connection failed: $e", success: false);
+      context.showSnackbar("Connection failed: $e", success: false);
+    }
+  }
+
+  Future<void> _loadMenu() async {
+    final provider = context.read<BluetoothDeviceProvider>();
+    final value = await provider.sendRequest("Menu");
+    if (value != null) {
+      final decoded = String.fromCharCodes(value);
+      final data = jsonDecode(decoded) as List;
+      cocktails = data.map((e) => Cocktail.fromJson(e)).toList();
     }
   }
 
@@ -664,9 +706,7 @@ class _ScanScreenState extends State<ScanScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.teal,
-        title: const Text("Scan for Devices",
-            style: TextStyle(color: Colors.white)),
+        title: const Text("Scan for Devices"),
         actions: [
           Consumer<BluetoothDeviceProvider>(
             builder: (context, provider, child) {
@@ -676,7 +716,7 @@ class _ScanScreenState extends State<ScanScreen> {
                       color: Colors.white),
                   onPressed: () {
                     provider.disconnect();
-                    Snackbar.show("Disconnected", success: true);
+                    context.showSnackbar("Disconnected", success: true);
                   },
                 );
               }
@@ -691,7 +731,6 @@ class _ScanScreenState extends State<ScanScreen> {
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(8.0),
-            color: Colors.grey[200],
             child: Text(
               statusMessage,
               style: const TextStyle(fontSize: 12),
@@ -706,10 +745,8 @@ class _ScanScreenState extends State<ScanScreen> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: isScanning ? null : scanForDevices,
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
                 child: Text(
                   isScanning ? "Scanning..." : "Scan for Devices",
-                  style: const TextStyle(color: Colors.white),
                 ),
               ),
             ),
@@ -757,29 +794,25 @@ class _ScanScreenState extends State<ScanScreen> {
   }
 }
 
-// Keep your existing CocktailEditScreen and EditCocktailScreen classes unchanged
-class CocktailEditScreen extends StatefulWidget {
-  const CocktailEditScreen({super.key});
+class CocktailsListScreen extends StatefulWidget {
+  const CocktailsListScreen({super.key});
 
   @override
-  _CocktailEditScreenState createState() => _CocktailEditScreenState();
+  _CocktailsListScreenState createState() => _CocktailsListScreenState();
 }
 
-class _CocktailEditScreenState extends State<CocktailEditScreen> {
+class _CocktailsListScreenState extends State<CocktailsListScreen> {
   @override
   Widget build(BuildContext context) {
     int completeCount = cocktails.where((c) => c.isComplete).length;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Edit Cocktails'),
-      ),
+      appBar: AppBar(title: const Text("Edit Cocktails")),
       body: Column(
         children: [
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(16.0),
-            color: Colors.grey[100],
             child: Column(
               children: [
                 Text(
@@ -790,7 +823,6 @@ class _CocktailEditScreenState extends State<CocktailEditScreen> {
                 const SizedBox(height: 8),
                 LinearProgressIndicator(
                   value: completeCount / 9,
-                  backgroundColor: Colors.grey[300],
                   valueColor: AlwaysStoppedAnimation<Color>(
                     completeCount == 9 ? Colors.green : Colors.blue,
                   ),
@@ -823,7 +855,7 @@ class _CocktailEditScreenState extends State<CocktailEditScreen> {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                EditCocktailScreen(cocktail: cocktail),
+                                CocktailEditScreen(cocktail: cocktail),
                           ),
                         );
                         if (updated != null) {
@@ -844,15 +876,15 @@ class _CocktailEditScreenState extends State<CocktailEditScreen> {
   }
 }
 
-class EditCocktailScreen extends StatefulWidget {
+class CocktailEditScreen extends StatefulWidget {
   final Cocktail cocktail;
-  const EditCocktailScreen({super.key, required this.cocktail});
+  const CocktailEditScreen({super.key, required this.cocktail});
 
   @override
-  _EditCocktailScreenState createState() => _EditCocktailScreenState();
+  _CocktailEditScreenState createState() => _CocktailEditScreenState();
 }
 
-class _EditCocktailScreenState extends State<EditCocktailScreen> {
+class _CocktailEditScreenState extends State<CocktailEditScreen> {
   late String name;
   late List<int> amounts;
 
@@ -877,7 +909,7 @@ class _EditCocktailScreenState extends State<EditCocktailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Edit $name')),
+      appBar: AppBar(title: Text("Edit $name")),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -964,11 +996,11 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   }
 
   Future<void> _readStats() async {
-    final value = await widget.provider.readValue();
+    final value = await widget.provider.sendRequest("Stats");
     if (value != null) {
       final decoded = String.fromCharCodes(value);
-      final Map<String, dynamic> json = jsonDecode(decoded);
-      final data = json['data'] as Map<String, dynamic>;
+      final data = jsonDecode(decoded);
+
       final List<String> formattedStats = [
         'Orders Completed: ${data['orders_completed']}',
         'Random Drink Orders: ${data['random_drink_orders']}',
@@ -977,10 +1009,12 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         'Orders Cancelled: ${data['orders_cancelled']}',
         'Custom Drink Orders: ${data['custom_drink_orders']}',
       ];
+
       final List<dynamic> presetCounts = data['preset_cocktail_order_counts'];
       for (var i = 0; i < presetCounts.length; i++) {
         formattedStats.add('${cocktails[i].name}: ${presetCounts[i]}');
       }
+
       setState(() {
         stats = formattedStats;
       });
@@ -990,7 +1024,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Statistics')),
+      appBar: AppBar(title: const Text("Statistics")),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: stats.isEmpty
@@ -1027,18 +1061,63 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     );
   }
 
-// Helper widget for pretty stat cards
   Widget _statCard(IconData icon, String label) {
     return Card(
       elevation: 2,
       margin: const EdgeInsets.symmetric(vertical: 6),
       child: ListTile(
-        leading: Icon(icon, color: Colors.teal, size: 32),
+        leading: Icon(icon, color: Colors.blueAccent, size: 32),
         title: Text(
           label,
           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
         ),
       ),
     );
+  }
+}
+
+class DumpScreen extends StatefulWidget {
+  final BluetoothDeviceProvider provider;
+
+  const DumpScreen({super.key, required this.provider});
+
+  @override
+  State<DumpScreen> createState() => _DumpScreenState();
+}
+
+class _DumpScreenState extends State<DumpScreen> {
+  String dump = "-None-";
+
+  @override
+  void initState() {
+    super.initState();
+    _readDump();
+  }
+
+  Future<void> _readDump() async {
+    final value = await widget.provider.sendRequest("Dump");
+    if (value != null) {
+      final decoded = String.fromCharCodes(value);
+      setState(() {
+        dump = decoded;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(title: const Text('Statistics')),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: dump.isEmpty
+              ? const Center(child: CircularProgressIndicator())
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(dump, style: const TextStyle(fontSize: 10)),
+                  ],
+                ),
+        ));
   }
 }

@@ -19,10 +19,10 @@
       proguardRules="proguard.txt"/>
   <library
       name=":@@:permission_handler_android::release"
-      jars="C:\Users\itai9\.gradle\caches\8.10.2\transforms\3f96e1fefaf830b2e0d13c48f3eafab0\transformed\out\jars\classes.jar;C:\Users\itai9\.gradle\caches\8.10.2\transforms\3f96e1fefaf830b2e0d13c48f3eafab0\transformed\out\jars\libs\R.jar"
+      jars="C:\Users\itai9\.gradle\caches\8.10.2\transforms\db5db887af0a97d946ff25902c2a553c\transformed\out\jars\classes.jar;C:\Users\itai9\.gradle\caches\8.10.2\transforms\db5db887af0a97d946ff25902c2a553c\transformed\out\jars\libs\R.jar"
       resolved="com.baseflow.permissionhandler:permission_handler_android:1.0"
       partialResultsDir="C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\build\permission_handler_android\intermediates\lint_vital_partial_results\release\lintVitalAnalyzeRelease\out"
-      folder="C:\Users\itai9\.gradle\caches\8.10.2\transforms\3f96e1fefaf830b2e0d13c48f3eafab0\transformed\out"
+      folder="C:\Users\itai9\.gradle\caches\8.10.2\transforms\db5db887af0a97d946ff25902c2a553c\transformed\out"
       manifest="AndroidManifest.xml"
       resFolder="res"
       assetsFolder="assets"
