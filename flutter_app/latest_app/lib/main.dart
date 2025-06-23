@@ -158,8 +158,8 @@ class MainScreen extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                       builder: (context) => StatisticsScreen(
-      provider: context.read<BluetoothDeviceProvider>(),
-    )),
+                            provider: context.read<BluetoothDeviceProvider>(),
+                          )),
                 );
               },
             ),
@@ -172,8 +172,8 @@ class MainScreen extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                       builder: (context) => StatisticsScreen(
-      provider: context.read<BluetoothDeviceProvider>(),
-    )),
+                            provider: context.read<BluetoothDeviceProvider>(),
+                          )),
                 );
               },
             ),
@@ -604,36 +604,37 @@ class _ScanScreenState extends State<ScanScreen> {
 
       // Look for the specific characteristic from your working app
       for (var service in services) {
-  for (var characteristic in service.characteristics) {
-    if (characteristic.characteristicUuid ==
-        Guid("beb5483e-36e1-4688-b7f5-ea07361b26a8")) {
-      if (characteristic.properties.write ||
-          characteristic.properties.writeWithoutResponse) {
-        writeChar = characteristic;
+        for (var characteristic in service.characteristics) {
+          if (characteristic.characteristicUuid ==
+              Guid("beb5483e-36e1-4688-b7f5-ea07361b26a8")) {
+            if (characteristic.properties.write ||
+                characteristic.properties.writeWithoutResponse) {
+              writeChar = characteristic;
+            }
+            if (characteristic.properties.notify) {
+              notifyChar = characteristic;
+            }
+            if (characteristic.properties.read) {
+              readChar = characteristic;
+            }
+          }
+        }
       }
-      if (characteristic.properties.notify) {
-        notifyChar = characteristic;
-      }
-      if (characteristic.properties.read) {
-        readChar = characteristic;
-      }
-    }
-  }
-}
 
 // Fallback to any readable characteristic if not found
-if (readChar == null) {
-  for (var service in services) {
-    for (var characteristic in service.characteristics) {
-      if (readChar == null && characteristic.properties.read) {
-        readChar = characteristic;
+      if (readChar == null) {
+        for (var service in services) {
+          for (var characteristic in service.characteristics) {
+            if (readChar == null && characteristic.properties.read) {
+              readChar = characteristic;
+            }
+          }
+        }
       }
-    }
-  }
-}
 
       provider.setConnectedDevice(device);
-      provider.setCharacteristics(write: writeChar, notify: notifyChar, read: readChar);
+      provider.setCharacteristics(
+          write: writeChar, notify: notifyChar, read: readChar);
 
       setState(() {
         statusMessage = "Connected successfully!";
@@ -966,8 +967,22 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     final value = await widget.provider.readValue();
     if (value != null) {
       final decoded = String.fromCharCodes(value);
+      final Map<String, dynamic> json = jsonDecode(decoded);
+      final data = json['data'] as Map<String, dynamic>;
+      final List<String> formattedStats = [
+        'Orders Completed: ${data['orders_completed']}',
+        'Random Drink Orders: ${data['random_drink_orders']}',
+        'Preset Drink Orders: ${data['preset_drink_orders']}',
+        'Orders Timed Out: ${data['orders_timed_out']}',
+        'Orders Cancelled: ${data['orders_cancelled']}',
+        'Custom Drink Orders: ${data['custom_drink_orders']}',
+      ];
+      final List<dynamic> presetCounts = data['preset_cocktail_order_counts'];
+      for (var i = 0; i < presetCounts.length; i++) {
+        formattedStats.add('${cocktails[i].name}: ${presetCounts[i]}');
+      }
       setState(() {
-        stats = decoded.split('\n');
+        stats = formattedStats;
       });
     }
   }
@@ -980,17 +995,50 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         padding: const EdgeInsets.all(16.0),
         child: stats.isEmpty
             ? const Center(child: CircularProgressIndicator())
-            : Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: stats
-                    .map((s) => Padding(
-                          padding: const EdgeInsets.only(bottom: 10),
-                          child: Text(s, style: const TextStyle(fontSize: 24)),
-                        ))
-                    .toList(),
+            : ListView(
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                    child: Text(
+                      'General Orders',
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  _statCard(Icons.check_circle, stats[0]),
+                  _statCard(Icons.shuffle, stats[1]),
+                  _statCard(Icons.local_bar, stats[2]),
+                  _statCard(Icons.timer_off, stats[3]),
+                  _statCard(Icons.cancel, stats[4]),
+                  _statCard(Icons.edit, stats[5]),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                    child: Text(
+                      'Preset Cocktail Orders',
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  ...stats.sublist(6).asMap().entries.map(
+                      (entry) => _statCard(Icons.local_drink, entry.value)),
+                ],
               ),
       ),
     );
   }
-}
 
+// Helper widget for pretty stat cards
+  Widget _statCard(IconData icon, String label) {
+    return Card(
+      elevation: 2,
+      margin: const EdgeInsets.symmetric(vertical: 6),
+      child: ListTile(
+        leading: Icon(icon, color: Colors.teal, size: 32),
+        title: Text(
+          label,
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+        ),
+      ),
+    );
+  }
+}
