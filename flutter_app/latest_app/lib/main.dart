@@ -45,6 +45,12 @@ class BluetoothDeviceProvider with ChangeNotifier {
     return await _readCharacteristic!.read();
   }
 
+  Future<bool> sendPost(String what, String data) async {
+    if (_writeCharacteristic == null) return false;
+    await _writeCharacteristic!.write(utf8.encode("POST $what $data"));
+    return true;
+  }
+
   void disconnect() {
     _connectedDevice?.disconnect();
     _connectedDevice = null;
@@ -127,7 +133,7 @@ class Cocktail {
 
 List<Cocktail> cocktails = List.generate(
   9,
-  (index) => Cocktail(name: 'DISCONNECTED', amounts: [0, 0, 0, 0]),
+  (index) => Cocktail(name: '[missing]', amounts: [0, 0, 0, 0]),
 );
 
 class Ingredient {
@@ -151,7 +157,7 @@ class Ingredient {
 
 List<Ingredient> stock = List.generate(
   4,
-  (index) => Ingredient(name: 'DISCONNECTED', amount: 0),
+  (index) => Ingredient(name: '[missing]', amount: 0),
 );
 
 class MainScreen extends StatefulWidget {
@@ -192,8 +198,7 @@ class _MainScreenState extends State<MainScreen> {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => const BluetoothScreen()),
+                  MaterialPageRoute(builder: (context) => const BluetoothScreen()),
                 ).then((_) => setState(() {}));
               },
             ),
@@ -204,8 +209,7 @@ class _MainScreenState extends State<MainScreen> {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => const CocktailsListScreen()),
+                  MaterialPageRoute(builder: (context) => const CocktailsListScreen()),
                 ).then((_) => setState(() {}));
               },
             ),
@@ -216,8 +220,7 @@ class _MainScreenState extends State<MainScreen> {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => const IngredientsEditScreen()),
+                  MaterialPageRoute(builder: (context) => const IngredientsEditScreen()),
                 ).then((_) => setState(() {}));
               },
             ),
@@ -269,30 +272,21 @@ class _MainScreenState extends State<MainScreen> {
                       children: [
                         const Text(
                           'Bluetooth Status',
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 10),
                         Row(
                           children: [
                             Icon(
-                              connectedDevice != null
-                                  ? Icons.bluetooth_connected
-                                  : Icons.bluetooth_disabled,
-                              color: connectedDevice != null
-                                  ? Colors.green
-                                  : Colors.red,
+                              connectedDevice != null ? Icons.bluetooth_connected : Icons.bluetooth_disabled,
+                              color: connectedDevice != null ? Colors.green : Colors.red,
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              connectedDevice != null
-                                  ? "Connected to: ${connectedDevice.platformName}"
-                                  : "No device connected",
+                              connectedDevice != null ? "Connected to: ${connectedDevice.platformName}" : "No device connected",
                               style: TextStyle(
                                 fontSize: 16,
-                                color: connectedDevice != null
-                                    ? Colors.green
-                                    : Colors.red,
+                                color: connectedDevice != null ? Colors.green : Colors.red,
                               ),
                             ),
                           ],
@@ -318,8 +312,7 @@ class _MainScreenState extends State<MainScreen> {
                       children: [
                         const Text(
                           'Cocktail Status',
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 10),
                         Text(
@@ -354,8 +347,7 @@ class _MainScreenState extends State<MainScreen> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => const BluetoothScreen()),
+                        MaterialPageRoute(builder: (context) => const BluetoothScreen()),
                       );
                     },
                     icon: const Icon(Icons.bluetooth),
@@ -371,8 +363,7 @@ class _MainScreenState extends State<MainScreen> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => const CocktailsListScreen()),
+                        MaterialPageRoute(builder: (context) => const CocktailsListScreen()),
                       ).then((_) => setState(() {}));
                     },
                     icon: const Icon(Icons.edit),
@@ -392,17 +383,34 @@ class _MainScreenState extends State<MainScreen> {
                 final connectedDevice = provider.connectedDevice;
                 int completeCount = cocktails.where((c) => c.isComplete).length;
                 if (connectedDevice != null && completeCount == 9) {
-                  return SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      onPressed: () => _sendCocktailMenu(context, provider),
-                      icon: const Icon(Icons.send),
-                      label: const Text('Send Cocktail Menu to ESP32'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
+                  return Column(
+                    children: [
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          onPressed: () => _sendCocktailMenu(context, provider),
+                          icon: const Icon(Icons.send),
+                          label: const Text('Send Cocktail Menu to ESP32'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.green,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                          ),
+                        ),
                       ),
-                    ),
+                      const SizedBox(height: 12),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          onPressed: () => _sendStock(context, provider),
+                          icon: const Icon(Icons.send),
+                          label: const Text('Update Stock on ESP32'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.green,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                          ),
+                        ),
+                      ),
+                    ],
                   );
                 } else if (connectedDevice != null && completeCount < 9) {
                   return Container(
@@ -415,8 +423,7 @@ class _MainScreenState extends State<MainScreen> {
                     ),
                     child: Text(
                       'Complete all cocktails (100 ml each) to send ($completeCount/9 complete)',
-                      style:
-                          const TextStyle(color: Colors.orange, fontSize: 16),
+                      style: const TextStyle(color: Colors.orange, fontSize: 16),
                       textAlign: TextAlign.center,
                     ),
                   );
@@ -444,23 +451,22 @@ class _MainScreenState extends State<MainScreen> {
                       return Card(
                         child: ListTile(
                           leading: Icon(
-                            cocktail.isComplete
-                                ? Icons.check_circle
-                                : Icons.radio_button_unchecked,
-                            color: cocktail.isComplete
-                                ? Colors.green
-                                : Colors.grey,
+                            cocktail.isComplete ? Icons.check_circle : Icons.radio_button_unchecked,
+                            color: cocktail.isComplete ? Colors.green : Colors.grey,
                           ),
                           title: Text(cocktail.name),
-                          subtitle: Text(
-                            'Total: ${cocktail.amounts.reduce((a, b) => a + b)} ml',
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: List.generate(4, (i) {
+                              final name = stock[i].name;
+                              final amount = cocktail.amounts[i];
+                              return Text('$name: $amount ml');
+                            }),
                           ),
                           trailing: Text(
                             cocktail.isComplete ? 'Complete' : 'Incomplete',
                             style: TextStyle(
-                              color: cocktail.isComplete
-                                  ? Colors.green
-                                  : Colors.red,
+                              color: cocktail.isComplete ? Colors.green : Colors.red,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -477,8 +483,7 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  Future<void> _sendCocktailMenu(
-      BuildContext context, BluetoothDeviceProvider provider) async {
+  Future<void> _sendCocktailMenu(BuildContext context, BluetoothDeviceProvider provider) async {
     final device = provider.connectedDevice;
     if (device == null) {
       context.showSnackbar("No device connected", success: false);
@@ -486,66 +491,54 @@ class _MainScreenState extends State<MainScreen> {
     }
 
     try {
-      // Show loading dialog
       showDialog(
         context: context,
         barrierDismissible: false,
         builder: (context) => const Center(child: CircularProgressIndicator()),
       );
 
-      List<BluetoothService> services = await device.discoverServices();
-      BluetoothCharacteristic? writeCharacteristic;
+      List<Map<String, dynamic>> cocktailData = cocktails.map((c) => c.toJson()).toList();
+      String jsonString = jsonEncode(cocktailData);
 
-      // Look for the specific characteristic from your working app
-      for (var service in services) {
-        for (var characteristic in service.characteristics) {
-          if (characteristic.characteristicUuid ==
-              Guid("beb5483e-36e1-4688-b7f5-ea07361b26a8")) {
-            writeCharacteristic = characteristic;
-            break;
-          }
-        }
-        if (writeCharacteristic != null) break;
-      }
-
-      if (writeCharacteristic == null) {
-        // Fallback to any writable characteristic
-        for (var service in services) {
-          for (var characteristic in service.characteristics) {
-            if (characteristic.properties.write ||
-                characteristic.properties.writeWithoutResponse) {
-              writeCharacteristic = characteristic;
-              break;
-            }
-          }
-          if (writeCharacteristic != null) break;
-        }
-      }
-
-      if (writeCharacteristic != null) {
-        // Prepare cocktail data
-        List<Map<String, dynamic>> cocktailData =
-            cocktails.map((c) => c.toJson()).toList();
-        String jsonString = jsonEncode(cocktailData);
-        List<int> bytes = utf8.encode(jsonString);
-
-        // Send data
-        if (writeCharacteristic.properties.write) {
-          await writeCharacteristic.write(bytes, withoutResponse: false);
-        } else {
-          await writeCharacteristic.write(bytes, withoutResponse: true);
-        }
-
-        Navigator.of(context).pop(); // Close loading dialog
+      if (await provider.sendPost("Menu", jsonString)) {
+        Navigator.of(context).pop();
         context.showSnackbar("Cocktail menu sent successfully!", success: true);
       } else {
-        Navigator.of(context).pop(); // Close loading dialog
-        context.showSnackbar("No writable characteristic found",
-            success: false);
+        Navigator.of(context).pop();
+        context.showSnackbar("Error sending menu", success: false);
       }
     } catch (e) {
       Navigator.of(context).pop(); // Close loading dialog
-      context.showSnackbar("Error sending data: $e", success: false);
+      context.showSnackbar("Error sending menu: $e", success: false);
+    }
+  }
+
+  Future<void> _sendStock(BuildContext context, BluetoothDeviceProvider provider) async {
+    final device = provider.connectedDevice;
+    if (device == null) {
+      context.showSnackbar("No device connected", success: false);
+      return;
+    }
+
+    try {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(child: CircularProgressIndicator()),
+      );
+      List<Map<String, dynamic>> stockData = stock.map((i) => i.toJson()).toList();
+      String jsonString = jsonEncode(stockData);
+
+      if (await provider.sendPost("Stock", jsonString)) {
+        Navigator.of(context).pop();
+        context.showSnackbar("Stock sent successfully!", success: true);
+      } else {
+        Navigator.of(context).pop();
+        context.showSnackbar("Error sending stock", success: false);
+      }
+    } catch (e) {
+      Navigator.of(context).pop(); // Close loading dialog
+      context.showSnackbar("Error sending stock: $e", success: false);
     }
   }
 }
@@ -588,29 +581,24 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
     bool allGranted = statuses.values.every((status) => status.isGranted);
 
     setState(() {
-      statusMessage = allGranted
-          ? "Permissions granted"
-          : "Some permissions denied. BLE may not work properly.";
+      statusMessage = allGranted ? "Permissions granted" : "Some permissions denied. BLE may not work properly.";
     });
   }
 
   Future<void> checkBluetoothState() async {
     try {
-      BluetoothAdapterState adapterState =
-          await FlutterBluePlus.adapterState.first;
+      BluetoothAdapterState adapterState = await FlutterBluePlus.adapterState.first;
 
       setState(() {
         if (adapterState == BluetoothAdapterState.on) {
           statusMessage = "Bluetooth is ready";
         } else {
-          statusMessage =
-              "Bluetooth is ${adapterState.toString().split('.').last}";
+          statusMessage = "Bluetooth is ${adapterState.toString().split('.').last}";
         }
       });
 
       if (adapterState != BluetoothAdapterState.on) {
-        context.showSnackbar("Please enable Bluetooth to scan for devices",
-            success: false);
+        context.showSnackbar("Please enable Bluetooth to scan for devices", success: false);
       }
     } catch (e) {
       setState(() {
@@ -620,8 +608,7 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
   }
 
   Future<void> scanForDevices() async {
-    BluetoothAdapterState adapterState =
-        await FlutterBluePlus.adapterState.first;
+    BluetoothAdapterState adapterState = await FlutterBluePlus.adapterState.first;
     if (adapterState != BluetoothAdapterState.on) {
       context.showSnackbar("Bluetooth is not enabled", success: false);
       return;
@@ -645,8 +632,7 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
 
       FlutterBluePlus.scanResults.listen((results) {
         for (ScanResult result in results) {
-          if (!devicesList
-              .any((device) => device.remoteId == result.device.remoteId)) {
+          if (!devicesList.any((device) => device.remoteId == result.device.remoteId)) {
             setState(() {
               devicesList.add(result.device);
               statusMessage = "Found ${devicesList.length} device(s)";
@@ -659,9 +645,7 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
         if (!scanning && isScanning) {
           setState(() {
             isScanning = false;
-            statusMessage = devicesList.isEmpty
-                ? "No devices found"
-                : "Scan complete - ${devicesList.length} device(s) found";
+            statusMessage = devicesList.isEmpty ? "No devices found" : "Scan complete - ${devicesList.length} device(s) found";
           });
         }
       });
@@ -674,12 +658,10 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
   }
 
   Future<void> connectToDevice(BluetoothDevice device) async {
-    final provider =
-        Provider.of<BluetoothDeviceProvider>(context, listen: false);
+    final provider = Provider.of<BluetoothDeviceProvider>(context, listen: false);
 
     setState(() {
-      statusMessage =
-          "Connecting to ${device.platformName.isNotEmpty ? device.platformName : 'Unknown'}...";
+      statusMessage = "Connecting to ${device.platformName.isNotEmpty ? device.platformName : 'Unknown'}...";
     });
 
     try {
@@ -693,10 +675,8 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
       // Look for the specific characteristic from your working app
       for (var service in services) {
         for (var characteristic in service.characteristics) {
-          if (characteristic.characteristicUuid ==
-              Guid("beb5483e-36e1-4688-b7f5-ea07361b26a8")) {
-            if (characteristic.properties.write ||
-                characteristic.properties.writeWithoutResponse) {
+          if (characteristic.characteristicUuid == Guid("beb5483e-36e1-4688-b7f5-ea07361b26a8")) {
+            if (characteristic.properties.write || characteristic.properties.writeWithoutResponse) {
               writeChar = characteristic;
             }
             if (characteristic.properties.notify) {
@@ -721,18 +701,16 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
       }
 
       provider.setConnectedDevice(device);
-      provider.setCharacteristics(
-          write: writeChar, notify: notifyChar, read: readChar);
+      provider.setCharacteristics(write: writeChar, notify: notifyChar, read: readChar);
 
       setState(() {
         statusMessage = "Connected successfully!";
       });
 
-      context.showSnackbar(
-          "Connected to ${device.platformName.isNotEmpty ? device.platformName : 'Unknown'}",
-          success: true);
+      context.showSnackbar("Connected to ${device.platformName.isNotEmpty ? device.platformName : 'Unknown'}", success: true);
 
       await _loadMenu();
+      await _loadStock();
 
       // Go back to main screen
       Navigator.of(context).pop();
@@ -755,6 +733,17 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
     }
   }
 
+  Future<void> _loadStock() async {
+    final provider = context.read<BluetoothDeviceProvider>();
+    final value = await provider.sendRequest("Stock");
+    if (value != null) {
+      final decoded = String.fromCharCodes(value);
+      final data = jsonDecode(decoded) as List;
+      stock = data.map((e) => Ingredient.fromJson(e)).toList();
+      provider.notifyCocktailsUpdated();
+    }
+  }
+
   @override
   void dispose() {
     FlutterBluePlus.stopScan();
@@ -771,8 +760,7 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
             builder: (context, provider, child) {
               if (provider.connectedDevice != null) {
                 return IconButton(
-                  icon: const Icon(Icons.bluetooth_connected,
-                      color: Colors.white),
+                  icon: const Icon(Icons.bluetooth_connected, color: Colors.white),
                   onPressed: () {
                     provider.disconnect();
                     context.showSnackbar("Disconnected", success: true);
@@ -819,26 +807,18 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
                 final device = devicesList[index];
                 return Consumer<BluetoothDeviceProvider>(
                   builder: (context, provider, child) {
-                    final isConnected =
-                        provider.connectedDevice?.remoteId == device.remoteId;
+                    final isConnected = provider.connectedDevice?.remoteId == device.remoteId;
 
                     return Card(
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 4),
+                      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                       child: ListTile(
                         title: Text(
-                          device.platformName.isNotEmpty
-                              ? device.platformName
-                              : "Unknown Device",
+                          device.platformName.isNotEmpty ? device.platformName : "Unknown Device",
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         subtitle: Text(device.remoteId.toString()),
-                        trailing: isConnected
-                            ? const Icon(Icons.check_circle,
-                                color: Colors.green)
-                            : const Icon(Icons.bluetooth, color: Colors.grey),
-                        onTap:
-                            isConnected ? null : () => connectToDevice(device),
+                        trailing: isConnected ? const Icon(Icons.check_circle, color: Colors.green) : const Icon(Icons.bluetooth, color: Colors.grey),
+                        onTap: isConnected ? null : () => connectToDevice(device),
                         tileColor: isConnected ? Colors.green[100] : null,
                       ),
                     );
@@ -876,8 +856,7 @@ class _CocktailsListScreenState extends State<CocktailsListScreen> {
               children: [
                 Text(
                   'Complete Cocktails: $completeCount / 9',
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 8),
                 LinearProgressIndicator(
@@ -895,26 +874,21 @@ class _CocktailsListScreenState extends State<CocktailsListScreen> {
               itemBuilder: (context, index) {
                 final cocktail = cocktails[index];
                 return Card(
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                   child: ListTile(
                     leading: Icon(
-                      cocktail.isComplete
-                          ? Icons.check_circle
-                          : Icons.radio_button_unchecked,
+                      cocktail.isComplete ? Icons.check_circle : Icons.radio_button_unchecked,
                       color: cocktail.isComplete ? Colors.green : Colors.grey,
                     ),
                     title: Text(cocktail.name),
-                    subtitle: Text(
-                        'Amounts: ${cocktail.amounts.join(', ')} ml (Total: ${cocktail.amounts.reduce((a, b) => a + b)} ml)'),
+                    subtitle: Text('Amounts: ${cocktail.amounts.join(', ')} ml (Total: ${cocktail.amounts.reduce((a, b) => a + b)} ml)'),
                     trailing: IconButton(
                       icon: const Icon(Icons.edit),
                       onPressed: () async {
                         final updated = await Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                CocktailEditScreen(cocktail: cocktail),
+                            builder: (context) => CocktailEditScreen(cocktail: cocktail),
                           ),
                         );
                         if (updated != null) {
@@ -979,9 +953,7 @@ class _CocktailEditScreenState extends State<CocktailEditScreen> {
               onChanged: (val) => name = val,
             ),
             const SizedBox(height: 20),
-            Text('Total: $total ml',
-                style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text('Total: $total ml', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 10),
             for (int i = 0; i < 4; i++)
               Card(
@@ -990,18 +962,15 @@ class _CocktailEditScreenState extends State<CocktailEditScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('${stock[i].name}: ${amounts[i]} ml',
-                          style: const TextStyle(fontSize: 16)),
+                      Text('${stock[i].name}: ${amounts[i]} ml', style: const TextStyle(fontSize: 16)),
                       Row(
                         children: [
                           IconButton(
-                            icon: const Icon(Icons.remove_circle,
-                                color: Colors.red),
+                            icon: const Icon(Icons.remove_circle, color: Colors.red),
                             onPressed: () => updateAmount(i, -10),
                           ),
                           IconButton(
-                            icon: const Icon(Icons.add_circle,
-                                color: Colors.green),
+                            icon: const Icon(Icons.add_circle, color: Colors.green),
                             onPressed: () => updateAmount(i, 10),
                           ),
                         ],
@@ -1014,13 +983,11 @@ class _CocktailEditScreenState extends State<CocktailEditScreen> {
             if (total == 100)
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pop(
-                      context, Cocktail(name: name, amounts: amounts));
+                  Navigator.pop(context, Cocktail(name: name, amounts: amounts));
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                 ),
                 child: const Text('Save Cocktail'),
               )
@@ -1101,18 +1068,15 @@ class _IngredientsEditScreenState extends State<IngredientsEditScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Amount: ${amounts[i]} ml',
-                              style: const TextStyle(fontSize: 16)),
+                          Text('Amount: ${amounts[i]} ml', style: const TextStyle(fontSize: 16)),
                           Row(
                             children: [
                               IconButton(
-                                icon: const Icon(Icons.remove_circle,
-                                    color: Colors.red),
+                                icon: const Icon(Icons.remove_circle, color: Colors.red),
                                 onPressed: () => updateAmount(i, -50),
                               ),
                               IconButton(
-                                icon: const Icon(Icons.add_circle,
-                                    color: Colors.green),
+                                icon: const Icon(Icons.add_circle, color: Colors.green),
                                 onPressed: () => updateAmount(i, 50),
                               ),
                             ],
@@ -1128,8 +1092,7 @@ class _IngredientsEditScreenState extends State<IngredientsEditScreen> {
               onPressed: saveIngredients,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
               ),
               child: const Text(
                 'Save Ingredients',
@@ -1201,8 +1164,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                     padding: EdgeInsets.symmetric(vertical: 8.0),
                     child: Text(
                       'General Orders',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   ),
                   _statCard(Icons.check_circle, stats[0]),
@@ -1215,12 +1177,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                     padding: EdgeInsets.symmetric(vertical: 8.0),
                     child: Text(
                       'Preset Cocktail Orders',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   ),
-                  ...stats.sublist(6).asMap().entries.map(
-                      (entry) => _statCard(Icons.local_drink, entry.value)),
+                  ...stats.sublist(6).asMap().entries.map((entry) => _statCard(Icons.local_drink, entry.value)),
                 ],
               ),
       ),

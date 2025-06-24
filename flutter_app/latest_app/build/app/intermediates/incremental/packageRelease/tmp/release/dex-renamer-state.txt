@@ -1,4 +1,4 @@
-#Tue Jun 24 18:40:18 IDT 2025
+#Tue Jun 24 21:10:31 IDT 2025
 base.0=C\:\\Users\\itai9\\Documents\\Arduino\\IOT_Project\\flutter_app\\latest_app\\build\\app\\intermediates\\dex\\release\\minifyReleaseWithR8\\classes.dex
 renamed.0=classes.dex
 path.0=classes.dex

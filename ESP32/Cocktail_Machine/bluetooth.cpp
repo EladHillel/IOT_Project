@@ -1,4 +1,3 @@
-// File: BleHandler.cpp
 #include "bluetooth.h"
 #include <BLEDevice.h>
 #include <BLEServer.h>
@@ -13,6 +12,18 @@
 #define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
 #define SEND_DELAY 3000
 
+enum RequestType { MENU,
+                   STATS,
+                   INGREDIENTS,
+                   UNKNOWN };
+
+RequestType parseRequestType(const std::string& type) {
+    if (type == "Menu") return MENU;
+    if (type == "Stats") return STATS;
+    if (type == "Stock") return INGREDIENTS;
+    return UNKNOWN;
+}
+
 BLEServer* pServer = nullptr;
 BLECharacteristic* pCharacteristic = nullptr;
 bool deviceConnected = false;
@@ -25,11 +36,6 @@ static void clearCocktailAmounts(Cocktail& c) {
 }
 
 void send_menu_via_ble() {
-    // unsigned long currentTime = millis();
-    // static unsigned long lastSentTime = 0;
-    // if (currentTime - lastSentTime < SEND_DELAY) return;
-    // lastSentTime = currentTime;
-
     if (!deviceConnected || !pCharacteristic) return;
 
     StaticJsonDocument<512> doc;
@@ -56,6 +62,41 @@ static void fillCocktailAmountsFromJson(Cocktail& cocktail, JsonArray amountsJso
     for (int i = 0; i < count; ++i) {
         cocktail.amounts[i] = amountsJson[i].as<int>();
     }
+}
+
+void parseIngredientsJson(const String& json) {
+    StaticJsonDocument<512> doc;
+    DeserializationError err = deserializeJson(doc, json);
+    if (err) {
+        Serial.println("Failed to parse JSON");
+        return;
+    }
+
+    for (int i = 0; i < INGREDIENT_COUNT; ++i) {
+        JsonObject obj = doc.as<JsonArray>()[i];
+        ingredients[i].name = obj["name"].as<String>();
+        ingredients[i].amount_left = obj["amount"].as<float>();
+    }
+
+    save_ingredients(ingredients);
+    draw_current_menu();
+}
+
+void send_ingredients_via_ble() {
+    if (!deviceConnected || !pCharacteristic) return;
+
+    StaticJsonDocument<512> doc;
+    JsonArray ingredientArray = doc.to<JsonArray>();
+
+    for (int i = 0; i < INGREDIENT_COUNT; ++i) {
+        JsonObject ing = ingredientArray.createNestedObject();
+        ing["name"] = ingredients[i].name;
+        ing["amount"] = int(ingredients[i].amount_left);
+    }
+
+    String jsonString;
+    serializeJson(doc, jsonString);
+    pCharacteristic->setValue(jsonString.c_str());
 }
 
 static void parseCocktailJson(const String& json) {
@@ -113,11 +154,6 @@ class MyServerCallbacks : public BLEServerCallbacks {
 };
 
 void send_stats_via_ble() {
-    // static unsigned long lastSentTime = 0;
-    // unsigned long currentTime = millis();
-    // if (currentTime - lastSentTime < SEND_DELAY) return;
-    // lastSentTime = currentTime;
-
     if (!deviceConnected || !pCharacteristic) return;
 
     StaticJsonDocument<512> doc;
@@ -144,32 +180,64 @@ class MyCharacteristicCallbacks : public BLECharacteristicCallbacks {
         std::string input = c->getValue();
         if (input.empty()) return;
 
-        // handle request
-        std::string prefix = "REQUEST ";
-        if (input.rfind(prefix, 0) == 0) {
-            std::string type = input.substr(prefix.length());
+        size_t first_space = input.find(' ');
+        if (first_space == std::string::npos) {
+            Serial.println("Malformed input: no prefix/type delimiter");
+            return;
+        }
 
-            std::string result = "GOT " + type;
+        const std::string prefix_request = "REQUEST";
+        const std::string prefix_post = "POST";
+
+        std::string prefix = input.substr(0, first_space);
+
+        if (prefix == prefix_request) {
+            std::string result = "GOT " + input;
             Serial.println(result.c_str());
 
-            if (type == "Menu")
-                send_menu_via_ble();
-            else if (type == "Stats")
-                send_stats_via_ble();
-            else {
-                char s[512], *p = "0123456789ABCDEF";
-                for (int i = 0; i < 512; i++)
-                    s[i] = p[i % 16];
-                c->setValue(s);
+            std::string type = input.substr(first_space + 1);
+
+            switch (parseRequestType(type)) {
+                case MENU: send_menu_via_ble(); break;
+                case STATS: send_stats_via_ble(); break;
+                case INGREDIENTS: send_ingredients_via_ble(); break;
+                default:
+                    char s[512], *p = "0123456789ABCDEF";
+                    for (int i = 0; i < 512; i++)
+                        s[i] = p[i % 16];
+                    c->setValue(s);
+                    break;
             }
             return;
         }
 
-        // handle incoming menu
-        String json = String(input.c_str());
-        Serial.println("Received JSON:");
-        Serial.println(json);
-        parseCocktailJson(json);
+        if (prefix == prefix_post) {
+
+            size_t second_space = input.find(' ', first_space + 1);
+            if (second_space == std::string::npos) {
+                Serial.println("Malformed input: no type/json delimiter");
+                return;
+            }
+
+            std::string type = input.substr(first_space + 1, second_space - first_space - 1);
+            std::string json = input.substr(second_space + 1);
+
+            Serial.println("Received Type: \"" + String(type.c_str()) + "\"");
+
+            Serial.println("Received POST:");
+            Serial.println(json.c_str());
+
+            if (type == "Menu")
+                parseCocktailJson(String(json.c_str()));
+            else if (type == "Stock")
+                parseIngredientsJson(String(json.c_str()));
+            else
+                Serial.println("Unknown POST type");
+
+            return;
+        }
+
+        Serial.println("Unknown command format");
     }
 };
 

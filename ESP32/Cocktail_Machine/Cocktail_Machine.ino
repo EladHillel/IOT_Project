@@ -35,6 +35,4 @@ void loop() {
         update_top_ordered_cocktails();
     }
     delay(100);
-    // TODO - remove before launch!!
-    stats.orders_completed++;
 }
