@@ -9,11 +9,18 @@ class BluetoothDeviceProvider with ChangeNotifier {
   BluetoothCharacteristic? _writeCharacteristic;
   BluetoothCharacteristic? _notifyCharacteristic;
   BluetoothCharacteristic? _readCharacteristic;
+  int _cocktailVersion = 0;
+  int get cocktailVersion => _cocktailVersion;
 
   BluetoothDevice? get connectedDevice => _connectedDevice;
   BluetoothCharacteristic? get writeCharacteristic => _writeCharacteristic;
   BluetoothCharacteristic? get notifyCharacteristic => _notifyCharacteristic;
   BluetoothCharacteristic? get readCharacteristic => _readCharacteristic;
+
+  void notifyCocktailsUpdated() {
+    _cocktailVersion++;
+    notifyListeners();
+  }
 
   void setConnectedDevice(BluetoothDevice? device) {
     _connectedDevice = device;
@@ -29,11 +36,6 @@ class BluetoothDeviceProvider with ChangeNotifier {
     _notifyCharacteristic = notify;
     _readCharacteristic = read;
     notifyListeners();
-  }
-
-  Future<List<int>?> readValue() async {
-    if (_readCharacteristic == null) return null;
-    return await _readCharacteristic!.read();
   }
 
   Future<List<int>?> sendRequest(String request) async {
@@ -125,16 +127,43 @@ class Cocktail {
 
 List<Cocktail> cocktails = List.generate(
   9,
-  (index) => Cocktail(name: 'Cocktail ${index + 1}', amounts: [100, 0, 0, 0]),
+  (index) => Cocktail(name: 'DISCONNECTED', amounts: [0, 0, 0, 0]),
 );
 
-class MainScreen extends StatelessWidget {
+class Ingredient {
+  String name;
+  int amount;
+
+  Ingredient({required this.name, required this.amount});
+
+  factory Ingredient.fromJson(Map<String, dynamic> json) {
+    return Ingredient(
+      name: json['name'],
+      amount: json['amount'],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'name': name,
+        'amount': amount,
+      };
+}
+
+List<Ingredient> stock = List.generate(
+  4,
+  (index) => Ingredient(name: 'DISCONNECTED', amount: 0),
+);
+
+class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    int completeCount = cocktails.where((c) => c.isComplete).length;
+  State<MainScreen> createState() => _MainScreenState();
+}
 
+class _MainScreenState extends State<MainScreen> {
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Cocktail Manager"),
@@ -165,7 +194,7 @@ class MainScreen extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                       builder: (context) => const BluetoothScreen()),
-                );
+                ).then((_) => setState(() {}));
               },
             ),
             ListTile(
@@ -177,7 +206,19 @@ class MainScreen extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                       builder: (context) => const CocktailsListScreen()),
-                );
+                ).then((_) => setState(() {}));
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.liquor),
+              title: const Text('Edit Ingredients'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const IngredientsEditScreen()),
+                ).then((_) => setState(() {}));
               },
             ),
             ListTile(
@@ -195,7 +236,7 @@ class MainScreen extends StatelessWidget {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.query_stats),
+              leading: const Icon(Icons.rocket_launch),
               title: const Text('RISH'),
               onTap: () {
                 Navigator.pop(context);
@@ -265,32 +306,38 @@ class MainScreen extends StatelessWidget {
             const SizedBox(height: 20),
 
             // Cocktail Status Card
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Cocktail Status',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            Consumer<BluetoothDeviceProvider>(
+              builder: (context, provider, _) {
+                final _ = provider.cocktailVersion; // force rebuild
+                int completeCount = cocktails.where((c) => c.isComplete).length;
+                return Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Cocktail Status',
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          'Complete Cocktails: $completeCount / 9',
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                        const SizedBox(height: 5),
+                        LinearProgressIndicator(
+                          value: completeCount / 9,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            completeCount == 9 ? Colors.green : Colors.blue,
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 10),
-                    Text(
-                      'Complete Cocktails: $completeCount / 9',
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                    const SizedBox(height: 5),
-                    LinearProgressIndicator(
-                      value: completeCount / 9,
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        completeCount == 9 ? Colors.green : Colors.blue,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+                  ),
+                );
+              },
             ),
             const SizedBox(height: 20),
 
@@ -326,7 +373,7 @@ class MainScreen extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (context) => const CocktailsListScreen()),
-                      );
+                      ).then((_) => setState(() {}));
                     },
                     icon: const Icon(Icons.edit),
                     label: const Text('Edit Cocktails'),
@@ -338,11 +385,12 @@ class MainScreen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 10),
-
             // Send Cocktail Menu Button
             Consumer<BluetoothDeviceProvider>(
               builder: (context, provider, child) {
+                final _ = provider.cocktailVersion; // force rebuild
                 final connectedDevice = provider.connectedDevice;
+                int completeCount = cocktails.where((c) => c.isComplete).length;
                 if (connectedDevice != null && completeCount == 9) {
                   return SizedBox(
                     width: double.infinity,
@@ -385,30 +433,40 @@ class MainScreen extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             Expanded(
-              child: ListView.builder(
-                itemCount: cocktails.length,
-                itemBuilder: (context, index) {
-                  final cocktail = cocktails[index];
-                  return Card(
-                    child: ListTile(
-                      leading: Icon(
-                        cocktail.isComplete
-                            ? Icons.check_circle
-                            : Icons.radio_button_unchecked,
-                        color: cocktail.isComplete ? Colors.green : Colors.grey,
-                      ),
-                      title: Text(cocktail.name),
-                      subtitle: Text(
-                          'Total: ${cocktail.amounts.reduce((a, b) => a + b)} ml'),
-                      trailing: Text(
-                        cocktail.isComplete ? 'Complete' : 'Incomplete',
-                        style: TextStyle(
-                          color:
-                              cocktail.isComplete ? Colors.green : Colors.red,
-                          fontWeight: FontWeight.bold,
+              child: Consumer<BluetoothDeviceProvider>(
+                builder: (context, provider, child) {
+                  final _ = provider.cocktailVersion;
+                  final localCocktails = cocktails;
+                  return ListView.builder(
+                    itemCount: localCocktails.length,
+                    itemBuilder: (context, index) {
+                      final cocktail = localCocktails[index];
+                      return Card(
+                        child: ListTile(
+                          leading: Icon(
+                            cocktail.isComplete
+                                ? Icons.check_circle
+                                : Icons.radio_button_unchecked,
+                            color: cocktail.isComplete
+                                ? Colors.green
+                                : Colors.grey,
+                          ),
+                          title: Text(cocktail.name),
+                          subtitle: Text(
+                            'Total: ${cocktail.amounts.reduce((a, b) => a + b)} ml',
+                          ),
+                          trailing: Text(
+                            cocktail.isComplete ? 'Complete' : 'Incomplete',
+                            style: TextStyle(
+                              color: cocktail.isComplete
+                                  ? Colors.green
+                                  : Colors.red,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
+                      );
+                    },
                   );
                 },
               ),
@@ -674,7 +732,7 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
           "Connected to ${device.platformName.isNotEmpty ? device.platformName : 'Unknown'}",
           success: true);
 
-      _loadMenu();
+      await _loadMenu();
 
       // Go back to main screen
       Navigator.of(context).pop();
@@ -693,6 +751,7 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
       final decoded = String.fromCharCodes(value);
       final data = jsonDecode(decoded) as List;
       cocktails = data.map((e) => Cocktail.fromJson(e)).toList();
+      provider.notifyCocktailsUpdated();
     }
   }
 
@@ -931,7 +990,7 @@ class _CocktailEditScreenState extends State<CocktailEditScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Drink ${i + 1}: ${amounts[i]} ml',
+                      Text('${stock[i].name}: ${amounts[i]} ml',
                           style: const TextStyle(fontSize: 16)),
                       Row(
                         children: [
@@ -958,18 +1017,125 @@ class _CocktailEditScreenState extends State<CocktailEditScreen> {
                   Navigator.pop(
                       context, Cocktail(name: name, amounts: amounts));
                 },
-                child: const Text('Save Cocktail'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,
                   padding:
                       const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                 ),
+                child: const Text('Save Cocktail'),
               )
             else
               const Text(
                 'Total must be exactly 100ml to save',
                 style: TextStyle(color: Colors.red, fontSize: 16),
               )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class IngredientsEditScreen extends StatefulWidget {
+  const IngredientsEditScreen({super.key});
+
+  @override
+  _IngredientsEditScreenState createState() => _IngredientsEditScreenState();
+}
+
+class _IngredientsEditScreenState extends State<IngredientsEditScreen> {
+  late List<String> names;
+  late List<int> amounts;
+
+  @override
+  void initState() {
+    super.initState();
+    names = stock.map((ingredient) => ingredient.name).toList();
+    amounts = stock.map((ingredient) => ingredient.amount).toList();
+  }
+
+  void updateAmount(int index, int delta) {
+    setState(() {
+      int newVal = amounts[index] + delta;
+      if (newVal >= 0) {
+        amounts[index] = newVal;
+      }
+    });
+  }
+
+  void saveIngredients() {
+    for (int i = 0; i < stock.length; i++) {
+      stock[i] = Ingredient(name: names[i], amount: amounts[i]);
+    }
+    Navigator.pop(context, true);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Edit Ingredients")),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            const Text(
+              'Ingredient Stock',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20),
+            for (int i = 0; i < 4; i++)
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Column(
+                    children: [
+                      TextField(
+                        decoration: InputDecoration(
+                          labelText: 'Ingredient ${i + 1} Name',
+                          border: const OutlineInputBorder(),
+                        ),
+                        controller: TextEditingController(text: names[i]),
+                        onChanged: (val) => names[i] = val,
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Amount: ${amounts[i]} ml',
+                              style: const TextStyle(fontSize: 16)),
+                          Row(
+                            children: [
+                              IconButton(
+                                icon: const Icon(Icons.remove_circle,
+                                    color: Colors.red),
+                                onPressed: () => updateAmount(i, -50),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.add_circle,
+                                    color: Colors.green),
+                                onPressed: () => updateAmount(i, 50),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            const Spacer(),
+            ElevatedButton(
+              onPressed: saveIngredients,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+              ),
+              child: const Text(
+                'Save Ingredients',
+                style: TextStyle(fontSize: 16),
+              ),
+            ),
           ],
         ),
       ),
