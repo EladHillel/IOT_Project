@@ -149,6 +149,10 @@ static OrderState pour_ingredient(int motor_num, float target_weight){
 
 
 void pour_until_stopped(int motor_num){
+  if(motor_num == -1){
+    Serial.println("pour_until_stopped index not valid");
+    return;
+  }
   Serial.println("Starting Cleaning Mode...");
   init_cancellable_op("Cleaning...");
   const int CLEAN_TIME = 5000;

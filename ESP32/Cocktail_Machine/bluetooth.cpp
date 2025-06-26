@@ -7,6 +7,7 @@
 #include <map>
 #include "menu.h"
 #include "filesystem.h"
+#include "motors_sensors.h"
 
 #define SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 #define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
@@ -17,11 +18,23 @@ enum RequestType { MENU,
                    INGREDIENTS,
                    UNKNOWN };
 
+enum PostType {POST_MENU,
+                POST_INGREDIENTS,
+                POST_CLEAN,
+                POST_UNKNOWN};
+
 RequestType parseRequestType(const std::string& type) {
     if (type == "Menu") return MENU;
     if (type == "Stats") return STATS;
     if (type == "Stock") return INGREDIENTS;
     return UNKNOWN;
+}
+
+PostType parsePostType(const std::string& type) {
+    if (type == "Menu") return POST_MENU;
+    if (type == "Stock") return POST_INGREDIENTS;
+    if (type == "Clean") return POST_CLEAN;
+    return POST_UNKNOWN;
 }
 
 BLEServer* pServer = nullptr;
@@ -220,20 +233,30 @@ class MyCharacteristicCallbacks : public BLECharacteristicCallbacks {
             }
 
             std::string type = input.substr(first_space + 1, second_space - first_space - 1);
-            std::string json = input.substr(second_space + 1);
+            std::string payload = input.substr(second_space + 1);
 
             Serial.println("Received Type: \"" + String(type.c_str()) + "\"");
 
             Serial.println("Received POST:");
-            Serial.println(json.c_str());
+            Serial.println(payload.c_str());
 
-            if (type == "Menu")
-                parseCocktailJson(String(json.c_str()));
-            else if (type == "Stock")
-                parseIngredientsJson(String(json.c_str()));
-            else
+            PostType postType = parsePostType(type);
+            switch (postType) {
+            case POST_MENU:
+                parseCocktailJson(String(payload.c_str()));
+                break;
+            case POST_INGREDIENTS:
+                parseIngredientsJson(String(payload.c_str()));
+                break;
+            case POST_CLEAN:{
+                int clean_index = payload.empty() ? -1 : payload[0] - '0';
+                pour_until_stopped(clean_index);
+                break;
+            }
+            default:
                 Serial.println("Unknown POST type");
-
+                break;
+            }
             return;
         }
 
