@@ -206,6 +206,14 @@ class _MainScreenState extends State<MainScreen> {
               leading: const Icon(Icons.edit),
               title: const Text('Edit Cocktails'),
               onTap: () {
+                final provider = context.read<BluetoothDeviceProvider>();
+                if (provider.connectedDevice == null) {
+                  Navigator.pop(context); // CLOSE drawer
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('No device connected')),
+                  );
+                  return;
+                }
                 Navigator.pop(context);
                 Navigator.push(
                   context,
@@ -217,6 +225,14 @@ class _MainScreenState extends State<MainScreen> {
               leading: const Icon(Icons.liquor),
               title: const Text('Edit Ingredients'),
               onTap: () {
+                final provider = context.read<BluetoothDeviceProvider>();
+                if (provider.connectedDevice == null) {
+                  Navigator.pop(context); // CLOSE drawer
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('No device connected')),
+                  );
+                  return;
+                }
                 Navigator.pop(context);
                 Navigator.push(
                   context,
@@ -225,9 +241,36 @@ class _MainScreenState extends State<MainScreen> {
               },
             ),
             ListTile(
+              leading: const Icon(Icons.cleaning_services),
+              title: const Text('Clean Hoses'),
+              onTap: () {
+                final provider = context.read<BluetoothDeviceProvider>();
+                if (provider.connectedDevice == null) {
+                  Navigator.pop(context); // CLOSE drawer
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('No device connected')),
+                  );
+                  return;
+                }
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const CleanHoseScreen()),
+                );
+              },
+            ),
+            ListTile(
               leading: const Icon(Icons.query_stats),
               title: const Text('View Statistics'),
               onTap: () {
+                final provider = context.read<BluetoothDeviceProvider>();
+                if (provider.connectedDevice == null) {
+                  Navigator.pop(context); // CLOSE drawer
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('No device connected')),
+                  );
+                  return;
+                }
                 Navigator.pop(context);
                 Navigator.push(
                   context,
@@ -361,6 +404,13 @@ class _MainScreenState extends State<MainScreen> {
                 Expanded(
                   child: ElevatedButton.icon(
                     onPressed: () {
+                      final provider = context.read<BluetoothDeviceProvider>();
+                      if (provider.connectedDevice == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('No device connected')),
+                        );
+                        return;
+                      }
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => const CocktailsListScreen()),
@@ -442,6 +492,16 @@ class _MainScreenState extends State<MainScreen> {
             Expanded(
               child: Consumer<BluetoothDeviceProvider>(
                 builder: (context, provider, child) {
+                  if (provider.connectedDevice == null) {
+                    return Expanded(
+                      child: Center(
+                        child: Text(
+                          'No Bluetooth device connected',
+                          style: TextStyle(fontSize: 18, color: Colors.red),
+                        ),
+                      ),
+                    );
+                  }
                   final _ = provider.cocktailVersion;
                   final localCocktails = cocktails;
                   return ListView.builder(
@@ -1097,6 +1157,86 @@ class _IngredientsEditScreenState extends State<IngredientsEditScreen> {
               child: const Text(
                 'Save Ingredients',
                 style: TextStyle(fontSize: 16),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class CleanHoseScreen extends StatelessWidget {
+  const CleanHoseScreen({super.key});
+
+  Future<void> _sendCleanHoseCommand(
+      BuildContext context, BluetoothDeviceProvider provider, int index) async {
+    final device = provider.connectedDevice;
+    if (device == null) {
+      context.showSnackbar("No device connected", success: false);
+      return;
+    }
+
+    try {
+      String payload = index.toString();
+      int displayIndex = index + 1;
+      final messenger = ScaffoldMessenger.of(context);
+
+      provider.sendPost("Clean", payload).then((success) {
+        messenger.showSnackBar(SnackBar(
+          content: Text(success
+              ? "Clean command sent for hose $displayIndex"
+              : "Failed to send clean command"),
+          backgroundColor: success ? Colors.green : Colors.red,
+        ));
+      }).catchError((e) {
+        messenger.showSnackBar(SnackBar(
+          content: Text("Error sending clean command: $e"),
+          backgroundColor: Colors.red,
+        ));
+      });
+    } catch (e) {
+      context.showSnackbar("Error sending clean command: $e", success: false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Clean Ingredient Hoses")),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              "To clean a hose:\n"
+              "• Replace the ingredient with water\n"
+              "• Tap the button to flush\n"
+              "• Remove the hose and tap again to drain",
+              style: TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 24),
+            Expanded(
+              child: ListView.builder(
+                itemCount: 4,
+                itemBuilder: (context, i) => Card(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  margin: const EdgeInsets.symmetric(vertical: 8),
+                  elevation: 3,
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    title: Text('Clean Hose for Ingredient ${i + 1}'),
+                    subtitle: Text('Current: ${stock[i].name}'),
+                    trailing: ElevatedButton(
+                      onPressed: () {
+                        final provider = context.read<BluetoothDeviceProvider>();
+                        _sendCleanHoseCommand(context, provider, i);
+                      },
+                      child: const Text("Clean"),
+                    ),
+                  ),
+                ),
               ),
             ),
           ],
