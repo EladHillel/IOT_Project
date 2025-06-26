@@ -95,6 +95,7 @@ Enters quick dispense mode
 */
 void enter_quick_mode(Cocktail cocktail);
 
+void reset_menu_selection();
 
 void handle_touch(int x, int y);
 TS_Point* check_touch();

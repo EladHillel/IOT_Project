@@ -71,6 +71,6 @@ void log_cocktail(const Cocktail& cocktail);
 Cocktail get_random_cocktail();
 void deselect_preset_cocktail();
 void reset_stats_if_replaced(const Cocktail old_presets[], const Cocktail new_presets[], Stats& stats);
-void update_stats_on_drink_order(OrderState state);
+void update_stats_on_drink_order(Cocktail cocktail, OrderState state);
 void update_top_ordered_cocktails();
 #endif

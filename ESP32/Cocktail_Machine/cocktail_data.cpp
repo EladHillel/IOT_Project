@@ -49,7 +49,7 @@ bool isIngredientAvailable(Ingredient ingredient, float required) {
     Serial.print(available);
     Serial.println(" ml");
 
-    if (required > available - MINIMUM_INGREDIENT_AMOUNT_THRESHOLD) {
+    if (required != 0 &&required > available - MINIMUM_INGREDIENT_AMOUNT_THRESHOLD) {
         Serial.println(" -> Not enough available.");
         return false;
     }
@@ -116,8 +116,9 @@ void reset_stats_if_replaced(const Cocktail old_presets[], const Cocktail new_pr
     }
 }
 
-void update_stats_on_drink_order(OrderState state) {
-    const String& name = ordered_cocktail.name;
+void update_stats_on_drink_order(Cocktail cocktail, OrderState state) {
+    const String& name = cocktail.name;
+    Serial.println("Updating stats for "+name);
 
     if (name == UNSELECTED_COCKTAIL_NAME) {
         return;  // Ignore unselected

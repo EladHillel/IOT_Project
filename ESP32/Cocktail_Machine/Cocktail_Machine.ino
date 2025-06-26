@@ -8,11 +8,12 @@ void setup() {
     while (!Serial)
         delay(10);
 
-    // setup_motors();
-    // setup_weight_sensor();
+    setup_motors();
+    setup_weight_sensor();
     setup_data();
     setup_screen();
     ble_setup();
+    update_top_ordered_cocktails();
     // enter_quick_mode(preset_cocktails[0]);
 }
 

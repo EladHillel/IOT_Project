@@ -141,7 +141,7 @@ static void parseCocktailJson(const String& json) {
     }
 
     save_cocktails(preset_cocktails, cocktailCount);
-    draw_current_menu();
+    reset_menu_selection();
 }
 
 class MyServerCallbacks : public BLEServerCallbacks {

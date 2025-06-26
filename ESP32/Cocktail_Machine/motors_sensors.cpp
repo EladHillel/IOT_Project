@@ -15,20 +15,21 @@ void setup_motors(){
   digitalWrite(MOTOR4_PIN, LOW);
 }
 
-void setup_weight_sensor(){
+void setup_weight_sensor() {
   scale.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
   scale.set_scale(CALIBRATION_FACTOR);
 
-  Serial.println("Taring... remove any weight.");
-  delay(3000);
-  scale.tare();  // Zero the scale
-  Serial.println("Tare complete.");
-
+  Serial.println("Checking if HX711 is ready...");
   while (!scale.is_ready()) {
     Serial.println("HX711 not found.");
     delay(1000);
   }
   Serial.println("HX711 found.");
+
+  Serial.println("Taring... remove any weight.");
+  delay(3000);
+  scale.tare();  // Zero the scale
+  Serial.println("Tare complete.");
 }
 
 bool wait_for_cup() {
@@ -84,15 +85,17 @@ void pour_drink(Cocktail cocktail, CocktailSize size) {
       break;
     case Cancelled:
       Serial.println("CANCELLED");
+      update_stats_on_drink_order(cocktail, op_state);
       return_to_main_menu();
       return;
     case Timeout:
       Serial.println("Timeout Reached");
+      update_stats_on_drink_order(cocktail, op_state);
       alert_error("Operation failed: pour timeout reached");
       return;
     }
-  update_stats_on_drink_order(op_state);
   }
+  update_stats_on_drink_order(cocktail, Completed);
   Serial.printf("Cocktail poured successfully");
   return_to_main_menu();
 }
@@ -124,6 +127,7 @@ static OrderState pour_ingredient(int motor_num, float target_weight){
 
     //Timeout check
     bool is_weight_changed = (abs(curr_weight - prev_weight) < WEIGHT_CHANGE_DETECTION_THRESHOLD);
+    Serial.printf("Weight change check: prev=%.2f, curr=%.2f, times_unchanged=%d\n", prev_weight, curr_weight, times_unchanged);
     times_unchanged =  is_weight_changed ? times_unchanged + 1 : 0;
     if (times_unchanged >= TIMES_UNCHANGED_FOR_TIMEOUT) {
       digitalWrite(MOTOR_MAP[motor_num], LOW);
@@ -131,7 +135,7 @@ static OrderState pour_ingredient(int motor_num, float target_weight){
       return Timeout;
     }
     
-    prev_weight = is_weight_changed ? curr_weight : prev_weight;
+    prev_weight = curr_weight;//is_weight_changed ? curr_weight : prev_weight;
     delay(100);
     curr_weight = scale.get_units(5);
   }
