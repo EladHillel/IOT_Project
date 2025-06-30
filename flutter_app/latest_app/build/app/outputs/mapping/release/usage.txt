@@ -11171,7 +11171,6 @@ com.getkeepsafe.relinker.elf.Program64Header
 com.getkeepsafe.relinker.elf.Section32Header
 com.getkeepsafe.relinker.elf.Section64Header
 com.google.common.util.concurrent.ListenableFuture
-com.lib.flutter_blue_plus.FlutterBluePlusPlugin$6
 com.lib.flutter_blue_plus.FlutterBluePlusPlugin$ChrFound:
     public final synthetic com.lib.flutter_blue_plus.FlutterBluePlusPlugin this$0
 com.lib.flutter_blue_plus.FlutterBluePlusPlugin$LogLevel$EnumUnboxingLocalUtility:

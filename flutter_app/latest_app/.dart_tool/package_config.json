@@ -368,10 +368,10 @@
       "languageVersion": "3.0"
     }
   ],
-  "generated": "2025-06-24T14:13:59.295428Z",
+  "generated": "2025-06-30T11:11:06.130624Z",
   "generator": "pub",
   "generatorVersion": "3.7.2",
   "flutterRoot": "file:///C:/Users/itai9/Documents/Arduino/flutter",
-  "flutterVersion": "3.29.4-0.0.pre.1",
+  "flutterVersion": "3.29.3",
   "pubCache": "file:///C:/Users/itai9/AppData/Local/Pub/Cache"
 }
