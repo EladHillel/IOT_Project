@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.helloworld.app-mergeReleaseResources-24:/values-night-v8/values-night-v8.xml",
+            "outputFile": "com.example.helloworld.app-mergeReleaseResources-25:/values-night-v8/values-night-v8.xml",
             "map": [
                 {
                     "source": "C:\\Users\\itai9\\Documents\\Arduino\\IOT_Project\\flutter_app\\latest_app\\android\\app\\src\\main\\res\\values-night\\styles.xml",

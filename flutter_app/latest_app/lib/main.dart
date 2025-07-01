@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
@@ -9,6 +10,7 @@ class BluetoothDeviceProvider with ChangeNotifier {
   BluetoothCharacteristic? _writeCharacteristic;
   BluetoothCharacteristic? _notifyCharacteristic;
   BluetoothCharacteristic? _readCharacteristic;
+  BluetoothCharacteristic? _pushNotifyCharacteristic;
   int _cocktailVersion = 0;
   int get cocktailVersion => _cocktailVersion;
 
@@ -16,6 +18,7 @@ class BluetoothDeviceProvider with ChangeNotifier {
   BluetoothCharacteristic? get writeCharacteristic => _writeCharacteristic;
   BluetoothCharacteristic? get notifyCharacteristic => _notifyCharacteristic;
   BluetoothCharacteristic? get readCharacteristic => _readCharacteristic;
+  BluetoothCharacteristic? get pushNotifyCharacteristic => _pushNotifyCharacteristic;
 
   void notifyCocktailsUpdated() {
     _cocktailVersion++;
@@ -31,10 +34,12 @@ class BluetoothDeviceProvider with ChangeNotifier {
     BluetoothCharacteristic? write,
     BluetoothCharacteristic? notify,
     BluetoothCharacteristic? read,
+    BluetoothCharacteristic? pushNotify,
   }) {
     _writeCharacteristic = write;
     _notifyCharacteristic = notify;
     _readCharacteristic = read;
+    _pushNotifyCharacteristic = pushNotify;
     notifyListeners();
   }
 
@@ -72,21 +77,56 @@ extension SnackbarExtension on BuildContext {
   }
 }
 
-void main() => runApp(
-      ChangeNotifierProvider(
-        create: (_) => BluetoothDeviceProvider(),
-        child: MaterialApp(
-          builder: (context, child) => SafeArea(child: child!),
-          theme: ThemeData(
-            appBarTheme: const AppBarTheme(
-              backgroundColor: Colors.blueAccent,
-              foregroundColor: Colors.white,
-            ),
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+void initializeNotifications() async {
+  const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher'); // your app icon
+
+  const InitializationSettings initializationSettings = InitializationSettings(
+    android: initializationSettingsAndroid,
+  );
+
+  await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+}
+
+void showHelloNotification() {
+  const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
+    'channel_id',
+    'channel_name',
+    importance: Importance.high,
+    priority: Priority.high,
+  );
+
+  const NotificationDetails notificationDetails = NotificationDetails(android: androidDetails);
+
+  flutterLocalNotificationsPlugin.show(
+    0,
+    'Cocktail Machine App', // title
+    'Welcome 🤩', // body
+    notificationDetails,
+  );
+}
+
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  initializeNotifications();
+  showHelloNotification();
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => BluetoothDeviceProvider(),
+      child: MaterialApp(
+        builder: (context, child) => SafeArea(child: child!),
+        theme: ThemeData(
+          appBarTheme: const AppBarTheme(
+            backgroundColor: Colors.blueAccent,
+            foregroundColor: Colors.white,
           ),
-          home: const MainScreen(),
         ),
+        home: const MainScreen(),
       ),
-    );
+    ),
+  );
+}
 
 class Cocktail {
   String name;
@@ -697,16 +737,25 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
     });
 
     try {
-      await device.connect(timeout: const Duration(seconds: 15));
+      await device.connect(timeout: const Duration(seconds: 15), autoConnect: false);
+
+      await Permission.bluetooth.request(); // Android 12+
+      await Permission.bluetoothConnect.request(); // Android 12+
+      await Permission.bluetoothScan.request(); // Android 12+
+      await Permission.location.request(); // Sometimes still needed
+
+      await device.requestMtu(247);
 
       List<BluetoothService> services = await device.discoverServices();
       BluetoothCharacteristic? writeChar;
       BluetoothCharacteristic? notifyChar;
       BluetoothCharacteristic? readChar;
+      BluetoothCharacteristic? pushNotifyChar;
 
       // Look for the specific characteristic from your working app
       for (var service in services) {
         for (var characteristic in service.characteristics) {
+          GLOBAL_RISH += "\n${(characteristic.characteristicUuid.toString())}";
           if (characteristic.characteristicUuid == Guid("beb5483e-36e1-4688-b7f5-ea07361b26a8")) {
             if (characteristic.properties.write || characteristic.properties.writeWithoutResponse) {
               writeChar = characteristic;
@@ -717,6 +766,10 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
             if (characteristic.properties.read) {
               readChar = characteristic;
             }
+          }
+          if (characteristic.characteristicUuid == Guid("6ba7b811-9dad-11d1-80b4-00c04fd430c8")) {
+            GLOBAL_RISH = "FOUND PUSH NOTIFY";
+            pushNotifyChar = characteristic;
           }
         }
       }
@@ -733,7 +786,40 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
       }
 
       provider.setConnectedDevice(device);
-      provider.setCharacteristics(write: writeChar, notify: notifyChar, read: readChar);
+      provider.setCharacteristics(write: writeChar, notify: notifyChar, read: readChar, pushNotify: pushNotifyChar);
+
+      if (pushNotifyChar != null) {
+        GLOBAL_RISH = "IN LISTENER'S IF";
+        await pushNotifyChar.setNotifyValue(true);
+        pushNotifyChar.lastValueStream.listen((value) {
+          final msg = String.fromCharCodes(value);
+          GLOBAL_RISH = msg;
+          // final intAmount = int.tryParse(msg) ?? 0;
+          // provider.notifyCocktailsUpdated();
+
+          final String str = String.fromCharCodes(value).trim();
+          final int x = int.parse(str);
+
+          final String name = stock[x].name;
+          final String message = "Ingredient $x ($name) is running low!";
+
+          const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
+            'channel_id',
+            'channel_name',
+            importance: Importance.high,
+            priority: Priority.high,
+          );
+
+          const NotificationDetails notificationDetails = NotificationDetails(android: androidDetails);
+
+          flutterLocalNotificationsPlugin.show(
+            0,
+            'Cocktail Machine App', // title
+            message, // body
+            notificationDetails,
+          );
+        });
+      }
 
       setState(() {
         statusMessage = "Connected successfully!";
@@ -1124,7 +1210,23 @@ class _IngredientsEditScreenState extends State<IngredientsEditScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Amount: ${amounts[i]} ml', style: const TextStyle(fontSize: 16)),
+                          SizedBox(
+                            width: 120,
+                            child: TextField(
+                              keyboardType: TextInputType.number,
+                              decoration: const InputDecoration(
+                                labelText: 'Amount (ml)',
+                                border: OutlineInputBorder(),
+                              ),
+                              controller: TextEditingController(text: amounts[i].toString()),
+                              onChanged: (val) {
+                                final parsed = int.tryParse(val);
+                                if (parsed != null && parsed >= 0) {
+                                  amounts[i] = parsed;
+                                }
+                              },
+                            ),
+                          ),
                           Row(
                             children: [
                               IconButton(
@@ -1270,6 +1372,7 @@ class StatisticsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    GLOBAL_RISH = "STATS";
     return Scaffold(
       appBar: AppBar(title: const Text("Statistics")),
       body: Padding(
@@ -1328,10 +1431,13 @@ class StatisticsScreen extends StatelessWidget {
   }
 }
 
+String GLOBAL_RISH = "---";
+
 class DumpScreen extends StatelessWidget {
   const DumpScreen({super.key});
 
   Future<String> _readDump(BuildContext context) async {
+    return GLOBAL_RISH;
     final provider = context.read<BluetoothDeviceProvider>();
     final value = await provider.sendRequest("Dump");
     return value != null ? String.fromCharCodes(value) : "-None-";
