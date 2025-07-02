@@ -38,7 +38,6 @@ bool isCocktailAvailable(Cocktail cocktail) {
 }
 
 bool isIngredientAvailable(Ingredient ingredient, float required) {
-    const float MINIMUM_INGREDIENT_AMOUNT_THRESHOLD = 5;
     int available = ingredient.amount_left;
 
     Serial.print("Ingredient ");
@@ -49,7 +48,7 @@ bool isIngredientAvailable(Ingredient ingredient, float required) {
     Serial.print(available);
     Serial.println(" ml");
 
-    if (required != 0 &&required > available - MINIMUM_INGREDIENT_AMOUNT_THRESHOLD) {
+    if (required != 0 && required > available - MINIMUM_INGREDIENT_AMOUNT_THRESHOLD) {
         Serial.println(" -> Not enough available.");
         return false;
     }

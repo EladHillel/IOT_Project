@@ -24,11 +24,12 @@ enum OrderState {
 
 const int INGREDIENT_COUNT = 4;
 const int PRESET_COCKTAIL_COUNT = 9;
-const int MAX_COCKTAIL_DRINK_AMOUNT = 200;
+const int MAX_COCKTAIL_DRINK_AMOUNT = 100;
 const int POPULAR_DRINK_COUNT = 3;
 extern const String UNSELECTED_COCKTAIL_NAME;
 const String RANDOM_COCKTAIL_NAME = "Random Cocktail";
 const int TOP_COCKTAIL_COUNT = 3;
+const float MINIMUM_INGREDIENT_AMOUNT_THRESHOLD = 10;
 
 struct Cocktail {
   String name;

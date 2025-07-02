@@ -509,6 +509,10 @@ void handle_touch_menu_1(int x, int y) {
     handle_touch_tiles(x, y, PRESET_COCKTAIL_COUNT, preset_cocktails);
 }
 
+int roundDownToNearest10(float value) {
+    return (int(value) / 10) * 10;
+}
+
 void handle_touch_menu_2(int x, int y) {
     const int tileW = MAIN_WIDTH / 2;
     const int tileH = SCREEN_HEIGHT / 2;
@@ -528,7 +532,7 @@ void handle_touch_menu_2(int x, int y) {
 
     bool changed = false;
     if (lx >= bx && lx < bx + button_size && ly >= by && ly < by + button_size) {
-        int maximal_ingredient_available = min(MAX_COCKTAIL_DRINK_AMOUNT, int(ingredients[ingredient_index].amount_left));
+        int maximal_ingredient_available = min(MAX_COCKTAIL_DRINK_AMOUNT, roundDownToNearest10(ingredients[ingredient_index].amount_left));
         current_custom_cocktail.amounts[ingredient_index] = min(current_custom_cocktail.amounts[ingredient_index] + MENU_2_INGREDIENT_DELTA, maximal_ingredient_available);
         changed = true;
     }

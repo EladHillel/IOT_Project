@@ -14,7 +14,6 @@ void setup() {
     setup_screen();
     ble_setup();
     update_top_ordered_cocktails();
-    // enter_quick_mode(preset_cocktails[0]);
 }
 
 void loop() {

@@ -10,5 +10,5 @@ void ble_loop();
 void log_cocktail(const Cocktail& cocktail);
 void send_menu_via_ble();
 void send_stats_via_ble();
-
+void send_push_notification(int ingredientIndex);
 #endif 

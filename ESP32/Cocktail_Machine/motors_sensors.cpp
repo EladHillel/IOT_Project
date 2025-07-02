@@ -1,5 +1,7 @@
 #include "motors_sensors.h"
 #include "menu.h"
+#include "bluetooth.h"
+#include "cocktail_data.h"
 
 void setup_motors(){
 // Initialize motor control pins
@@ -67,6 +69,12 @@ bool wait_for_cup() {
   return true;
 }
 
+void notifyOnMissing(int ingredientIndex){
+  if (ingredients[ingredientIndex].amount_left <= 2*MINIMUM_INGREDIENT_AMOUNT_THRESHOLD){
+    send_push_notification(ingredientIndex);
+  }
+}
+
 void pour_drink(Cocktail cocktail, CocktailSize size) {
   init_cancellable_op("Pouring cocktail...");
   delay(500);
@@ -79,6 +87,7 @@ void pour_drink(Cocktail cocktail, CocktailSize size) {
     
     float curr_amount = cocktail.amounts[ingredient] * PORTION_MAP[size];
     OrderState op_state = pour_ingredient(ingredient, curr_amount);
+    notifyOnMissing(ingredient);
     switch (op_state) {
     case Completed:
       Serial.print("Ingredient poured succcessfully");

@@ -11,6 +11,8 @@
 
 #define SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 #define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
+#define SERVICE_PUSH_UUID "6ba7b810-9dad-11d1-80b4-00c04fd430c8"
+#define CHARACTERISTIC_PUSH_UUID "6ba7b811-9dad-11d1-80b4-00c04fd430c8"
 #define SEND_DELAY 3000
 
 enum RequestType { MENU,
@@ -39,6 +41,7 @@ PostType parsePostType(const std::string& type) {
 
 BLEServer* pServer = nullptr;
 BLECharacteristic* pCharacteristic = nullptr;
+BLECharacteristic* pPushCharacteristic = nullptr;
 bool deviceConnected = false;
 bool oldDeviceConnected = false;
 
@@ -264,6 +267,15 @@ class MyCharacteristicCallbacks : public BLECharacteristicCallbacks {
     }
 };
 
+void send_push_notification(int ingredientIndex) {
+    if (deviceConnected && pPushCharacteristic) {
+        Serial.println("Pushing notification");
+        String msg = String(ingredientIndex);
+        pPushCharacteristic->setValue(msg.c_str());
+        pPushCharacteristic->notify();
+    }
+}
+
 void ble_setup() {
     Serial.begin(115200);
     BLEDevice::init("ESP32-CocktailBLE");
@@ -279,8 +291,18 @@ void ble_setup() {
     pCharacteristic->addDescriptor(new BLE2902());
 
     pService->start();
+
+    BLEService* pPushService = pServer->createService(SERVICE_PUSH_UUID);
+    pPushCharacteristic = pPushService->createCharacteristic(
+        CHARACTERISTIC_PUSH_UUID,
+        BLECharacteristic::PROPERTY_NOTIFY
+    );
+    pPushCharacteristic->addDescriptor(new BLE2902());
+    pPushService->start();
+
     BLEAdvertising* pAdvertising = BLEDevice::getAdvertising();
     pAdvertising->addServiceUUID(SERVICE_UUID);
+    pAdvertising->addServiceUUID(SERVICE_PUSH_UUID);
     pAdvertising->start();
 }
 
