@@ -1,4 +1,0 @@
-Not searching for unused variables given on the command line.
--- Configuring done
--- Generating done
--- Build files have been written to: C:/Users/itai9/Documents/Arduino/IOT_Project/flutter_app/latest_app/android/app/.cxx/RelWithDebInfo/173sv194/x86_64

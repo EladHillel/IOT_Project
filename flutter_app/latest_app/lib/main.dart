@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
@@ -9,6 +10,7 @@ class BluetoothDeviceProvider with ChangeNotifier {
   BluetoothCharacteristic? _writeCharacteristic;
   BluetoothCharacteristic? _notifyCharacteristic;
   BluetoothCharacteristic? _readCharacteristic;
+  BluetoothCharacteristic? _pushNotifyCharacteristic;
   int _cocktailVersion = 0;
   int get cocktailVersion => _cocktailVersion;
 
@@ -16,6 +18,7 @@ class BluetoothDeviceProvider with ChangeNotifier {
   BluetoothCharacteristic? get writeCharacteristic => _writeCharacteristic;
   BluetoothCharacteristic? get notifyCharacteristic => _notifyCharacteristic;
   BluetoothCharacteristic? get readCharacteristic => _readCharacteristic;
+  BluetoothCharacteristic? get pushNotifyCharacteristic => _pushNotifyCharacteristic;
 
   void notifyCocktailsUpdated() {
     _cocktailVersion++;
@@ -31,10 +34,12 @@ class BluetoothDeviceProvider with ChangeNotifier {
     BluetoothCharacteristic? write,
     BluetoothCharacteristic? notify,
     BluetoothCharacteristic? read,
+    BluetoothCharacteristic? pushNotify,
   }) {
     _writeCharacteristic = write;
     _notifyCharacteristic = notify;
     _readCharacteristic = read;
+    _pushNotifyCharacteristic = pushNotify;
     notifyListeners();
   }
 
@@ -72,17 +77,44 @@ extension SnackbarExtension on BuildContext {
   }
 }
 
-void main() => runApp(const CocktailBluetoothApp());
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
-class CocktailBluetoothApp extends StatelessWidget {
-  const CocktailBluetoothApp({super.key});
+void initializeNotifications() async {
+  const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher'); // your app icon
 
-  @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
+  const InitializationSettings initializationSettings = InitializationSettings(
+    android: initializationSettingsAndroid,
+  );
+
+  await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+}
+
+void showHelloNotification() {
+  const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
+    'channel_id',
+    'channel_name',
+    importance: Importance.high,
+    priority: Priority.high,
+  );
+
+  const NotificationDetails notificationDetails = NotificationDetails(android: androidDetails);
+
+  flutterLocalNotificationsPlugin.show(
+    0,
+    'Cocktail Machine App', // title
+    'Welcome 🤩', // body
+    notificationDetails,
+  );
+}
+
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  initializeNotifications();
+  showHelloNotification();
+  runApp(
+    ChangeNotifierProvider(
       create: (_) => BluetoothDeviceProvider(),
       child: MaterialApp(
-        // scaffoldMessengerKey: snackbarKey,
         builder: (context, child) => SafeArea(child: child!),
         theme: ThemeData(
           appBarTheme: const AppBarTheme(
@@ -90,24 +122,10 @@ class CocktailBluetoothApp extends StatelessWidget {
             foregroundColor: Colors.white,
           ),
         ),
-        home: const HomeLoader(),
+        home: const MainScreen(),
       ),
-    );
-  }
-}
-
-class HomeLoader extends StatefulWidget {
-  const HomeLoader({super.key});
-
-  @override
-  State<HomeLoader> createState() => _HomeLoaderState();
-}
-
-class _HomeLoaderState extends State<HomeLoader> {
-  @override
-  Widget build(BuildContext context) {
-    return const MainScreen();
-  }
+    ),
+  );
 }
 
 class Cocktail {
@@ -274,10 +292,7 @@ class _MainScreenState extends State<MainScreen> {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => StatisticsScreen(
-                            provider: context.read<BluetoothDeviceProvider>(),
-                          )),
+                  MaterialPageRoute(builder: (context) => StatisticsScreen()),
                 );
               },
             ),
@@ -288,10 +303,7 @@ class _MainScreenState extends State<MainScreen> {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => DumpScreen(
-                            provider: context.read<BluetoothDeviceProvider>(),
-                          )),
+                  MaterialPageRoute(builder: (context) => DumpScreen()),
                 );
               },
             ),
@@ -725,16 +737,25 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
     });
 
     try {
-      await device.connect(timeout: const Duration(seconds: 15));
+      await device.connect(timeout: const Duration(seconds: 15), autoConnect: false);
+
+      await Permission.bluetooth.request(); // Android 12+
+      await Permission.bluetoothConnect.request(); // Android 12+
+      await Permission.bluetoothScan.request(); // Android 12+
+      await Permission.location.request(); // Sometimes still needed
+
+      await device.requestMtu(247);
 
       List<BluetoothService> services = await device.discoverServices();
       BluetoothCharacteristic? writeChar;
       BluetoothCharacteristic? notifyChar;
       BluetoothCharacteristic? readChar;
+      BluetoothCharacteristic? pushNotifyChar;
 
       // Look for the specific characteristic from your working app
       for (var service in services) {
         for (var characteristic in service.characteristics) {
+          GLOBAL_RISH += "\n${(characteristic.characteristicUuid.toString())}";
           if (characteristic.characteristicUuid == Guid("beb5483e-36e1-4688-b7f5-ea07361b26a8")) {
             if (characteristic.properties.write || characteristic.properties.writeWithoutResponse) {
               writeChar = characteristic;
@@ -745,6 +766,10 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
             if (characteristic.properties.read) {
               readChar = characteristic;
             }
+          }
+          if (characteristic.characteristicUuid == Guid("6ba7b811-9dad-11d1-80b4-00c04fd430c8")) {
+            GLOBAL_RISH = "FOUND PUSH NOTIFY";
+            pushNotifyChar = characteristic;
           }
         }
       }
@@ -761,7 +786,40 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
       }
 
       provider.setConnectedDevice(device);
-      provider.setCharacteristics(write: writeChar, notify: notifyChar, read: readChar);
+      provider.setCharacteristics(write: writeChar, notify: notifyChar, read: readChar, pushNotify: pushNotifyChar);
+
+      if (pushNotifyChar != null) {
+        GLOBAL_RISH = "IN LISTENER'S IF";
+        await pushNotifyChar.setNotifyValue(true);
+        pushNotifyChar.lastValueStream.listen((value) {
+          final msg = String.fromCharCodes(value);
+          GLOBAL_RISH = msg;
+          // final intAmount = int.tryParse(msg) ?? 0;
+          // provider.notifyCocktailsUpdated();
+
+          final String str = String.fromCharCodes(value).trim();
+          final int x = int.parse(str);
+
+          final String name = stock[x].name;
+          final String message = "Ingredient $x ($name) is running low!";
+
+          const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
+            'channel_id',
+            'channel_name',
+            importance: Importance.high,
+            priority: Priority.high,
+          );
+
+          const NotificationDetails notificationDetails = NotificationDetails(android: androidDetails);
+
+          flutterLocalNotificationsPlugin.show(
+            0,
+            'Cocktail Machine App', // title
+            message, // body
+            notificationDetails,
+          );
+        });
+      }
 
       setState(() {
         statusMessage = "Connected successfully!";
@@ -877,7 +935,9 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         subtitle: Text(device.remoteId.toString()),
-                        trailing: isConnected ? const Icon(Icons.check_circle, color: Colors.green) : const Icon(Icons.bluetooth, color: Colors.grey),
+                        trailing: isConnected
+                            ? const Icon(Icons.check_circle, color: Colors.green)
+                            : const Icon(Icons.bluetooth, color: Colors.grey),
                         onTap: isConnected ? null : () => connectToDevice(device),
                         tileColor: isConnected ? Colors.green[100] : null,
                       ),
@@ -1073,12 +1133,29 @@ class IngredientsEditScreen extends StatefulWidget {
 class _IngredientsEditScreenState extends State<IngredientsEditScreen> {
   late List<String> names;
   late List<int> amounts;
+  bool loaded = false;
 
   @override
   void initState() {
     super.initState();
-    names = stock.map((ingredient) => ingredient.name).toList();
-    amounts = stock.map((ingredient) => ingredient.amount).toList();
+    _loadStock();
+  }
+
+  Future<void> _loadStock() async {
+    final provider = context.read<BluetoothDeviceProvider>();
+    final value = await provider.sendRequest("Stock");
+    if (value != null) {
+      final decoded = String.fromCharCodes(value);
+      final data = jsonDecode(decoded) as List;
+      stock = data.map((e) => Ingredient.fromJson(e)).toList();
+      provider.notifyCocktailsUpdated();
+    }
+
+    setState(() {
+      names = stock.map((ingredient) => ingredient.name).toList();
+      amounts = stock.map((ingredient) => ingredient.amount).toList();
+      loaded = true;
+    });
   }
 
   void updateAmount(int index, int delta) {
@@ -1099,6 +1176,11 @@ class _IngredientsEditScreenState extends State<IngredientsEditScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (!loaded) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
     return Scaffold(
       appBar: AppBar(title: const Text("Edit Ingredients")),
       body: Padding(
@@ -1128,7 +1210,23 @@ class _IngredientsEditScreenState extends State<IngredientsEditScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Amount: ${amounts[i]} ml', style: const TextStyle(fontSize: 16)),
+                          SizedBox(
+                            width: 120,
+                            child: TextField(
+                              keyboardType: TextInputType.number,
+                              decoration: const InputDecoration(
+                                labelText: 'Amount (ml)',
+                                border: OutlineInputBorder(),
+                              ),
+                              controller: TextEditingController(text: amounts[i].toString()),
+                              onChanged: (val) {
+                                final parsed = int.tryParse(val);
+                                if (parsed != null && parsed >= 0) {
+                                  amounts[i] = parsed;
+                                }
+                              },
+                            ),
+                          ),
                           Row(
                             children: [
                               IconButton(
@@ -1151,7 +1249,7 @@ class _IngredientsEditScreenState extends State<IngredientsEditScreen> {
             ElevatedButton(
               onPressed: saveIngredients,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
+                backgroundColor: Colors.green,
                 padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
               ),
               child: const Text(
@@ -1169,8 +1267,7 @@ class _IngredientsEditScreenState extends State<IngredientsEditScreen> {
 class CleanHoseScreen extends StatelessWidget {
   const CleanHoseScreen({super.key});
 
-  Future<void> _sendCleanHoseCommand(
-      BuildContext context, BluetoothDeviceProvider provider, int index) async {
+  Future<void> _sendCleanHoseCommand(BuildContext context, BluetoothDeviceProvider provider, int index) async {
     final device = provider.connectedDevice;
     if (device == null) {
       context.showSnackbar("No device connected", success: false);
@@ -1184,9 +1281,7 @@ class CleanHoseScreen extends StatelessWidget {
 
       provider.sendPost("Clean", payload).then((success) {
         messenger.showSnackBar(SnackBar(
-          content: Text(success
-              ? "Clean command sent for hose $displayIndex"
-              : "Failed to send clean command"),
+          content: Text(success ? "Clean command sent for hose $displayIndex" : "Failed to send clean command"),
           backgroundColor: success ? Colors.green : Colors.red,
         ));
       }).catchError((e) {
@@ -1246,83 +1341,77 @@ class CleanHoseScreen extends StatelessWidget {
   }
 }
 
-class StatisticsScreen extends StatefulWidget {
-  final BluetoothDeviceProvider provider;
+class StatisticsScreen extends StatelessWidget {
+  const StatisticsScreen({super.key});
 
-  const StatisticsScreen({super.key, required this.provider});
+  Future<List<String>> _readStats(BuildContext context) async {
+    final provider = context.read<BluetoothDeviceProvider>();
+    final value = await provider.sendRequest("Stats");
 
-  @override
-  State<StatisticsScreen> createState() => _StatisticsScreenState();
-}
+    if (value == null) return [];
 
-class _StatisticsScreenState extends State<StatisticsScreen> {
-  List<String> stats = [];
+    final decoded = String.fromCharCodes(value);
+    final data = jsonDecode(decoded);
 
-  @override
-  void initState() {
-    super.initState();
-    _readStats();
-  }
+    final stats = [
+      'Orders Completed: ${data['orders_completed']}',
+      'Random Drink Orders: ${data['random_drink_orders']}',
+      'Preset Drink Orders: ${data['preset_drink_orders']}',
+      'Orders Timed Out: ${data['orders_timed_out']}',
+      'Orders Cancelled: ${data['orders_cancelled']}',
+      'Custom Drink Orders: ${data['custom_drink_orders']}',
+    ];
 
-  Future<void> _readStats() async {
-    final value = await widget.provider.sendRequest("Stats");
-    if (value != null) {
-      final decoded = String.fromCharCodes(value);
-      final data = jsonDecode(decoded);
-
-      final List<String> formattedStats = [
-        'Orders Completed: ${data['orders_completed']}',
-        'Random Drink Orders: ${data['random_drink_orders']}',
-        'Preset Drink Orders: ${data['preset_drink_orders']}',
-        'Orders Timed Out: ${data['orders_timed_out']}',
-        'Orders Cancelled: ${data['orders_cancelled']}',
-        'Custom Drink Orders: ${data['custom_drink_orders']}',
-      ];
-
-      final List<dynamic> presetCounts = data['preset_cocktail_order_counts'];
-      for (var i = 0; i < presetCounts.length; i++) {
-        formattedStats.add('${cocktails[i].name}: ${presetCounts[i]}');
-      }
-
-      setState(() {
-        stats = formattedStats;
-      });
+    final List<dynamic> presetCounts = data['preset_cocktail_order_counts'];
+    for (var i = 0; i < presetCounts.length; i++) {
+      stats.add('${cocktails[i].name}: ${presetCounts[i]}');
     }
+
+    return stats;
   }
 
   @override
   Widget build(BuildContext context) {
+    GLOBAL_RISH = "STATS";
     return Scaffold(
       appBar: AppBar(title: const Text("Statistics")),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: stats.isEmpty
-            ? const Center(child: CircularProgressIndicator())
-            : ListView(
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 8.0),
-                    child: Text(
-                      'General Orders',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
+        child: FutureBuilder<List<String>>(
+          future: _readStats(context),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            final stats = snapshot.data!;
+            return ListView(
+              children: [
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                  child: Text(
+                    'General Orders',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  _statCard(Icons.check_circle, stats[0]),
-                  _statCard(Icons.shuffle, stats[1]),
-                  _statCard(Icons.local_bar, stats[2]),
-                  _statCard(Icons.timer_off, stats[3]),
-                  _statCard(Icons.cancel, stats[4]),
-                  _statCard(Icons.edit, stats[5]),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 8.0),
-                    child: Text(
-                      'Preset Cocktail Orders',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
+                ),
+                _statCard(Icons.check_circle, stats[0]),
+                _statCard(Icons.shuffle, stats[1]),
+                _statCard(Icons.local_bar, stats[2]),
+                _statCard(Icons.timer_off, stats[3]),
+                _statCard(Icons.cancel, stats[4]),
+                _statCard(Icons.edit, stats[5]),
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                  child: Text(
+                    'Preset Cocktail Orders',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  ...stats.sublist(6).asMap().entries.map((entry) => _statCard(Icons.local_drink, entry.value)),
-                ],
-              ),
+                ),
+                ...stats.sublist(6).map((stat) => _statCard(Icons.local_drink, stat)),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
@@ -1342,48 +1431,38 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   }
 }
 
-class DumpScreen extends StatefulWidget {
-  final BluetoothDeviceProvider provider;
+String GLOBAL_RISH = "---";
 
-  const DumpScreen({super.key, required this.provider});
+class DumpScreen extends StatelessWidget {
+  const DumpScreen({super.key});
 
-  @override
-  State<DumpScreen> createState() => _DumpScreenState();
-}
-
-class _DumpScreenState extends State<DumpScreen> {
-  String dump = "-None-";
-
-  @override
-  void initState() {
-    super.initState();
-    _readDump();
-  }
-
-  Future<void> _readDump() async {
-    final value = await widget.provider.sendRequest("Dump");
-    if (value != null) {
-      final decoded = String.fromCharCodes(value);
-      setState(() {
-        dump = decoded;
-      });
-    }
+  Future<String> _readDump(BuildContext context) async {
+    return GLOBAL_RISH;
+    final provider = context.read<BluetoothDeviceProvider>();
+    final value = await provider.sendRequest("Dump");
+    return value != null ? String.fromCharCodes(value) : "-None-";
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text('Statistics')),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: dump.isEmpty
-              ? const Center(child: CircularProgressIndicator())
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(dump, style: const TextStyle(fontSize: 10)),
-                  ],
-                ),
-        ));
+      appBar: AppBar(title: const Text('Statistics')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: FutureBuilder<String>(
+          future: _readDump(context),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            final dump = snapshot.data!;
+            return SingleChildScrollView(
+              child: Text(dump, style: const TextStyle(fontSize: 20)),
+            );
+          },
+        ),
+      ),
+    );
   }
 }

@@ -50,6 +50,9 @@ color call_notification_answer_color
 color call_notification_decline_color
 color notification_action_color_filter
 color notification_icon_bg_color
+color notification_material_background_media_default_color
+color primary_text_default_material_dark
+color secondary_text_default_material_dark
 dimen compat_button_inset_horizontal_material
 dimen compat_button_inset_vertical_material
 dimen compat_button_padding_horizontal_material
@@ -72,6 +75,10 @@ dimen notification_small_icon_size_as_large
 dimen notification_subtext_size
 dimen notification_top_pad
 dimen notification_top_pad_large_text
+dimen subtitle_corner_radius
+dimen subtitle_outline_width
+dimen subtitle_shadow_offset
+dimen subtitle_shadow_radius
 drawable ic_call_answer
 drawable ic_call_answer_low
 drawable ic_call_answer_video
@@ -125,6 +132,7 @@ id accessibility_custom_action_6
 id accessibility_custom_action_7
 id accessibility_custom_action_8
 id accessibility_custom_action_9
+id action0
 id action_container
 id action_divider
 id action_image
@@ -138,9 +146,11 @@ id androidx_window_activity_scope
 id async
 id blocking
 id bottomToTop
+id cancel_action
 id chronometer
 id dialog_button
 id edit_text_id
+id end_padder
 id forever
 id fragment_container_view_tag
 id hide_ime_id
@@ -152,6 +162,7 @@ id line1
 id line3
 id locale
 id ltr
+id media_actions
 id never
 id normal
 id notification_background
@@ -162,6 +173,7 @@ id right_icon
 id right_side
 id rtl
 id special_effects_controller_view_tag
+id status_bar_latest_event_content
 id tag_accessibility_actions
 id tag_accessibility_clickable_spans
 id tag_accessibility_heading
@@ -185,14 +197,24 @@ id view_tree_on_back_pressed_dispatcher_owner
 id view_tree_saved_state_registry_owner
 id view_tree_view_model_store_owner
 id visible_removing_fragment_view_tag
+integer cancel_button_image_alpha
 integer status_bar_notification_info_maxnum
 layout custom_dialog
 layout ime_base_split_test_activity
 layout ime_secondary_split_test_activity
 layout notification_action
 layout notification_action_tombstone
+layout notification_media_action
+layout notification_media_cancel_action
+layout notification_template_big_media
+layout notification_template_big_media_custom
+layout notification_template_big_media_narrow
+layout notification_template_big_media_narrow_custom
 layout notification_template_custom_big
 layout notification_template_icon_group
+layout notification_template_lines_media
+layout notification_template_media
+layout notification_template_media_custom
 layout notification_template_part_chronometer
 layout notification_template_part_time
 mipmap ic_launcher
@@ -209,9 +231,14 @@ style LaunchTheme
 style NormalTheme
 style TextAppearance_Compat_Notification
 style TextAppearance_Compat_Notification_Info
+style TextAppearance_Compat_Notification_Info_Media
 style TextAppearance_Compat_Notification_Line2
+style TextAppearance_Compat_Notification_Line2_Media
+style TextAppearance_Compat_Notification_Media
 style TextAppearance_Compat_Notification_Time
+style TextAppearance_Compat_Notification_Time_Media
 style TextAppearance_Compat_Notification_Title
+style TextAppearance_Compat_Notification_Title_Media
 style Widget_Compat_NotificationActionContainer
 style Widget_Compat_NotificationActionText
 styleable ActivityFilter activityAction activityName

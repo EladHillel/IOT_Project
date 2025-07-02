@@ -1,4 +1,7 @@
-#Tue Jun 24 21:10:31 IDT 2025
+#Tue Jul 01 18:34:19 IDT 2025
 base.0=C\:\\Users\\itai9\\Documents\\Arduino\\IOT_Project\\flutter_app\\latest_app\\build\\app\\intermediates\\dex\\release\\minifyReleaseWithR8\\classes.dex
-renamed.0=classes.dex
+base.1=C\:\\Users\\itai9\\Documents\\Arduino\\IOT_Project\\flutter_app\\latest_app\\build\\app\\intermediates\\desugar_lib_dex\\release\\l8DexDesugarLibRelease\\classes1000.dex
 path.0=classes.dex
+path.1=classes1000.dex
+renamed.0=classes.dex
+renamed.1=classes2.dex

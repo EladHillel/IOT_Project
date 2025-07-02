@@ -1,0 +1,32 @@
+<variant
+    name="release"
+    package="com.dexterous.flutterlocalnotifications"
+    minSdkVersion="16"
+    targetSdkVersion="16"
+    mergedManifest="C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\build\flutter_local_notifications\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml"
+    proguardFiles="C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\build\flutter_local_notifications\intermediates\default_proguard_files\global\proguard-android.txt-8.7.0"
+    partialResultsDir="C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\build\flutter_local_notifications\intermediates\lint_vital_partial_results\release\lintVitalAnalyzeRelease\out"
+    desugaredMethodsFiles="C:\Users\itai9\.gradle\caches\8.10.2\transforms\c5e89b5e232373ab07ee8b1ac0177b5c\transformed\desugar_jdk_libs_configuration-1.2.2-desugar-lint.txt;C:\Users\itai9\.gradle\caches\8.10.2\transforms\4df54563e32a9d65942bf8dd18a06cd6\transformed\D8BackportedDesugaredMethods.txt">
+  <buildFeatures
+      coreLibraryDesugaring="true"
+      namespacing="REQUIRED"/>
+  <sourceProviders>
+    <sourceProvider
+        manifests="src\main\AndroidManifest.xml"
+        javaDirectories="src\main\java;src\release\java;src\main\kotlin;src\release\kotlin"
+        resDirectories="src\main\res;src\release\res"
+        assetsDirectories="src\main\assets;src\release\assets"/>
+  </sourceProviders>
+  <testSourceProviders>
+  </testSourceProviders>
+  <testFixturesSourceProviders>
+  </testFixturesSourceProviders>
+  <artifact
+      classOutputs="C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\build\flutter_local_notifications\intermediates\javac\release\compileReleaseJavaWithJavac\classes;C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\build\flutter_local_notifications\intermediates\compile_r_class_jar\release\generateReleaseRFile\R.jar"
+      type="MAIN"
+      applicationId="com.dexterous.flutterlocalnotifications"
+      generatedSourceFolders="C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\build\flutter_local_notifications\generated\ap_generated_sources\release\out"
+      generatedResourceFolders="C:\Users\itai9\Documents\Arduino\IOT_Project\flutter_app\latest_app\build\flutter_local_notifications\generated\res\resValues\release"
+      desugaredMethodsFiles="C:\Users\itai9\.gradle\caches\8.10.2\transforms\c5e89b5e232373ab07ee8b1ac0177b5c\transformed\desugar_jdk_libs_configuration-1.2.2-desugar-lint.txt;C:\Users\itai9\.gradle\caches\8.10.2\transforms\4df54563e32a9d65942bf8dd18a06cd6\transformed\D8BackportedDesugaredMethods.txt">
+  </artifact>
+</variant>
