@@ -25,6 +25,19 @@ class BluetoothDeviceProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void monitorConnection() {
+  _connectedDevice?.connectionState.listen((state) {
+    if (state == BluetoothConnectionState.disconnected) {
+      _connectedDevice = null;
+      _writeCharacteristic = null;
+      _notifyCharacteristic = null;
+      _readCharacteristic = null;
+      _pushNotifyCharacteristic = null;
+      notifyListeners();
+    }
+  });
+  }
+
   void setConnectedDevice(BluetoothDevice? device) {
     _connectedDevice = device;
     notifyListeners();
@@ -825,6 +838,7 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
         statusMessage = "Connected successfully!";
       });
 
+      provider.monitorConnection();
       context.showSnackbar("Connected to ${device.platformName.isNotEmpty ? device.platformName : 'Unknown'}", success: true);
 
       await _loadMenu();
