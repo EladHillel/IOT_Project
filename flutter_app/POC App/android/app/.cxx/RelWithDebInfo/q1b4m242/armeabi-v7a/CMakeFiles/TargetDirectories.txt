@@ -1,2 +1,0 @@
-C:/Users/itai9/Documents/Arduino/IOT_Project/flutter_app/Hello-World-8/android/app/.cxx/RelWithDebInfo/q1b4m242/armeabi-v7a/CMakeFiles/edit_cache.dir
-C:/Users/itai9/Documents/Arduino/IOT_Project/flutter_app/Hello-World-8/android/app/.cxx/RelWithDebInfo/q1b4m242/armeabi-v7a/CMakeFiles/rebuild_cache.dir
